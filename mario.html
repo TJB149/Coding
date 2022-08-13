@@ -64,8 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
      canvas.height=window.innerHeight
           }, 10)
     
-    
-   
+          var reDraw;
+          var intermediateArr = []
     
   
     
@@ -103,52 +103,56 @@ var changer = 0;
 //interval for moving mario 
 var work;
 //attaches button to mario
+
 function radiansToDegrees(radians){
   var pi = Math.PI;
   return radians * (180/pi);
 }
-    
+var internalArr = [];
     
           
 class Hitbox{
     constructor(spriteX, spriteY, ...points){
-        this.points=points;
+        
         this.spriteX=spriteX;
         this.spriteY=spriteY;
+        this.points=points;
+        
     }
-    movement( spriteX, spriteY,...points){
+        movement(){
+       
         var xcoord;
         var ycoord;
         var hasX=false;
        
-        var reDraw;
-        this.points=points;
-        this.spriteX=spriteX
-        this.spriteY=spriteY
+       
+        
+        
         
         reDraw=setInterval(function(){
             
             ctx.beginPath();
         ctx.strokeStyle = "#000000";
         ctx.lineWidth = 1;
-        ctx.moveTo(points[0]+spriteX,[points[1]]+spriteY);
-        console.log("reDraw")
-       console.log(points.length)
-        for (var i=0;i<points.length;i++){
-            console.log('function')
+        ctx.moveTo(this.points[0],this.points[1]);
+        
+      
+        for (var i=0;i<this.points.length;i++){
+           
+           
+            
+
             if (hasX==false){
-                xcoord=points[i]+spriteX
+                xcoord=points[i]
                
-                    console.log("hasX is false")
-                    console.log(xcoord)
                 
                 hasX=true
             }else{
-                ycoord=points[i]+spriteY
+                ycoord=points[i]
                 
                 hasX=false
-                console.log('hasX is true')
-                console.log(ycoord)
+                
+               
                 ctx.lineTo(xcoord, ycoord)
 
             }
@@ -164,25 +168,33 @@ class Hitbox{
     endMovement(){
         clearInterval(reDraw)
     }
-}
-    function hitboxMovement(hitbox, x, y){
+    pointChange( x, y){
         var newX=true
-        for( j=0;j<hitbox.points.length;j++){
+        
+        
+        for( var j=0;j<this.points.length;j++){
             if(newX==true){
-            hitbox.points[j]+=x; 
+                console.log("x changed")
+                this.points[j]+=x
+                newX=false
             }else{
-                hitbox.points[j]+=y;
+                this.points[j]+=y
+                newX=true
+                console.log("y changed")
 
             }    
             }   
-        hitbox.endMovement()
-        hitbox.movement(marioX, marioY, marioPosArr)
+        
+        
+        
     }
     
+}
+   
 var marioPosArr = [12,6,29,13,50,10,50,32,29,27,12,35, 12,6]
 
-var marioHitbox = new Hitbox( marioX, marioY, marioPosArr)
-marioHitbox.movement(marioX, marioY, marioPosArr)
+var marioHitbox = new Hitbox( marioX, marioY, ...marioPosArr)
+marioHitbox.movement(marioPosArr)
 function buttonControl(freq, btn, btnstring){
     //on mouse down , runs start move
     btn.addEventListener("mousedown", startMove);
@@ -204,56 +216,76 @@ function buttonControl(freq, btn, btnstring){
     //end move clears work interval
     function endMove(){
         clearInterval(work);
+        
     }
     
 }
+
 //this is where the magic happens - used to move mario
 function move_m(direction){
     
     switch(direction){
    //if the direction is up
    case "up":
-   
+  
        //used to decide how much the value(top or left) is being changed by
        changer = -1;
+      
        //checks if it is within limits
        if (Number(mario.style.top.substring(0, mario.style.top.length - 2))<=00){
           
        }else{
            //actually changes value
            mario.style.top=Number(mario.style.top.substring(0, mario.style.top.length - 2))+changer+"px";
-       }
+           marioHitbox.endMovement()
+           marioHitbox.pointChange(0,1)
+            marioHitbox.movement()
+            
+        }
       
        break;
        //direction is down
  
        case "down":
-       //hitboxMovement(marioHitbox, 0,1)
+      
        changer = 1
       
        //see above for all of these
    if (Number(mario.style.top.substring(0, mario.style.top.length - 2))>=canvas.height){
-    console.log("help")
+   
        }else{
            mario.style.top=Number(mario.style.top.substring(0, mario.style.top.length - 2))+changer+"px";
-       }
+           marioHitbox.endMovement()
+           marioHitbox.pointChange(0,1)
+           marioHitbox.movement()
+           
+        }
       
        break;
    case "left":
-   //hitboxMovement(marioHitbox, -1,0)
+  
       if (Number(mario.style.left.substring(0, mario.style.left.length - 2))<=0){
           
        }else{
            mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))-1+"px";
-       }
+           marioHitbox.endMovement()
+           
+           marioHitbox.pointChange(-1,0)
+           marioHitbox.movement()
+           
+        }
       
        break;
    case"right":
-   //hitboxMovement(marioHitbox, 1,0)
+   
     if (Number(mario.style.left.substring(0, mario.style.left.length - 2))>=canvas.width){
-        console.log("help")
+       
        }else{
            mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))+1+"px";
+           marioHitbox.endMovement()
+           marioHitbox.pointChange(0,1)
+           marioHitbox.movement()
+           
        }
       
        break;
@@ -282,18 +314,22 @@ function keyControl(freq){
             //w to move up
             work = setInterval(function(){move_m("up", mario)}, freq);
             
+            
             break;
             case 83: 
             //s to move down
             work = setInterval(function(){move_m("down", mario)}, freq);
+            
             break;
             case 68: 
             //d to move right
             work = setInterval(function(){move_m("right", mario)}, freq);
             
+            
             break;
             case 65: 
             //a to move left
+            
             work = setInterval(function(){move_m("left", mario)}, freq);
             break;
             default:
