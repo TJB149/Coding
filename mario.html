@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            #body{
+                height: 100%
+            }
+            #up{
+	            position:absolute;
+	            left:150px;
+	            top: 310px;
+	
+            }
+            #left{
+	            position: absolute;
+	            left: 100px;
+	            top: 330px;
+            }
+            #right{
+	            position: absolute;
+	            left: 200px;
+	            top: 330px;
+            }
+            #down{
+	        position:absolute;
+	        left:150px;
+	        top: 340px;
+            }
+
+#mario{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: 42px;
+    width: 60px;
+    
+    
+}
+#canvas{
+    position: absolute;
+    left: 0px; 
+    top: 0px;
+    width: 100%;
+    height: 100%;
+   
+    
+}
+
+        </style>
+        <script>
+
+
+//this makes the js load after the html to prevent errors from being thrown up about event lister
+
+    
+document.addEventListener("DOMContentLoaded", () => {
+    //canvas
+    const canvas = document.getElementById("canvas")
+    //context of canvas
+    const ctx = canvas.getContext("2d")
+    //interval to change the canvas resolution when the window is resize
+    var x=setInterval(function(){
+    canvas.width=document.body.clientWidth
+     canvas.height=window.innerHeight
+          }, 10)
+    
+    
+   
+    
+  
+    
+      
+        
+        //top paragraph
+    var xPara = document.getElementById("mousex");
+    //bottom paragraph
+var yPara = document.getElementById("mousey");
+//mario image
+var mario = document.getElementById("mario");
+//up button(NEED TO CHANGE TO KEYS)
+var up = document.getElementById("up");
+//down button
+var down = document.getElementById("down");
+//right button
+var right = document.getElementById("right");
+//left button
+var left = document.getElementById("left");
+//used to store attributes of the mouse
+var mouseX;
+var mouseY;
+//used to store mouse angle relative to person
+var mouseAngle;
+//used later when calculating angles - had to be global
+var width;
+var height;
+//attributes of character
+var marioX = Number(mario.style.left.substring(0, mario.style.left.length - 2));
+var marioY = Number(mario.style.top.substring(0, mario.style.top.length - 2));
+var marioHeight = mario.clientHeight
+var marioWidth = mario.clientWidth
+//used to alter the position of mario within move_m()
+var changer = 0;
+//interval for moving mario 
+var work;
+//attaches button to mario
+function radiansToDegrees(radians){
+  var pi = Math.PI;
+  return radians * (180/pi);
+}
+    
+    
+          
+class Hitbox{
+    constructor(spriteX, spriteY, ...points){
+        this.points=points;
+        this.spriteX=spriteX;
+        this.spriteY=spriteY;
+    }
+    movement( spriteX, spriteY,...points){
+        var xcoord;
+        var ycoord;
+        var hasX=false;
+       
+        var reDraw;
+        this.points=points;
+        this.spriteX=spriteX
+        this.spriteY=spriteY
+        
+        reDraw=setInterval(function(){
+            
+            ctx.beginPath();
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 1;
+        ctx.moveTo(points[0]+spriteX,[points[1]]+spriteY);
+        console.log("reDraw")
+       console.log(points.length)
+        for (var i=0;i<points.length;i++){
+            console.log('function')
+            if (hasX==false){
+                xcoord=points[i]+spriteX
+               
+                    console.log("hasX is false")
+                    console.log(xcoord)
+                
+                hasX=true
+            }else{
+                ycoord=points[i]+spriteY
+                
+                hasX=false
+                console.log('hasX is true')
+                console.log(ycoord)
+                ctx.lineTo(xcoord, ycoord)
+
+            }
+            
+            
+        }
+        
+        
+        
+        ctx.stroke();}, 9.99999999999999999999999999999999999999999999999999)    
+        
+    }
+    endMovement(){
+        clearInterval(reDraw)
+    }
+}
+    function hitboxMovement(hitbox, x, y){
+        var newX=true
+        for( j=0;j<hitbox.points.length;j++){
+            if(newX==true){
+            hitbox.points[j]+=x; 
+            }else{
+                hitbox.points[j]+=y;
+
+            }    
+            }   
+        hitbox.endMovement()
+        hitbox.movement(marioX, marioY, marioPosArr)
+    }
+    
+var marioPosArr = [12,6,29,13,50,10,50,32,29,27,12,35, 12,6]
+
+var marioHitbox = new Hitbox( marioX, marioY, marioPosArr)
+marioHitbox.movement(marioX, marioY, marioPosArr)
+function buttonControl(freq, btn, btnstring){
+    //on mouse down , runs start move
+    btn.addEventListener("mousedown", startMove);
+    //start move creates work interval of move_m
+    function startMove(){
+        marioX = Number(mario.style.left.substring(0, mario.style.left.length - 2));
+     marioY = Number(mario.style.top.substring(0, mario.style.top.length - 2));
+    
+
+   //using trigenometry to figure out the angle between the player and the mouse
+    mouseAngle = angleCalc(marioX, marioY, mouseX, mouseY);
+ 
+    xPara.innerHTML = Math.floor(mouseAngle)
+        work = setInterval(function(){move_m(btnstring)}, freq);
+        
+    }
+    //on mouse up, runs end move
+    btn.addEventListener("mouseup", endMove);
+    //end move clears work interval
+    function endMove(){
+        clearInterval(work);
+    }
+    
+}
+//this is where the magic happens - used to move mario
+function move_m(direction){
+    
+    switch(direction){
+   //if the direction is up
+   case "up":
+   
+       //used to decide how much the value(top or left) is being changed by
+       changer = -1;
+       //checks if it is within limits
+       if (Number(mario.style.top.substring(0, mario.style.top.length - 2))<=00){
+          
+       }else{
+           //actually changes value
+           mario.style.top=Number(mario.style.top.substring(0, mario.style.top.length - 2))+changer+"px";
+       }
+      
+       break;
+       //direction is down
+ 
+       case "down":
+       //hitboxMovement(marioHitbox, 0,1)
+       changer = 1
+      
+       //see above for all of these
+   if (Number(mario.style.top.substring(0, mario.style.top.length - 2))>=canvas.height){
+    console.log("help")
+       }else{
+           mario.style.top=Number(mario.style.top.substring(0, mario.style.top.length - 2))+changer+"px";
+       }
+      
+       break;
+   case "left":
+   //hitboxMovement(marioHitbox, -1,0)
+      if (Number(mario.style.left.substring(0, mario.style.left.length - 2))<=0){
+          
+       }else{
+           mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))-1+"px";
+       }
+      
+       break;
+   case"right":
+   //hitboxMovement(marioHitbox, 1,0)
+    if (Number(mario.style.left.substring(0, mario.style.left.length - 2))>=canvas.width){
+        console.log("help")
+       }else{
+           mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))+1+"px";
+       }
+      
+       break;
+   default:
+}
+
+
+
+    
+}
+//used to check whether the key has already been pressed, to prevent the function from creating infinite intervals
+var keyDownCheck;
+//binding the keyboard rather than the buttons for movement
+function keyControl(freq){
+    //when any key is pressed down
+    document.addEventListener("keydown", function(event) {
+        //checks if keydown has already been called, without a keyup inbetween
+        if (keyDownCheck==false){
+             marioX = Number(mario.style.left.substring(0, mario.style.left.length - 2));
+             marioY = Number(mario.style.top.substring(0, mario.style.top.length - 2));
+            
+        //checks the keycode of the pressed key
+        switch (event.keyCode){
+            
+            case 87: 
+            //w to move up
+            work = setInterval(function(){move_m("up", mario)}, freq);
+            
+            break;
+            case 83: 
+            //s to move down
+            work = setInterval(function(){move_m("down", mario)}, freq);
+            break;
+            case 68: 
+            //d to move right
+            work = setInterval(function(){move_m("right", mario)}, freq);
+            
+            break;
+            case 65: 
+            //a to move left
+            work = setInterval(function(){move_m("left", mario)}, freq);
+            break;
+            default:
+                
+        }
+    }
+    //shows that key has been pressed down
+    keyDownCheck=true;
+    });
+    
+    
+
+    document.addEventListener("keyup", function(event){
+        //stops movement
+        clearInterval(work);
+        //shows that key has been released
+        keyDownCheck = false;
+    });
+}
+//actually runs the function
+keyControl(10);
+
+//associates function with each button
+//down
+buttonControl(10, down, "down");
+//left
+buttonControl(10, left, "left");
+//right
+buttonControl(10, right, "right");
+//up
+buttonControl(10, up, "up");
+function angleCalc(personX, personY, objX, objY){
+    
+     width = personX-objX;
+ 
+     height = personY-objY;
+    var rawAngle = radiansToDegrees(Math.atan(height/width));
+    if(width<0){
+        rawAngle+=180
+    }else if(height<0){
+        rawAngle+=360
+
+    }else if(height<0&&width<0){
+        rawAngle+=270
+    }
+    return rawAngle
+
+}
+document.addEventListener("mousemove",function(event){
+     marioX = Number(mario.style.left.substring(0, mario.style.left.length - 2));
+     marioY = Number(mario.style.top.substring(0, mario.style.top.length - 2));
+    mouseX = event.clientX;
+
+    mouseY = event.clientY;
+
+   //using trigenometry to figure out the angle between the player and the mouse
+    mouseAngle = angleCalc(marioX, marioY, mouseX, mouseY);
+   
+    
+    xPara.innerHTML = mouseX
+    yPara.innerHTML = mouseY
+});
+
+document.addEventListener("keydown", function(){
+    marioX = Number(mario.style.left.substring(0, mario.style.left.length - 2));
+     marioY = Number(mario.style.top.substring(0, mario.style.top.length - 2));
+    
+
+   //using trigenometry to figure out the angle between the player and the mouse
+    mouseAngle = angleCalc(marioX, marioY, mouseX, mouseY);
+   
+    //xPara.innerHTML = Math.floor(mouseAngle)
+});
+
+
+
+
+
+
+//END OF JS CODE HERE  
+});
+
+
+
+        </script>
+    </head>
+    <body id="body">
+       <canvas id="canvas"  ></canvas>
+<button id="up">up</button>
+<button id = "down">down</button>
+<button id = "right">right</button>
+<button id ="left">left</button>
+<p>Use WASD or the buttons to move</p>
+<p id="mousex">hello</p>
+<p id = "mousey">l</p>
+
+<img src = https://i.ibb.co/QmpRkbh/d-sub-pixilart.png" alt = "its a me a" id  =  "mario">
+
+    </body>
+
+</html>
