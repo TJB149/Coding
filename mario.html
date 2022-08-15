@@ -109,22 +109,24 @@ function radiansToDegrees(radians){
   return radians * (180/pi);
 }
 var internalArr = [];
-    
+
           
 class Hitbox{
-    constructor(spriteX, spriteY, ...points){
+    constructor(spriteX, spriteY, ...multiString){
         
         this.spriteX=spriteX;
         this.spriteY=spriteY;
-        this.points=points;
+        this.points=multiString[0];
+        this.horizontalTrue=multiString[1]
+        this.aboveBelow=multiString[2]
         
     }
-        movement(){
+        movement(points){
        
         var xcoord;
         var ycoord;
         var hasX=false;
-       
+        var self = this;
        
         
         
@@ -134,10 +136,10 @@ class Hitbox{
             ctx.beginPath();
         ctx.strokeStyle = "#000000";
         ctx.lineWidth = 1;
-        ctx.moveTo(this.points[0],this.points[1]);
+        ctx.moveTo(points[0],points[1]);
         
       
-        for (var i=0;i<this.points.length;i++){
+        for (var i=0;i<points.length;i++){
            
            
             
@@ -162,38 +164,137 @@ class Hitbox{
         
         
         
-        ctx.stroke();}, 9.99999999999999999999999999999999999999999999999999)    
+        ctx.stroke();}.bind(this), 9.99999999999999999999999999999999999999999999999999)    
         
     }
     endMovement(){
         clearInterval(reDraw)
     }
-    pointChange( x, y){
+
+pointChange( points, x, y){
         var newX=true
         
         
-        for( var j=0;j<this.points.length;j++){
+        for( var j=0;j<points.length;j++){
             if(newX==true){
-                console.log("x changed")
-                this.points[j]+=x
+                
+                points[j]+=x
+                
                 newX=false
             }else{
-                this.points[j]+=y
+                points[j]+=y
                 newX=true
-                console.log("y changed")
-
-            }    
+               
             }   
-        
+            
+            }   
+           
         
         
     }
     
-}
-   
-var marioPosArr = [12,6,29,13,50,10,50,32,29,27,12,35, 12,6]
+collisionDetect(points, checkingX, checkingY, horizontalTrue, aboveBelow){
+    
+    var newX = true
+    var firstPointCounter = true
+    var point1X;
+    var point1Y;
+    var point2X;
+    var point2Y;
+    var gradient;
+    var yIntercept;
+    var lines = []
+    var fitsAllCriteria  = true;
+var lineCount = (points.length-1)/2
+console.log(points.length)
+for( var k=0;k<points.length;k++){
+            if(newX==true){
+             if (firstPointCounter==true){
+                point1X = points[k]
+                
+             }else{
+                point2X = points[k]
+                
+             }  
+          
+               
+                newX=false
+            }else{
+                if (firstPointCounter==true){
+                    firstPointCounter = false
+                point1Y = points[k]
+             }else{
+                point2Y = points[k]
+                firstPointCounter = true
+             }  
+                newX=true
+                
+            }  
+            gradient = (point2X-point1X)/(point2Y-point1Y)
+            yIntercept = point1Y-(gradient*point1X)
+            function stores(gradient, yIntercept, point1X, point1Y, point2X, point2Y){
+                this.gradient=gradient
+                this.yIntercept=yIntercept
+                this.point1X=point1X
+                this.point1Y=point1Y
+                this.point2X=point2X
+                this.point2Y=point2Y
+            }
+            lines.push(new stores(gradient, yIntercept, point1X, point1Y,point2X,point2Y))
+           console.log(lines.length)
+        
+            } 
+              
+            for(var l=0; l<horizontalTrue.length; l++){
+                if (horizontalTrue[l]==true){
+                    
+                    if(aboveBelow[l]==true){
+                        if(checkingY>=points[4*l-2]){
 
-var marioHitbox = new Hitbox( marioX, marioY, ...marioPosArr)
+                        } else{
+                            fitsAllCriteria=false
+                        }
+                    }else{
+                        if(checkingY<=points[4*l-2]){
+                            
+                        }else{
+                            fitsAllCriteria=false
+                        }
+                      }
+                }else if(horizontalTrue[l]==false){
+                    if(aboveBelow[l]==true){
+                        if(checkingX<=points[4*l-3]){
+                            
+                        }else{
+                            fitsAllCriteria=false
+                        }
+                    }else{
+                        if(checkingY>=points[4*l-3]){
+
+                        } else{
+                            fitsAllCriteria=false
+                        }
+
+                    }
+                }else{
+                    if(aboveBelow[l]==true){
+                            if(checkingY>(lines[l].gradient*checkingX)+lines[l].yIntercept){}
+                    }else{
+
+                    }
+                }
+            }    
+}
+
+
+
+    
+    
+}
+var marioPosArr = [12,6,29,13,50,10,50,32,29,27,12,35, 12,6]
+var marioOrientationArr = [ , , false, , , false ]
+var marioContentsArr= [false, false, true, true, true, false]
+var marioHitbox = new Hitbox( marioX, marioY, ...[[...marioPosArr],[...marioOrientationArr],[...marioContentsArr]])
 marioHitbox.movement(marioPosArr)
 function buttonControl(freq, btn, btnstring){
     //on mouse down , runs start move
@@ -238,8 +339,8 @@ function move_m(direction){
            //actually changes value
            mario.style.top=Number(mario.style.top.substring(0, mario.style.top.length - 2))+changer+"px";
            marioHitbox.endMovement()
-           marioHitbox.pointChange(0,1)
-            marioHitbox.movement()
+           marioHitbox.pointChange(marioHitbox.points,0,-1)
+            marioHitbox.movement(marioHitbox.points)
             
         }
       
@@ -256,8 +357,8 @@ function move_m(direction){
        }else{
            mario.style.top=Number(mario.style.top.substring(0, mario.style.top.length - 2))+changer+"px";
            marioHitbox.endMovement()
-           marioHitbox.pointChange(0,1)
-           marioHitbox.movement()
+           marioHitbox.pointChange(marioHitbox.points,0,1)
+           marioHitbox.movement(marioHitbox.points)
            
         }
       
@@ -270,8 +371,8 @@ function move_m(direction){
            mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))-1+"px";
            marioHitbox.endMovement()
            
-           marioHitbox.pointChange(-1,0)
-           marioHitbox.movement()
+           marioHitbox.pointChange(marioHitbox.points,-1,0)
+           marioHitbox.movement(marioHitbox.points)
            
         }
       
@@ -283,8 +384,8 @@ function move_m(direction){
        }else{
            mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))+1+"px";
            marioHitbox.endMovement()
-           marioHitbox.pointChange(0,1)
-           marioHitbox.movement()
+           marioHitbox.pointChange(marioHitbox.points,1,0)
+           marioHitbox.movement(marioHitbox.points)
            
        }
       
@@ -403,8 +504,7 @@ document.addEventListener("keydown", function(){
    
     //xPara.innerHTML = Math.floor(mouseAngle)
 });
-
-
+marioHitbox.collisionDetect(marioHitbox.points, 0, 0)
 
 
 
