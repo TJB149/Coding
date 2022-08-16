@@ -45,6 +45,30 @@
    
     
 }
+.enemyProj{
+   /*visibility: hidden;*/
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    
+}
+#enemyProjectile1{
+
+    top: 40px;
+    left: 40px;
+}
+#enemyProjectile2{
+    top: 40px;
+    left: 56px;
+}
+#enemyProjectile3{
+    top: 40px;
+    left: 72px;
+}
+#enemyProjectile4{
+    top: 40px;
+    left: 86px;
+}
 
         </style>
         <script>
@@ -58,14 +82,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("canvas")
     //context of canvas
     const ctx = canvas.getContext("2d")
-    //interval to change the canvas resolution when the window is resize
+    //interval to change the canvas resolution when the window is resized
     var x=setInterval(function(){
     canvas.width=document.body.clientWidth
      canvas.height=window.innerHeight
           }, 10)
-    
+          //used as an interval for visual representation of hitbox
           var reDraw;
-          var intermediateArr = []
+          
     
   
     
@@ -75,6 +99,9 @@ document.addEventListener("DOMContentLoaded", () => {
     var xPara = document.getElementById("mousex");
     //bottom paragraph
 var yPara = document.getElementById("mousey");
+//enemy projectiles
+var enemyProjectiles = document.getElementsByClassName("enemyProj")
+
 //mario image
 var mario = document.getElementById("mario");
 //up button(NEED TO CHANGE TO KEYS)
@@ -93,7 +120,7 @@ var mouseAngle;
 //used later when calculating angles - had to be global
 var width;
 var height;
-//attributes of character
+//attributes of main character
 var marioX = Number(mario.style.left.substring(0, mario.style.left.length - 2));
 var marioY = Number(mario.style.top.substring(0, mario.style.top.length - 2));
 var marioHeight = mario.clientHeight
@@ -103,34 +130,35 @@ var changer = 0;
 //interval for moving mario 
 var work;
 //attaches button to mario
-
+//converts radians to degrees
 function radiansToDegrees(radians){
   var pi = Math.PI;
   return radians * (180/pi);
 }
-var internalArr = [];
 
-          
+
+//hitbox creator - also used to log collisions          
 class Hitbox{
-    constructor(spriteX, spriteY, ...multiString){
+    //parameters: x and y of object you create hitbox for
+    //multistring is a 2d array - you need to pas multiple arrays into this function. 
+    constructor(spriteX, spriteY, ...multiArr){
         
         this.spriteX=spriteX;
         this.spriteY=spriteY;
-        this.points=multiString[0];
-        this.horizontalTrue=multiString[1]
-        this.aboveBelow=multiString[2]
+        this.points=multiArr[0];
+        this.horizontalTrue=multiArr[1]
+        this.aboveBelow=multiArr[2]
         
     }
+    //used to move and redraw the hitbox - also changes the points array
         movement(points){
-       
+       //used to temporarily store the x and y of a given point
         var xcoord;
         var ycoord;
+        //used to check whether or not the part of the points array   you are iterating over is x or why
         var hasX=false;
-        var self = this;
-       
         
-        
-        
+        //interval to repeatedly redraw the hitbox
         reDraw=setInterval(function(){
             
             ctx.beginPath();
@@ -164,7 +192,7 @@ class Hitbox{
         
         
         
-        ctx.stroke();}.bind(this), 9.99999999999999999999999999999999999999999999999999)    
+        ctx.stroke();}, 1)    
         
     }
     endMovement(){
@@ -243,8 +271,7 @@ for( var k=0;k<points.length;k++){
                 this.point2Y=point2Y
             }
             lines.push(new stores(gradient, yIntercept, point1X, point1Y,point2X,point2Y))
-            console.log(k+"k")
-            console.log(lines.length)
+            
            
         }
         
@@ -254,65 +281,62 @@ for( var k=0;k<points.length;k++){
                 
                
                 if (horizontalTrue[l]==2){
-                    console.log("current item is horizontal")
+                   
                     if(aboveBelow[l]==true){
-                        console.log("point must be above line")
+                        
                         if(checkingY>=points[2*l]){
 
                         } else{
-                            console.log("failed")
+                            
                             fitsAllCriteria=false
 
                         }
                     }else{
-                        console.log("point must be below line")
+                       
                         if(checkingY<=points[2*l]){
                             
                         }else{
-                            console.log("failed")
+                           
                             fitsAllCriteria=false
                         }
                       }
                 }else if(horizontalTrue[l]==1){
-                    console.log("current item is  vertical")
+                   
                     if(aboveBelow[l]==true){
-                        console.log("point must be to the left of  line")
+                     
                         if(checkingX<=points[2*l]){
                             
                         }else{
-                            console.log("failed")
+                        
                             fitsAllCriteria=false
                         }
                     }else{
-                        console.log("point must be below line")
+                        
                         if(checkingY>=points[2*l]){
 
                         } else{
-                            console.log("failed")
+                       
                             fitsAllCriteria=false
                         }
 
                     }
                 }else{
-                    console.log("current item is diagonal")
+                  
                     if(aboveBelow[l]==true){
-                        console.log("point must be above line")
+                      
                             if(checkingY<=(lines[l].gradient*checkingX)+lines[l].yIntercept){
 
                             }else{
-                            console.log("failed")
-                            console.log((lines[l].gradient*checkingX)+lines[l].yIntercept)
+                            
                             fitsAllCriteria=false
                         }
                     }else{
-                        console.log("point must be below line")
+                       
 
                         if(checkingY>=((lines[l].gradient*checkingX)+lines[l].yIntercept)){
                                 
                             }else{
-                            console.log("checkingY")
-                            console.log((lines[l].gradient*checkingX)+lines[l].yIntercept)
-                            console.log("failed")
+                          
                             fitsAllCriteria=false
                             
                             
@@ -377,7 +401,7 @@ function move_m(direction){
            //actually changes value
            mario.style.top=Number(mario.style.top.substring(0, mario.style.top.length - 2))+changer+"px";
            marioHitbox.endMovement()
-           marioHitbox.pointChange(marioHitbox.points,0,-1)
+           marioHitbox.pointChange(marioHitbox.points,0,-0.985)
             marioHitbox.movement(marioHitbox.points)
             
         }
@@ -395,7 +419,7 @@ function move_m(direction){
        }else{
            mario.style.top=Number(mario.style.top.substring(0, mario.style.top.length - 2))+changer+"px";
            marioHitbox.endMovement()
-           marioHitbox.pointChange(marioHitbox.points,0,1)
+           marioHitbox.pointChange(marioHitbox.points,0,0.985)
            marioHitbox.movement(marioHitbox.points)
            
         }
@@ -409,7 +433,7 @@ function move_m(direction){
            mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))-1+"px";
            marioHitbox.endMovement()
            
-           marioHitbox.pointChange(marioHitbox.points,-1,0)
+           marioHitbox.pointChange(marioHitbox.points,-0.985,0)
            marioHitbox.movement(marioHitbox.points)
            
         }
@@ -422,7 +446,7 @@ function move_m(direction){
        }else{
            mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))+1+"px";
            marioHitbox.endMovement()
-           marioHitbox.pointChange(marioHitbox.points,1,0)
+           marioHitbox.pointChange(marioHitbox.points,0.985,0)
            marioHitbox.movement(marioHitbox.points)
            
        }
@@ -542,8 +566,7 @@ document.addEventListener("keydown", function(){
    
     //xPara.innerHTML = Math.floor(mouseAngle)
 });
-var test = marioHitbox.collisionDetect(marioHitbox.points, 29, 20.5, marioHitbox.horizontalTrue, marioHitbox.aboveBelow)
-console.log(test)
+
 
 
 
@@ -565,6 +588,10 @@ console.log(test)
 <p id="mousex">hello</p>
 <p id = "mousey">l</p>
 
+<img class = "enemyProj"id = "enemyProjectile1"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
+<img class = "enemyProj" id = "enemyProjectile2"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
+<img class = "enemyProj" id = "enemyProjectile3"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
+<img class = "enemyProj" id = "enemyProjectile4"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
 <img src = https://i.ibb.co/QmpRkbh/d-sub-pixilart.png" alt = "its a me a" id  =  "mario">
 
     </body>
