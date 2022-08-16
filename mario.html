@@ -206,8 +206,9 @@ collisionDetect(points, checkingX, checkingY, horizontalTrue, aboveBelow){
     var lines = []
     var fitsAllCriteria  = true;
 var lineCount = (points.length-1)/2
-console.log(points.length)
+
 for( var k=0;k<points.length;k++){
+    
             if(newX==true){
              if (firstPointCounter==true){
                 point1X = points[k]
@@ -230,8 +231,9 @@ for( var k=0;k<points.length;k++){
                 newX=true
                 
             }  
-            gradient = (point2X-point1X)/(point2Y-point1Y)
+            gradient = (point2Y-point1Y)/(point2X-point1X)
             yIntercept = point1Y-(gradient*point1X)
+            if(k>2&&(k+1)%2==0){
             function stores(gradient, yIntercept, point1X, point1Y, point2X, point2Y){
                 this.gradient=gradient
                 this.yIntercept=yIntercept
@@ -241,49 +243,85 @@ for( var k=0;k<points.length;k++){
                 this.point2Y=point2Y
             }
             lines.push(new stores(gradient, yIntercept, point1X, point1Y,point2X,point2Y))
-           console.log(lines.length)
+            console.log(k+"k")
+            console.log(lines.length)
+           
+        }
         
             } 
               
             for(var l=0; l<horizontalTrue.length; l++){
-                if (horizontalTrue[l]==true){
-                    
+                
+               
+                if (horizontalTrue[l]==2){
+                    console.log("current item is horizontal")
                     if(aboveBelow[l]==true){
-                        if(checkingY>=points[4*l-2]){
+                        console.log("point must be above line")
+                        if(checkingY>=points[2*l]){
 
                         } else{
+                            console.log("failed")
                             fitsAllCriteria=false
+
                         }
                     }else{
-                        if(checkingY<=points[4*l-2]){
+                        console.log("point must be below line")
+                        if(checkingY<=points[2*l]){
                             
                         }else{
+                            console.log("failed")
                             fitsAllCriteria=false
                         }
                       }
-                }else if(horizontalTrue[l]==false){
+                }else if(horizontalTrue[l]==1){
+                    console.log("current item is  vertical")
                     if(aboveBelow[l]==true){
-                        if(checkingX<=points[4*l-3]){
+                        console.log("point must be to the left of  line")
+                        if(checkingX<=points[2*l]){
                             
                         }else{
+                            console.log("failed")
                             fitsAllCriteria=false
                         }
                     }else{
-                        if(checkingY>=points[4*l-3]){
+                        console.log("point must be below line")
+                        if(checkingY>=points[2*l]){
 
                         } else{
+                            console.log("failed")
                             fitsAllCriteria=false
                         }
 
                     }
                 }else{
+                    console.log("current item is diagonal")
                     if(aboveBelow[l]==true){
-                            if(checkingY>(lines[l].gradient*checkingX)+lines[l].yIntercept){}
-                    }else{
+                        console.log("point must be above line")
+                            if(checkingY<=(lines[l].gradient*checkingX)+lines[l].yIntercept){
 
+                            }else{
+                            console.log("failed")
+                            console.log((lines[l].gradient*checkingX)+lines[l].yIntercept)
+                            fitsAllCriteria=false
+                        }
+                    }else{
+                        console.log("point must be below line")
+
+                        if(checkingY>=((lines[l].gradient*checkingX)+lines[l].yIntercept)){
+                                
+                            }else{
+                            console.log("checkingY")
+                            console.log((lines[l].gradient*checkingX)+lines[l].yIntercept)
+                            console.log("failed")
+                            fitsAllCriteria=false
+                            
+                            
+                        }
+                    
                     }
                 }
-            }    
+            }  
+            return fitsAllCriteria  
 }
 
 
@@ -292,7 +330,7 @@ for( var k=0;k<points.length;k++){
     
 }
 var marioPosArr = [12,6,29,13,50,10,50,32,29,27,12,35, 12,6]
-var marioOrientationArr = [ , , false, , , false ]
+var marioOrientationArr = [ 0,0 , 1, 0,0 , 1 ]
 var marioContentsArr= [false, false, true, true, true, false]
 var marioHitbox = new Hitbox( marioX, marioY, ...[[...marioPosArr],[...marioOrientationArr],[...marioContentsArr]])
 marioHitbox.movement(marioPosArr)
@@ -504,7 +542,8 @@ document.addEventListener("keydown", function(){
    
     //xPara.innerHTML = Math.floor(mouseAngle)
 });
-marioHitbox.collisionDetect(marioHitbox.points, 0, 0)
+var test = marioHitbox.collisionDetect(marioHitbox.points, 29, 20.5, marioHitbox.horizontalTrue, marioHitbox.aboveBelow)
+console.log(test)
 
 
 
