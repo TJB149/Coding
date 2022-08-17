@@ -45,30 +45,45 @@
    
     
 }
-.enemyProj{
-   /*visibility: hidden;*/
+
+   
+    
+
+
+#enemyProjectile1{
+/*visibility: hidden;*/
+position: absolute;
+    height: 16px;
+    width: 16px;
+    left: 0px; 
+    top: 0px;
+ 
+}
+#enemyProjectile2{
+    /*visibility: hidden;*/
     position: absolute;
     height: 16px;
     width: 16px;
-    
-}
-#enemyProjectile1{
-
-    top: 40px;
-    left: 40px;
-}
-#enemyProjectile2{
-    top: 40px;
-    left: 56px;
+    left: 0px; 
+    top: 0px;
 }
 #enemyProjectile3{
-    top: 40px;
-    left: 72px;
+   /*visibility: hidden;*/
+   position: absolute;
+    height: 16px;
+    width: 16px;
+    left: 0px; 
+    top: 0px;
 }
 #enemyProjectile4{
-    top: 40px;
-    left: 86px;
+ /*visibility: hidden;*/
+ position: absolute;
+    height: 16px;
+    width: 16px;
+    left: 0px; 
+    top: 0px;
 }
+
 
         </style>
         <script>
@@ -100,8 +115,10 @@ document.addEventListener("DOMContentLoaded", () => {
     //bottom paragraph
 var yPara = document.getElementById("mousey");
 //enemy projectiles
-var enemyProjectiles = document.getElementsByClassName("enemyProj")
-
+var enemyProjectile1=document.getElementById("enemyProjectile1")
+var enemyProjectile2 =  document.getElementById("enemyProjectile2")
+var enemyProjectile3= document.getElementById("enemyProjectile3")
+var enemyProjectile4 =  document.getElementById("enemyProjectile4")
 //mario image
 var mario = document.getElementById("mario");
 //up button(NEED TO CHANGE TO KEYS)
@@ -126,7 +143,7 @@ var marioY = Number(mario.style.top.substring(0, mario.style.top.length - 2));
 var marioHeight = mario.clientHeight
 var marioWidth = mario.clientWidth
 //used to alter the position of mario within move_m()
-var changer = 0;
+
 //interval for moving mario 
 var work;
 //attaches button to mario
@@ -386,7 +403,7 @@ function buttonControl(freq, btn, btnstring){
 
 //this is where the magic happens - used to move mario
 function move_m(direction){
-    
+    var changer = 0;
     switch(direction){
    //if the direction is up
    case "up":
@@ -404,7 +421,7 @@ function move_m(direction){
            marioHitbox.pointChange(marioHitbox.points,0,-0.985)
             marioHitbox.movement(marioHitbox.points)
             
-        }
+        }5
       
        break;
        //direction is down
@@ -457,8 +474,254 @@ function move_m(direction){
 
 
 
+
     
 }
+enemyProjectile2.style.left = "0px"
+function enemyProjMovement(number, direction){
+   var changer = 0
+   switch (number){
+    case 1:
+    switch(direction){
+   //if the direction is up
+   case "up":
+  
+       //used to decide how much the value(top or left) is being changed by
+       changer = -1;
+      
+       //checks if it is within limits
+       if (Number(enemyProjectile1.style.top.substring(0, enemyProjectile1.style.top.length - 2))<=00){
+          
+       }else{
+           //actually changes value
+           enemyProjectile1.style.top=Number(enemyProjectile1.style.top.substring(0, enemyProjectile1.style.top.length - 2))+changer+"px";
+          
+            
+        }5
+      
+       break;
+       //direction is down
+ 
+       case "down":
+      
+       changer = 1
+      
+       //see above for all of these
+   if (Number(enemyProjectile1.style.top.substring(0, enemyProjectile1.style.top.length - 2))>=canvas.height){
+   
+       }else{
+           enemyProjectile1.style.top=Number(enemyProjectile1.style.top.substring(0, enemyProjectile1.style.top.length - 2))+changer+"px";
+           
+           
+        }
+      
+       break;
+   case "left":
+  
+      if (Number(enemyProjectile1.style.left.substring(0, enemyProjectile1.style.left.length - 2))<=0){
+          
+       }else{
+           enemyProjectile1.style.left=Number(enemyProjectile1.style.left.substring(0, enemyProjectile1.style.left.length - 2))-1+"px";
+         
+           
+        }
+      
+       break;
+   case"right":
+   
+    if (Number(enemyProjectile1.style.left.substring(0, enemyProjectile1.style.left.length - 2))>=canvas.width){
+       
+       }else{
+           enemyProjectile1.style.left=Number(enemyProjectile1.style.left.substring(0, enemyProjectile1.style.left.length - 2))+1+"px";
+           
+       }
+      
+       break;
+   default:
+}
+break;
+case 2:
+    switch(direction){
+   //if the direction is up
+   case "up":
+  
+       //used to decide how much the value(top or left) is being changed by
+       changer = -1;
+      
+       //checks if it is within limits
+       if (Number(enemyProjectile2.style.top.substring(0, enemyProjectile2.style.top.length - 2))<=00){
+          
+       }else{
+           //actually changes value
+           enemyProjectile2.style.top=Number(enemyProjectile2.style.top.substring(0, enemyProjectile2.style.top.length - 2))+changer+"px";
+          
+            
+        }
+      
+       break;
+       //direction is down
+ 
+       case "down":
+      
+       changer = 1
+      
+       //see above for all of these
+   if (Number(enemyProjectile2.style.top.substring(0, enemyProjectile2.style.top.length - 2))>=canvas.height){
+   
+       }else{
+           enemyProjectile2.style.top=Number(enemyProjectile2.style.top.substring(0, enemyProjectile2.style.top.length - 2))+changer+"px";
+           
+           
+        }
+      
+       break;
+   case "left":
+  
+      if (Number(enemyProjectile2.style.left.substring(0, enemyProjectile2.style.left.length - 2))<=0){
+          
+       }else{
+           enemyProjectile2.style.left=Number(enemyProjectile2.style.left.substring(0, enemyProjectile2.style.left.length - 2))-1+"px";
+         
+           
+        }
+      
+       break;
+   case"right":
+   
+    if (Number(enemyProjectile2.style.left.substring(0, enemyProjectile2.style.left.length - 2))>=canvas.width){
+        
+       }else{
+           enemyProjectile2.style.left=Number(enemyProjectile2.style.left.substring(0, enemyProjectile2.style.left.length - 2))+1+"px";
+           console.log(enemyProjectile2.style.left)
+       }
+      
+       break;
+   default:
+}
+        break;
+        case 3:
+    switch(direction){
+   //if the direction is up
+   case "up":
+  
+       //used to decide how much the value(top or left) is being changed by
+       changer = -1;
+      
+       //checks if it is within limits
+       if (Number(enemyProjectile3.style.top.substring(0, enemyProjectile3.style.top.length - 2))<=00){
+          
+       }else{
+           //actually changes value
+           enemyProjectile3.style.top=Number(enemyProjectile3.style.top.substring(0, enemyProjectile3.style.top.length - 2))+changer+"px";
+          
+            
+        }
+      
+       break;
+       //direction is down
+ 
+       case "down":
+      
+       changer = 1
+      
+       //see above for all of these
+   if (Number(enemyProjectile3.style.top.substring(0, enemyProjectile3.style.top.length - 2))>=canvas.height){
+   
+       }else{
+           enemyProjectile3.style.top=Number(enemyProjectile3.style.top.substring(0, enemyProjectile3.style.top.length - 2))+changer+"px";
+           
+           
+        }
+      
+       break;
+   case "left":
+  
+      if (Number(enemyProjectile3.style.left.substring(0, enemyProjectile3.style.left.length - 2))<=0){
+          
+       }else{
+           enemyProjectile3.style.left=Number(enemyProjectile3.style.left.substring(0, enemyProjectile3.style.left.length - 2))-1+"px";
+         
+           
+        }
+      
+       break;
+   case"right":
+   
+    if (Number(enemyProjectile3.style.left.substring(0, enemyProjectile3.style.left.length - 2))>=canvas.width){
+        
+       }else{
+           enemyProjectile3.style.left=Number(enemyProjectile3.style.left.substring(0, enemyProjectile3.style.left.length - 2))+1+"px";
+           console.log(enemyProjectile3.style.left)
+       }
+      
+       break;
+   default:
+}
+break;
+case 4:
+    switch(direction){
+   //if the direction is up
+   case "up":
+  
+       //used to decide how much the value(top or left) is being changed by
+       changer = -1;
+      
+       //checks if it is within limits
+       if (Number(enemyProjectile4.style.top.substring(0, enemyProjectile4.style.top.length - 2))<=00){
+          
+       }else{
+           //actually changes value
+           enemyProjectile4.style.top=Number(enemyProjectile4.style.top.substring(0, enemyProjectile4.style.top.length - 2))+changer+"px";
+          
+            
+        }
+      
+       break;
+       //direction is down
+ 
+       case "down":
+      
+       changer = 1
+      
+       //see above for all of these
+   if (Number(enemyProjectile4.style.top.substring(0, enemyProjectile4.style.top.length - 2))>=canvas.height){
+   
+       }else{
+           enemyProjectile4.style.top=Number(enemyProjectile4.style.top.substring(0, enemyProjectile4.style.top.length - 2))+changer+"px";
+           
+           
+        }
+      
+       break;
+   case "left":
+  
+      if (Number(enemyProjectile4.style.left.substring(0, enemyProjectile4.style.left.length - 2))<=0){
+          
+       }else{
+           enemyProjectile4.style.left=Number(enemyProjectile4.style.left.substring(0, enemyProjectile4.style.left.length - 2))-1+"px";
+         
+           
+        }
+      
+       break;
+   case"right":
+   
+    if (Number(enemyProjectile4.style.left.substring(0, enemyProjectile4.style.left.length - 2))>=canvas.width){
+        
+       }else{
+           enemyProjectile4.style.left=Number(enemyProjectile4.style.left.substring(0, enemyProjectile4.style.left.length - 2))+1+"px";
+           console.log(enemyProjectile4.style.left)
+       }
+      
+       break;
+   default:
+}
+break;
+    default:
+   }
+}
+
+
 //used to check whether the key has already been pressed, to prevent the function from creating infinite intervals
 var keyDownCheck;
 //binding the keyboard rather than the buttons for movement
@@ -588,10 +851,10 @@ document.addEventListener("keydown", function(){
 <p id="mousex">hello</p>
 <p id = "mousey">l</p>
 
-<img class = "enemyProj"id = "enemyProjectile1"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
-<img class = "enemyProj" id = "enemyProjectile2"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
-<img class = "enemyProj" id = "enemyProjectile3"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
-<img class = "enemyProj" id = "enemyProjectile4"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
+<img  id = "enemyProjectile1"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
+<img   id = "enemyProjectile2"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
+<img   id = "enemyProjectile3"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
+<img   id = "enemyProjectile4"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
 <img src = https://i.ibb.co/QmpRkbh/d-sub-pixilart.png" alt = "its a me a" id  =  "mario">
 
     </body>
