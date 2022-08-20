@@ -3,7 +3,8 @@
     <head>
         <style>
             #body{
-                height: 100%
+                height: 100%;
+                margin: 0px;
             }
             #up{
 	            position:absolute;
@@ -29,17 +30,16 @@
 
 #mario{
     position: absolute;
-    left: 0px;
-    top: 0px;
-    height: 42px;
-    width: 60px;
+    left: 0;
+    top: 0;
+    height: 28px;
+    width: 45px;
     
     
 }
 #canvas{
     position: absolute;
-    left: 0px; 
-    top: 0px;
+ 
     width: 100%;
     height: 100%;
    
@@ -56,7 +56,7 @@ position: absolute;
     height: 16px;
     width: 16px;
     left: 0px; 
-    top: 0px;
+    top: 1px;
  
 }
 #enemyProjectile2{
@@ -65,7 +65,7 @@ position: absolute;
     height: 16px;
     width: 16px;
     left: 0px; 
-    top: 0px;
+    top: 1px;
 }
 #enemyProjectile3{
    /*visibility: hidden;*/
@@ -73,7 +73,7 @@ position: absolute;
     height: 16px;
     width: 16px;
     left: 0px; 
-    top: 0px;
+    top: 1px;
 }
 #enemyProjectile4{
  /*visibility: hidden;*/
@@ -81,7 +81,7 @@ position: absolute;
     height: 16px;
     width: 16px;
     left: 0px; 
-    top: 0px;
+    top: 1px;
 }
 
 
@@ -97,16 +97,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("canvas")
     //context of canvas
     const ctx = canvas.getContext("2d")
+   
     //interval to change the canvas resolution when the window is resized
     var x=setInterval(function(){
     canvas.width=document.body.clientWidth
      canvas.height=window.innerHeight
+     lol=true
           }, 10)
           //used as an interval for visual representation of hitbox
           var reDraw;
+         
           
-    
-  
     
       
         
@@ -153,23 +154,78 @@ function radiansToDegrees(radians){
   return radians * (180/pi);
 }
 
+class GameSprite{
+    constructor(health, name, damage, damageClass,damageImmunityStore, damageImmunityToggle,damageImmunityTime, ...damageClassReceiveable){
+        this.health=health
+        this.name=name
+        this.damage=damage
+        this.damageClass=damageClass
+        this.damageImmunityStore=damageImmunityStore
+        this.damageImmunityToggle=damageImmunityToggle
+        this.damageImmunityTime=damageImmunityTime
+    }
+    kill(afterTime, img, ){
+        setTimeout(function(){
+            img.style.visibility="hidden"  
+            
+        }, afterTime)
+    }
+    healthChange( sprite, change,  killX){
+        sprite.health+=change
+   
+        if (sprite.health<=0){
+            sprite.kill(20, eval(sprite.name))   
+        }
+            
+        
+    }
+    damageReceiver(damagerSprite, damageeSprite, killXer, killXee ){
+        
+       if(damagerSprite.damageImmunityToggle==true){
+       if(damagerSprite.damageImmunityStore==false){
+       
+        damagerSprite.healthChange( damagerSprite, damageeSprite.damage, eval(damagerSprite.name), killXer)
+        damagerSprite.damageImmunityStore=true
+        setTimeout(function(){
+            damagerSprite.damageImmunityStore=false
+        },damagerSprite.damageImmunityTime )
+       }
+    }else{
+        damagerSprite.healthChange( damagerSprite, damageeSprite.damage, eval(damagerSprite.name), killXer)
+    }
+        if(damageeSprite.damageImmunityToggle==true){
+       if(damageeSprite.damageImmunityStore==false){
+        damageeSprite.healthChange( damageeSprite, damagerSprite.damage, eval(damageeSprite.name), killXee)
+        damageeSprite.damageImmunityStore=true
+        setTimeout(function(){
+            damageeSprite.damageImmunityStore=false
+        },damageeSprite.damageImmunityTime )
+       }  
+    }else{
+        damageeSprite.healthChange( damageeSprite, damagerSprite.damage, eval(damageeSprite.name), killXee)
+    }  
 
+        
+    }
+}
 //hitbox creator - also used to log collisions          
 class Hitbox{
     //parameters: x and y of object you create hitbox for
     //multistring is a 2d array - you need to pas multiple arrays into this function. 
-    constructor(spriteX, spriteY, ...multiArr){
+    constructor(  ...multiArr){
         
-        this.spriteX=spriteX;
-        this.spriteY=spriteY;
+        
         this.points=multiArr[0];
         this.horizontalTrue=multiArr[1]
         this.aboveBelow=multiArr[2]
-        
+       
+       
     }
     //used to move and redraw the hitbox - also changes the points array
-        movement(points){
+        
+        movement(isALive, points){
        //used to temporarily store the x and y of a given point
+       
         var xcoord;
         var ycoord;
         //used to check whether or not the part of the points array   you are iterating over is x or why
@@ -177,7 +233,7 @@ class Hitbox{
         
         //interval to repeatedly redraw the hitbox
         reDraw=setInterval(function(){
-            
+           
             ctx.beginPath();
         ctx.strokeStyle = "#000000";
         ctx.lineWidth = 1;
@@ -205,13 +261,13 @@ class Hitbox{
             }
             
             
-        }
         
-        
-        
-        ctx.stroke();}, 1)    
         
     }
+        
+        ctx.stroke();}, 1)    
+    
+}
     endMovement(){
         clearInterval(reDraw)
     }
@@ -239,7 +295,7 @@ pointChange( points, x, y){
     }
     
 collisionDetect(points, checkingX, checkingY, horizontalTrue, aboveBelow){
-    
+   
     var newX = true
     var firstPointCounter = true
     var point1X;
@@ -289,28 +345,30 @@ for( var k=0;k<points.length;k++){
             }
             lines.push(new stores(gradient, yIntercept, point1X, point1Y,point2X,point2Y))
             
+            
            
         }
+        
         
             } 
               
             for(var l=0; l<horizontalTrue.length; l++){
                 
-               
+                
                 if (horizontalTrue[l]==2){
                    
                     if(aboveBelow[l]==true){
                         
-                        if(checkingY>=points[2*l]){
+                        if(checkingY<=points[2*l]){
 
                         } else{
-                            
+                   
                             fitsAllCriteria=false
 
                         }
                     }else{
-                       
-                        if(checkingY<=points[2*l]){
+                      
+                        if(checkingY>=points[2*l]){
                             
                         }else{
                            
@@ -318,33 +376,36 @@ for( var k=0;k<points.length;k++){
                         }
                       }
                 }else if(horizontalTrue[l]==1){
-                   
+             
+                
                     if(aboveBelow[l]==true){
-                     
+          
                         if(checkingX<=points[2*l]){
                             
                         }else{
-                        
+                             
                             fitsAllCriteria=false
                         }
                     }else{
+                     
                         
                         if(checkingY>=points[2*l]){
 
                         } else{
-                       
+                        
                             fitsAllCriteria=false
                         }
 
                     }
                 }else{
-                  
+                if (!(Math.min(lines[l].point1X, point2X, checkingX)!=checkingX&&Math.max(lines[l].point1X, point2X, checkingX)!=checkingX)){
+                
                     if(aboveBelow[l]==true){
-                      
+                        
                             if(checkingY<=(lines[l].gradient*checkingX)+lines[l].yIntercept){
 
                             }else{
-                            
+                               
                             fitsAllCriteria=false
                         }
                     }else{
@@ -353,14 +414,18 @@ for( var k=0;k<points.length;k++){
                         if(checkingY>=((lines[l].gradient*checkingX)+lines[l].yIntercept)){
                                 
                             }else{
-                          
+                                 
+                                 
                             fitsAllCriteria=false
                             
                             
                         }
                     
-                    }
+                    
                 }
+            }else{}
+                }
+            
             }  
             return fitsAllCriteria  
 }
@@ -370,11 +435,40 @@ for( var k=0;k<points.length;k++){
     
     
 }
-var marioPosArr = [12,6,29,13,50,10,50,32,29,27,12,35, 12,6]
-var marioOrientationArr = [ 0,0 , 1, 0,0 , 1 ]
-var marioContentsArr= [false, false, true, true, true, false]
-var marioHitbox = new Hitbox( marioX, marioY, ...[[...marioPosArr],[...marioOrientationArr],[...marioContentsArr]])
-marioHitbox.movement(marioPosArr)
+class gameObj{
+    constructor(hitbox, gamesprite){
+        this.hitbox=hitbox
+        this.gamesprite=gamesprite
+        
+    }
+}
+var marioAlive = true
+    var enemyProjAlive=[true, true, true, true]
+//x and ys of main character
+var marioPosArr = [6,-2,22,5,41,1,48, 15,41,28,22,25,6,32, 6,-2]
+//orientation of the lines of the hitbox, 0=diagonal, 1=vertical, 2=horizontal
+var marioOrientationArr = [ 0,0 , 0, 0,0, 0 , 1 ]
+//defines where a point must be to be within the hitbox, true is above a given line, false is below, (left/right respectively for vertical lines)
+var marioContentsArr= [false, false, false, true, true, true, false]
+var marioObj = new gameObj(new Hitbox(  ...[[...marioPosArr],[...marioOrientationArr],[...marioContentsArr]]),new GameSprite(100, "mario", -1, 3,false,true, 250,  ...[0]) )
+var enemyProjectilePosArrays = [[3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0], [3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0], [3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0],[3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0],] 
+var enemyProjectileOrientationArrays = [ [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0]]
+var enemyProjectileContentArrays = [false, false, true, true, true, true, false, false ]
+//within gameSprite, the arguments are health, name, damage, type of damage, and damage that can be received
+var enemyProjectileObj1 = new gameObj(new Hitbox(true, ...[[...enemyProjectilePosArrays[0]],[...enemyProjectileOrientationArrays[0]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile1", -10, 0,false, false, 0,  ...[1, 3]))
+var enemyProjectileObj2 = new gameObj(new Hitbox(true, ...[[...enemyProjectilePosArrays[1]],[...enemyProjectileOrientationArrays[1]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile2" , -10, 0,false, false, 0, ...[1, 3]))
+var enemyProjectileObj3 = new gameObj(new Hitbox(true, ...[[...enemyProjectilePosArrays[2]],[...enemyProjectileOrientationArrays[2]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile3", -10, 0,false, false, 0,  ...[1, 3]))
+var enemyProjectileObj4 = new gameObj(new Hitbox(true, ...[[...enemyProjectilePosArrays[3]],[...enemyProjectileOrientationArrays[3]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile4",-10, 0,false, false, 0, ...[1, 3]))
+//multidimensional arr and declaring the hitbox
+
+
+
+enemyProjectileObj1.hitbox.movement(enemyProjAlive[0],  enemyProjectilePosArrays[0])
+enemyProjectileObj2.hitbox.movement(enemyProjAlive[1],enemyProjectilePosArrays[1])
+enemyProjectileObj3.hitbox.movement(enemyProjAlive[2], enemyProjectilePosArrays[2])
+enemyProjectileObj4.hitbox.movement(enemyProjAlive[3], enemyProjectilePosArrays[3])
+
+marioObj.hitbox.movement(marioAlive,marioObj.hitbox.points)
 function buttonControl(freq, btn, btnstring){
     //on mouse down , runs start move
     btn.addEventListener("mousedown", startMove);
@@ -401,7 +495,8 @@ function buttonControl(freq, btn, btnstring){
     
 }
 
-//this is where the magic happens - used to move mario
+//this is where the magic happens - used to move mari
+
 function move_m(direction){
     var changer = 0;
     switch(direction){
@@ -412,16 +507,16 @@ function move_m(direction){
        changer = -1;
       
        //checks if it is within limits
-       if (Number(mario.style.top.substring(0, mario.style.top.length - 2))<=00){
+       if (Number(mario.style.top.substring(0, mario.style.top.length - 2))<=0){
           
        }else{
            //actually changes value
            mario.style.top=Number(mario.style.top.substring(0, mario.style.top.length - 2))+changer+"px";
-           marioHitbox.endMovement()
-           marioHitbox.pointChange(marioHitbox.points,0,-0.985)
-            marioHitbox.movement(marioHitbox.points)
+           marioObj.hitbox.endMovement()
+           marioObj.hitbox.pointChange(marioObj.hitbox.points,0,-1)
+            marioObj.hitbox.movement(marioAlive, marioObj.hitbox.points)
             
-        }5
+        }
       
        break;
        //direction is down
@@ -435,9 +530,9 @@ function move_m(direction){
    
        }else{
            mario.style.top=Number(mario.style.top.substring(0, mario.style.top.length - 2))+changer+"px";
-           marioHitbox.endMovement()
-           marioHitbox.pointChange(marioHitbox.points,0,0.985)
-           marioHitbox.movement(marioHitbox.points)
+           marioObj.hitbox.endMovement()
+           marioObj.hitbox.pointChange(marioObj.hitbox.points,0,1)
+           marioObj.hitbox.movement(marioAlive,marioObj.hitbox.points)
            
         }
       
@@ -448,10 +543,11 @@ function move_m(direction){
           
        }else{
            mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))-1+"px";
-           marioHitbox.endMovement()
+           marioObj.hitbox.endMovement()
            
-           marioHitbox.pointChange(marioHitbox.points,-0.985,0)
-           marioHitbox.movement(marioHitbox.points)
+           marioObj.hitbox.pointChange(marioObj.hitbox.points,-1,0)
+           marioObj.hitbox.movement(marioAlive,marioObj.hitbox.points)
+           
            
         }
       
@@ -462,9 +558,9 @@ function move_m(direction){
        
        }else{
            mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))+1+"px";
-           marioHitbox.endMovement()
-           marioHitbox.pointChange(marioHitbox.points,0.985,0)
-           marioHitbox.movement(marioHitbox.points)
+           marioObj.hitbox.endMovement()
+           marioObj.hitbox.pointChange(marioObj.hitbox.points,1,0)
+           marioObj.hitbox.movement(marioAlive,marioObj.hitbox.points)
            
        }
       
@@ -477,7 +573,8 @@ function move_m(direction){
 
     
 }
-enemyProjectile2.style.left = "0px"
+
+// (canvas.style.left)
 function enemyProjMovement(number, direction){
    var changer = 0
    switch (number){
@@ -495,9 +592,11 @@ function enemyProjMovement(number, direction){
        }else{
            //actually changes value
            enemyProjectile1.style.top=Number(enemyProjectile1.style.top.substring(0, enemyProjectile1.style.top.length - 2))+changer+"px";
-          
+          enemyProjectileObj1.hitbox.endMovement()
+          enemyProjectileObj1.hitbox.pointChange(enemyProjectileObj1.hitbox.points, 0, -1)
+          enemyProjectileObj1.hitbox.movement(enemyProjectileObj1.hitbox.points)
             
-        }5
+        }
       
        break;
        //direction is down
@@ -511,7 +610,9 @@ function enemyProjMovement(number, direction){
    
        }else{
            enemyProjectile1.style.top=Number(enemyProjectile1.style.top.substring(0, enemyProjectile1.style.top.length - 2))+changer+"px";
-           
+           enemyProjectileObj1.hitbox.endMovement()
+          enemyProjectileObj1.hitbox.pointChange(enemyProjectileObj1.hitbox.points, 0, 1)
+          enemyProjectileObj1.hitbox.movement(enemyProjectileObj1.hitbox.points)
            
         }
       
@@ -522,7 +623,9 @@ function enemyProjMovement(number, direction){
           
        }else{
            enemyProjectile1.style.left=Number(enemyProjectile1.style.left.substring(0, enemyProjectile1.style.left.length - 2))-1+"px";
-         
+           enemyProjectileObj1.hitbox.endMovement()
+          enemyProjectileObj1.hitbox.pointChange(enemyProjectileObj1.hitbox.points,  -1, 0)
+          enemyProjectileObj1.hitbox.movement(enemyProjectileObj1.hitbox.points)
            
         }
       
@@ -533,7 +636,9 @@ function enemyProjMovement(number, direction){
        
        }else{
            enemyProjectile1.style.left=Number(enemyProjectile1.style.left.substring(0, enemyProjectile1.style.left.length - 2))+1+"px";
-           
+           enemyProjectileObj1.hitbox.endMovement()
+          enemyProjectileObj1.hitbox.pointChange(enemyProjectileObj1.hitbox.points, 1, 0)
+          enemyProjectileObj1.hitbox.movement(enemyProjectileObj1.hitbox.points)
        }
       
        break;
@@ -554,7 +659,9 @@ case 2:
        }else{
            //actually changes value
            enemyProjectile2.style.top=Number(enemyProjectile2.style.top.substring(0, enemyProjectile2.style.top.length - 2))+changer+"px";
-          
+           enemyProjectileObj2.hitbox.endMovement()
+          enemyProjectileObj2.hitbox.pointChange(enemyProjectileObj2.hitbox.points, 0, -1)
+          enemyProjectileObj2.hitbox.movement(enemyProjAlive[1],enemyProjectileObj2.hitbox.points)
             
         }
       
@@ -570,7 +677,9 @@ case 2:
    
        }else{
            enemyProjectile2.style.top=Number(enemyProjectile2.style.top.substring(0, enemyProjectile2.style.top.length - 2))+changer+"px";
-           
+           enemyProjectileObj2.hitbox.endMovement()
+          enemyProjectileObj2.hitbox.pointChange(enemyProjectileObj2.hitbox.points, 0, 1)
+          enemyProjectileObj2.hitbox.movement(enemyProjAlive[1],enemyProjectileObj2.hitbox.points)
            
         }
       
@@ -581,7 +690,9 @@ case 2:
           
        }else{
            enemyProjectile2.style.left=Number(enemyProjectile2.style.left.substring(0, enemyProjectile2.style.left.length - 2))-1+"px";
-         
+           enemyProjectileObj2.hitbox.endMovement()
+          enemyProjectileObj2.hitbox.pointChange(enemyProjectileObj2.hitbox.points,  -1, 0)
+          enemyProjectileObj2.hitbox.movement(enemyProjAlive[1],enemyProjectileObj2.hitbox.points)
            
         }
       
@@ -592,7 +703,10 @@ case 2:
         
        }else{
            enemyProjectile2.style.left=Number(enemyProjectile2.style.left.substring(0, enemyProjectile2.style.left.length - 2))+1+"px";
-           console.log(enemyProjectile2.style.left)
+           
+           enemyProjectileObj2.hitbox.endMovement()
+          enemyProjectileObj2.hitbox.pointChange(enemyProjectileObj2.hitbox.points,1, 0     )
+          enemyProjectileObj2.hitbox.movement(enemyProjAlive[1],enemyProjectileObj2.hitbox.points)
        }
       
        break;
@@ -613,7 +727,9 @@ case 2:
        }else{
            //actually changes value
            enemyProjectile3.style.top=Number(enemyProjectile3.style.top.substring(0, enemyProjectile3.style.top.length - 2))+changer+"px";
-          
+           enemyProjectileObj3.hitbox.endMovement()
+          enemyProjectileObj3.hitbox.pointChange(enemyProjectileObj3.hitbox.points, 0, -1)
+          enemyProjectileObj3.hitbox.movement(enemyProjAlive[2],enemyProjectileObj3.hitbox.points)
             
         }
       
@@ -629,7 +745,10 @@ case 2:
    
        }else{
            enemyProjectile3.style.top=Number(enemyProjectile3.style.top.substring(0, enemyProjectile3.style.top.length - 2))+changer+"px";
-           
+           enemyProjectileObj3.hitbox.endMovement()
+          enemyProjectileObj3.hitbox.pointChange(enemyProjectileObj3.hitbox.points, 0, 1)
+          enemyProjectileObj3.hitbox.movement(enemyProjAlive[2],enemyProjectileObj3.hitbox.points)
+            
            
         }
       
@@ -640,7 +759,10 @@ case 2:
           
        }else{
            enemyProjectile3.style.left=Number(enemyProjectile3.style.left.substring(0, enemyProjectile3.style.left.length - 2))-1+"px";
-         
+           enemyProjectileObj3.hitbox.endMovement()
+          enemyProjectileObj3.hitbox.pointChange(enemyProjectileObj3.hitbox.points,  -1, 0)
+          enemyProjectileObj3.hitbox.movement(enemyProjAlive[2],enemyProjectileObj3.hitbox.points)
+            
            
         }
       
@@ -651,7 +773,11 @@ case 2:
         
        }else{
            enemyProjectile3.style.left=Number(enemyProjectile3.style.left.substring(0, enemyProjectile3.style.left.length - 2))+1+"px";
-           console.log(enemyProjectile3.style.left)
+          
+           enemyProjectileObj3.hitbox.endMovement()
+          enemyProjectileObj3.hitbox.pointChange(enemyProjectileObj3.hitbox.points, 1, 0)
+          enemyProjectileObj3.hitbox.movement(enemyProjAlive[2],enemyProjectileObj3.hitbox.points)
+            
        }
       
        break;
@@ -672,7 +798,10 @@ case 4:
        }else{
            //actually changes value
            enemyProjectile4.style.top=Number(enemyProjectile4.style.top.substring(0, enemyProjectile4.style.top.length - 2))+changer+"px";
-          
+           enemyProjectileObj4.hitbox.endMovement()
+          enemyProjectileObj4.hitbox.pointChange(enemyProjectileObj4.hitbox.points, 0, -1)
+          enemyProjectileObj4.hitbox.movement(enemyProjAlive[3],enemyProjectileObj4.hitbox.points)
+            
             
         }
       
@@ -688,7 +817,10 @@ case 4:
    
        }else{
            enemyProjectile4.style.top=Number(enemyProjectile4.style.top.substring(0, enemyProjectile4.style.top.length - 2))+changer+"px";
-           
+           enemyProjectileObj4.hitbox.endMovement()
+          enemyProjectileObj4.hitbox.pointChange(enemyProjectileObj4.hitbox.points, 0, 1)
+          enemyProjectileObj4.hitbox.movement(enemyProjAlive[3],enemyProjectileObj4.hitbox.points)
+            
            
         }
       
@@ -699,7 +831,10 @@ case 4:
           
        }else{
            enemyProjectile4.style.left=Number(enemyProjectile4.style.left.substring(0, enemyProjectile4.style.left.length - 2))-1+"px";
-         
+           enemyProjectileObj4.hitbox.endMovement()
+          enemyProjectileObj4.hitbox.pointChange(enemyProjectileObj4.hitbox.points,  -1, 0)
+          enemyProjectileObj4.hitbox.movement(enemyProjAlive[3],enemyProjectileObj4.hitbox.points)
+            
            
         }
       
@@ -710,7 +845,10 @@ case 4:
         
        }else{
            enemyProjectile4.style.left=Number(enemyProjectile4.style.left.substring(0, enemyProjectile4.style.left.length - 2))+1+"px";
-           console.log(enemyProjectile4.style.left)
+           enemyProjectileObj4.hitbox.endMovement()
+          enemyProjectileObj4.hitbox.pointChange(enemyProjectileObj4.hitbox.points, 1, 0)
+          enemyProjectileObj4.hitbox.movement(enemyProjAlive[3],enemyProjectileObj4.hitbox.points)
+            
        }
       
        break;
@@ -738,25 +876,27 @@ function keyControl(freq){
             
             case 87: 
             //w to move up
-            work = setInterval(function(){move_m("up", mario)}, freq);
+            work = setInterval(function(){move_m("up")}, freq);
             
             
             break;
             case 83: 
             //s to move down
-            work = setInterval(function(){move_m("down", mario)}, freq);
+           work = setInterval(function(){move_m("down")}, freq);
             
             break;
             case 68: 
             //d to move right
-            work = setInterval(function(){move_m("right", mario)}, freq);
+            work = setInterval(function(){move_m("right")
+          
+        }, freq);
             
             
             break;
             case 65: 
             //a to move left
             
-            work = setInterval(function(){move_m("left", mario)}, freq);
+            work = setInterval(function(){move_m("left")}, freq);
             break;
             default:
                 
@@ -827,11 +967,71 @@ document.addEventListener("keydown", function(){
    //using trigenometry to figure out the angle between the player and the mouse
     mouseAngle = angleCalc(marioX, marioY, mouseX, mouseY);
    
-    //xPara.innerHTML = Math.floor(mouseAngle)
+   
+
 });
 
+function hitboxCollision(collider, collidee, colliderPointsArr, collideePointsArr){
+        var xArr = []
+        var yArr = []
+        var borderArr = []
+        var colliderTrue;
+        
+      var collideeTrue;
+      var collision
+     
+        for(var n=0;n<collideePointsArr.length;n++){
+            if(n%2==0){
+                xArr.push(collideePointsArr[n])
+                
+            }else{
+                yArr.push(collideePointsArr[n])
+                
+            }
+        }
+    
+        var Xminimum = Math.min.apply(Math,xArr)
+        var Yminimum = Math.min.apply(Math,yArr)
+        var Xmaximum = Math.max.apply(Math,xArr)
+        var Ymaximum = Math.max.apply(Math,yArr)
+       borderArr.push(Xminimum, Yminimum, Xmaximum, Ymaximum)
+       
+       for(var p=Yminimum;p<=Ymaximum;p++){
+        for(var q = Xminimum; q<=Xmaximum;q++){
+                 collideeTrue = collidee.collisionDetect(collidee.points, q, p, collidee.horizontalTrue, collidee.aboveBelow) 
+                 colliderTrue = collider.collisionDetect(collider.points, q, p, collider.horizontalTrue, collider.aboveBelow)
+               
+                
+               
+                 if(collideeTrue==true&&colliderTrue==true){
+                    collision=true
+                   
+                 }
+                 
+        }
+       }
+       if(collision!=true){
+        collision=false
+       }
+      return collision
+    }
+   
+  
+for(var r=0;r<50;r++){
+    enemyProjMovement(1, "down")
+    enemyProjMovement(2, "right")
+    enemyProjMovement(3, "right")
+    enemyProjMovement(4, "right")
+}
 
-
+var marioDamage = setInterval(function(){
+    collide = hitboxCollision( marioObj.hitbox,enemyProjectileObj1.hitbox, marioObj.hitbox.points,enemyProjectileObj1.hitbox.points, )
+    if(collide==true){
+        marioObj.gamesprite.damageReceiver(enemyProjectileObj1.gamesprite, marioObj.gamesprite )
+       
+    }
+    
+}, 100)
 
 
 //END OF JS CODE HERE  
@@ -839,10 +1039,13 @@ document.addEventListener("keydown", function(){
 
 
 
+    
+
         </script>
     </head>
     <body id="body">
-       <canvas id="canvas"  ></canvas>
+        <img src = "https://i.ibb.co/mRwRWB4/sr27d6b04dafa25.jpg" alt = "its a me a" id  =  "mario">
+       <canvas id="canvas"style = "   left: 0px; top: 0px;"  ></canvas>
 <button id="up">up</button>
 <button id = "down">down</button>
 <button id = "right">right</button>
@@ -855,7 +1058,7 @@ document.addEventListener("keydown", function(){
 <img   id = "enemyProjectile2"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
 <img   id = "enemyProjectile3"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
 <img   id = "enemyProjectile4"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
-<img src = https://i.ibb.co/QmpRkbh/d-sub-pixilart.png" alt = "its a me a" id  =  "mario">
+
 
     </body>
 
