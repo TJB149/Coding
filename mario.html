@@ -164,45 +164,53 @@ class GameSprite{
         this.damageImmunityToggle=damageImmunityToggle
         this.damageImmunityTime=damageImmunityTime
     }
-    kill(afterTime, img, ){
+    kill(afterTime, img, killX, obj ){
         setTimeout(function(){
-            img.style.visibility="hidden"  
-            
+           
+            for(var t=obj.hitbox.points[0];t<killX;t++){
+                
+                img.style.left=killX+"px"
+            }
+            obj.hitbox.endMovement()
+                obj.hitbox.pointChange(obj.hitbox.points, killX, 0)
+                obj.hitbox.movement(obj.hitbox.points)
+            console.log(img.style.left+"lol")
+            console.log(obj.hitbox.points[0])
         }, afterTime)
     }
-    healthChange( sprite, change,  killX){
+    healthChange( sprite, change,  killX, obj){
         sprite.health+=change
    
         if (sprite.health<=0){
-            sprite.kill(20, eval(sprite.name))   
+            sprite.kill(20, eval(sprite.name), killX, obj)   
         }
             
         
     }
-    damageReceiver(damagerSprite, damageeSprite, killXer, killXee ){
+    damageReceiver(obj, damagerSprite, damageeSprite, killXer, killXee ){
         
        if(damagerSprite.damageImmunityToggle==true){
        if(damagerSprite.damageImmunityStore==false){
        
-        damagerSprite.healthChange( damagerSprite, damageeSprite.damage, killXer)
+        damagerSprite.healthChange( damagerSprite, damageeSprite.damage, killXer, obj)
         damagerSprite.damageImmunityStore=true
         setTimeout(function(){
             damagerSprite.damageImmunityStore=false
         },damagerSprite.damageImmunityTime )
        }
     }else{
-        damagerSprite.healthChange( damagerSprite, damageeSprite.damage,  killXer)
+        damagerSprite.healthChange( damagerSprite, damageeSprite.damage,  killXer, obj)
     }
         if(damageeSprite.damageImmunityToggle==true){
        if(damageeSprite.damageImmunityStore==false){
-        damageeSprite.healthChange( damageeSprite, damagerSprite.damage,  killXee)
+        damageeSprite.healthChange( damageeSprite, damagerSprite.damage,  killXee, obj)
         damageeSprite.damageImmunityStore=true
         setTimeout(function(){
             damageeSprite.damageImmunityStore=false
         },damageeSprite.damageImmunityTime )
        }  
     }else{
-        damageeSprite.healthChange( damageeSprite, damagerSprite.damage,  killXee)
+        damageeSprite.healthChange( damageeSprite, damagerSprite.damage,  killXee, obj)
     }  
 
         
@@ -225,7 +233,7 @@ class Hitbox{
         
         movement(points){
        //used to temporarily store the x and y of a given point
-            console.log(points.length)
+         
         var xcoord;
         var ycoord;
         //used to check whether or not the part of the points array   you are iterating over is x or why
@@ -1038,7 +1046,7 @@ function hitboxCollision(collider, collidee, colliderPointsArr, collideePointsAr
 var marioDamage = setInterval(function(){
     collide = hitboxCollision( marioObj.hitbox,enemyProjectileObj1.hitbox, marioObj.hitbox.points,enemyProjectileObj1.hitbox.points, )
     if(collide==true){
-        marioObj.gamesprite.damageReceiver(enemyProjectileObj1.gamesprite, marioObj.gamesprite )
+        marioObj.gamesprite.damageReceiver(marioObj, enemyProjectileObj1.gamesprite, marioObj.gamesprite, 50000, 50000 )
        
     }
     
