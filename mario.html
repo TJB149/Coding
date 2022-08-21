@@ -215,6 +215,20 @@ class GameSprite{
 
         
     }
+    respawn(returnX, returnY, hidden, obj){
+      var yDiff=returnY-obj.hitbox.points[1]
+      var xDiff=returnX-obj.hitbox.points[0]
+      
+        eval(obj.gamesprite.name).style.left=returnX+"px"
+        eval(obj.gamesprite.name).style.top=returnY+"px"
+        obj.hitbox.endMovement()
+        obj.hitbox.pointChange(obj.hitbox.points, xDiff, yDiff)
+        if(hidden==true){
+            eval(obj.gamesprite.name).style.visibility="hidden" 
+        }
+        
+
+    }
 }
 //hitbox creator - also used to log collisions          
 class Hitbox{
