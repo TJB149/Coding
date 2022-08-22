@@ -91,7 +91,6 @@ position: absolute;
 
 //this makes the js load after the html to prevent errors from being thrown up about event lister
 
-    
 document.addEventListener("DOMContentLoaded", () => {
     //canvas
     const canvas = document.getElementById("canvas")
@@ -237,10 +236,11 @@ class Hitbox{
     //multistring is a 2d array - you need to pas multiple arrays into this function. 
     constructor(  ...multiArr){
         
-        
+        this.reDraw
         this.points=multiArr[0];
         this.horizontalTrue=multiArr[1]
         this.aboveBelow=multiArr[2]
+
        
        
     }
@@ -248,7 +248,7 @@ class Hitbox{
         
         movement(points){
        //used to temporarily store the x and y of a given point
-      
+            
         var xcoord;
         var ycoord;
         //used to check whether or not the part of the points array   you are iterating over is x or why
@@ -271,7 +271,7 @@ class Hitbox{
             if (hasX==false){
                 xcoord=points[i]
                
-                
+               
                 hasX=true
             }else{
                 ycoord=points[i]
@@ -282,7 +282,7 @@ class Hitbox{
                 ctx.lineTo(xcoord, ycoord)
 
             }
-            
+            //console.log(xcoord+", "+ycoord)
             
         
         
@@ -511,11 +511,10 @@ function buttonControl(freq, btn, btnstring){
     xPara.innerHTML = Math.floor(mouseAngle)
         work = setInterval(function(){
             move_m(btnstring)
-            enemyProjMovement(1, "down")
-            console.log("hello")
-    enemyProjMovement(2, "down")
-    //enemyProjMovement(3, "down")
-    enemyProjMovement(4, "right")}, freq);
+            
+          
+   
+}, freq);
         
     }
     //on mouse up, runs end move
@@ -611,7 +610,7 @@ function move_m(direction){
 function enemyProjMovement(number, direction){
    var changer = 0
 eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px"
-console.log("hello")
+
     switch(direction){
    //if the direction is up
    case "up":
@@ -627,6 +626,7 @@ console.log("hello")
            eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px";
            eval("enemyProjectileObj"+number).hitbox.endMovement()
           eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 0, changer)
+         // console.log("enemyProjectileObj"+number+" up")
           eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points)
             
             
@@ -646,6 +646,7 @@ console.log("hello")
            eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px";
            eval("enemyProjectileObj"+number).hitbox.endMovement()
           eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 0, changer)
+          //console.log("enemyProjectileObj"+number+" down")
           eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points)
             
            
@@ -660,6 +661,7 @@ console.log("hello")
            eval("enemyProjectile"+number).style.left=Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))-1+"px";
            eval("enemyProjectileObj"+number).hitbox.endMovement()
           eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points,  -1, changer)
+          //console.log("enemyProjectileObj"+number+" left")
           eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points)
             
            
@@ -674,6 +676,7 @@ console.log("hello")
            eval("enemyProjectile"+number).style.left=Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))+1+"px";
            eval("enemyProjectileObj"+number).hitbox.endMovement()
           eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 1, changer)
+          //console.log("enemyProjectileObj"+number+" right")
           eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points)
             
        }
@@ -685,7 +688,7 @@ console.log("hello")
    }
 
 
-
+var worker;
 //used to check whether the key has already been pressed, to prevent the function from creating infinite intervals
 var keyDownCheck;
 //binding the keyboard rather than the buttons for movement
@@ -703,7 +706,7 @@ function keyControl(freq){
             
             case 87: 
             //w to move up
-            work = setInterval(function(){move_m("up")
+            worker = setInterval(function(){move_m("up")
        
         }, freq);
             
@@ -711,15 +714,17 @@ function keyControl(freq){
             break;
             case 83: 
             //s to move down
-           work = setInterval(function(){move_m("down")
+           worker = setInterval(function(){move_m("down")
            
          
     }, freq);
             break;
             case 68: 
             //d to move right
-            work = setInterval(function(){move_m("right")
-          
+            worker = setInterval(function(){move_m("right")
+            enemyProjMovement(2, "down")
+    //enemyProjMovement(3, "down")
+    //enemyProjMovement(4, "right")
         }, freq);
             
             
@@ -727,7 +732,7 @@ function keyControl(freq){
             case 65: 
             //a to move left
             
-            work = setInterval(function(){move_m("left")}, freq);
+            worker = setInterval(function(){move_m("left")}, freq);
             break;
             default:
                 
@@ -741,7 +746,7 @@ function keyControl(freq){
 
     document.addEventListener("keyup", function(event){
         //stops movement
-        clearInterval(work);
+        clearInterval(worker);
         //shows that key has been released
         keyDownCheck = false;
     });
