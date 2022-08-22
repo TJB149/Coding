@@ -166,22 +166,22 @@ class GameSprite{
     }
     kill(afterTime, img, killX, obj ){
         setTimeout(function(){
-           
-            for(var t=obj.hitbox.points[0];t<killX;t++){
-                
-                img.style.left=killX+"px"
-            }
+            
+            
             obj.hitbox.endMovement()
+            
                 obj.hitbox.pointChange(obj.hitbox.points, killX, 0)
                 obj.hitbox.movement(obj.hitbox.points)
+                eval(img).style.left=killX+"px"
          
         }, afterTime)
     }
     healthChange( sprite, change,  killX, obj){
         sprite.health+=change
-   
+
         if (sprite.health<=0){
-            sprite.kill(20, eval(sprite.name), killX, obj)   
+         
+            sprite.kill(20, sprite.name, killX, obj)   
         }
             
         
@@ -209,6 +209,8 @@ class GameSprite{
         },damageeSprite.damageImmunityTime )
        }  
     }else{
+
+    
         damageeSprite.healthChange( damageeSprite, damagerSprite.damage,  killXee, obj)
     }  
 
@@ -246,7 +248,7 @@ class Hitbox{
         
         movement(points){
        //used to temporarily store the x and y of a given point
-       console.log(points[0])
+      
         var xcoord;
         var ycoord;
         //used to check whether or not the part of the points array   you are iterating over is x or why
@@ -295,6 +297,7 @@ class Hitbox{
     }
 
 pointChange( points, x, y){
+  
         var newX=true
        
    
@@ -313,7 +316,7 @@ pointChange( points, x, y){
             }   
             
             }   
-           
+      
         
         
     }
@@ -474,7 +477,7 @@ var marioPosArr = [6,-2,22,5,41,1,48, 15,41,28,22,25,6,32, 6,-2]
 var marioOrientationArr = [ 0,0 , 0, 0,0, 0 , 1 ]
 //defines where a point must be to be within the hitbox, true is above a given line, false is below, (left/right respectively for vertical lines)
 var marioContentsArr= [false, false, false, true, true, true, false]
-var marioObj = new gameObj(new Hitbox(  ...[[...marioPosArr],[...marioOrientationArr],[...marioContentsArr]]),new GameSprite(infinity(), "mario", -1, 3,false,true, 250,  ...[0]) )
+var marioObj = new gameObj(new Hitbox(  ...[[...marioPosArr],[...marioOrientationArr],[...marioContentsArr]]),new GameSprite(50000, "mario", -1, 3,false,true, 250,  ...[0]) )
 var enemyProjectilePosArrays = [[3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0], [3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0], [3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0],[3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0]] 
 var enemyProjectileOrientationArrays = [ [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0]]
 var enemyProjectileContentArrays = [false, false, true, true, true, true, false, false ]
@@ -507,10 +510,10 @@ function buttonControl(freq, btn, btnstring){
  
     xPara.innerHTML = Math.floor(mouseAngle)
         work = setInterval(function(){
-            //move_m(btnstring)
+            move_m(btnstring)
             enemyProjMovement(1, "down")
-    enemyProjMovement(2, "right")
-    enemyProjMovement(3, "right")
+    enemyProjMovement(2, "down")
+    //enemyProjMovement(3, "down")
     enemyProjMovement(4, "right")}, freq);
         
     }
@@ -606,7 +609,7 @@ function move_m(direction){
 // (canvas.style.left)
 function enemyProjMovement(number, direction){
    var changer = 0
-  
+eval("enemyProjectile"+number).style.top=Number(enemyProjectile1.style.top.substring(0, enemyProjectile1.style.top.length - 2))+changer+"px"
    switch (number){
     case 1:
     switch(direction){
@@ -1059,8 +1062,8 @@ function hitboxCollision(collider, collidee, colliderPointsArr, collideePointsAr
 var marioDamage = setInterval(function(){
     collide = hitboxCollision( marioObj.hitbox,enemyProjectileObj1.hitbox, marioObj.hitbox.points,enemyProjectileObj1.hitbox.points, )
     if(collide==true){
-        marioObj.gamesprite.damageReceiver(marioObj, enemyProjectileObj1.gamesprite, marioObj.gamesprite, 50000, 50000 )
-       
+        marioObj.gamesprite.damageReceiver(enemyProjectileObj1, marioObj.gamesprite, enemyProjectileObj1.gamesprite, 50000, 50000 )
+      
     }
     
 }, 200)
