@@ -512,6 +512,7 @@ function buttonControl(freq, btn, btnstring){
         work = setInterval(function(){
             move_m(btnstring)
             enemyProjMovement(1, "down")
+            console.log("hello")
     enemyProjMovement(2, "down")
     //enemyProjMovement(3, "down")
     enemyProjMovement(4, "right")}, freq);
@@ -609,9 +610,8 @@ function move_m(direction){
 // (canvas.style.left)
 function enemyProjMovement(number, direction){
    var changer = 0
-eval("enemyProjectile"+number).style.top=Number(enemyProjectile1.style.top.substring(0, enemyProjectile1.style.top.length - 2))+changer+"px"
-   switch (number){
-    case 1:
+eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px"
+console.log("hello")
     switch(direction){
    //if the direction is up
    case "up":
@@ -620,221 +620,14 @@ eval("enemyProjectile"+number).style.top=Number(enemyProjectile1.style.top.subst
        changer = -1;
       
        //checks if it is within limits
-       if (Number(enemyProjectile1.style.top.substring(0, enemyProjectile1.style.top.length - 2))<=00){
+       if (Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))<=00){
           
        }else{
            //actually changes value
-           enemyProjectile1.style.top=Number(enemyProjectile1.style.top.substring(0, enemyProjectile1.style.top.length - 2))+changer+"px";
-          enemyProjectileObj1.hitbox.endMovement()
-          enemyProjectileObj1.hitbox.pointChange(enemyProjectileObj1.hitbox.points, 0, -1)
-          enemyProjectileObj1.hitbox.movement(enemyProjectileObj1.hitbox.points)
-            
-        }
-      
-       break;
-       //direction is down
- 
-       case "down":
-      
-       changer = 1
-      
-       //see above for all of these
-   if (Number(enemyProjectile1.style.top.substring(0, enemyProjectile1.style.top.length - 2))>=canvas.height){
-   
-       }else{
-           enemyProjectile1.style.top=Number(enemyProjectile1.style.top.substring(0, enemyProjectile1.style.top.length - 2))+changer+"px";
-           enemyProjectileObj1.hitbox.endMovement()
-          enemyProjectileObj1.hitbox.pointChange(enemyProjectileObj1.hitbox.points, 0, 1)
-          enemyProjectileObj1.hitbox.movement(enemyProjectileObj1.hitbox.points)
-        
-        }
-      
-       break;
-   case "left":
-  
-      if (Number(enemyProjectile1.style.left.substring(0, enemyProjectile1.style.left.length - 2))<=0){
-          
-       }else{
-   
-           enemyProjectile1.style.left=Number(enemyProjectile1.style.left.substring(0, enemyProjectile1.style.left.length - 2))-1+"px";
-           enemyProjectileObj1.hitbox.endMovement()
-          enemyProjectileObj1.hitbox.pointChange(enemyProjectileObj1.hitbox.points,  -1, 0)
-          enemyProjectileObj1.hitbox.movement(enemyProjectileObj1.hitbox.points)
-           
-        }
-      
-       break;
-   case"right":
-   
-    if (Number(enemyProjectile1.style.left.substring(0, enemyProjectile1.style.left.length - 2))>=canvas.width){
-       
-       }else{
-           enemyProjectile1.style.left=Number(enemyProjectile1.style.left.substring(0, enemyProjectile1.style.left.length - 2))+1+"px";
-           enemyProjectileObj1.hitbox.endMovement()
-          enemyProjectileObj1.hitbox.pointChange(enemyProjectileObj1.hitbox.points, 1, 0)
-          enemyProjectileObj1.hitbox.movement(enemyProjectileObj1.hitbox.points)
-       }
-      
-       break;
-   default:
-}
-break;
-case 2:
-    switch(direction){
-   //if the direction is up
-   case "up":
-  
-       //used to decide how much the value(top or left) is being changed by
-       changer = -1;
-      
-       //checks if it is within limits
-       if (Number(enemyProjectile2.style.top.substring(0, enemyProjectile2.style.top.length - 2))<=00){
-          
-       }else{
-           //actually changes value
-           enemyProjectile2.style.top=Number(enemyProjectile2.style.top.substring(0, enemyProjectile2.style.top.length - 2))+changer+"px";
-           enemyProjectileObj2.hitbox.endMovement()
-          enemyProjectileObj2.hitbox.pointChange(enemyProjectileObj2.hitbox.points, 0, -1)
-          enemyProjectileObj2.hitbox.movement(enemyProjectileObj2.hitbox.points)
-            
-        }
-      
-       break;
-       //direction is down
- 
-       case "down":
-      
-       changer = 1
-      
-       //see above for all of these
-   if (Number(enemyProjectile2.style.top.substring(0, enemyProjectile2.style.top.length - 2))>=canvas.height){
-   
-       }else{
-           enemyProjectile2.style.top=Number(enemyProjectile2.style.top.substring(0, enemyProjectile2.style.top.length - 2))+changer+"px";
-           enemyProjectileObj2.hitbox.endMovement()
-          enemyProjectileObj2.hitbox.pointChange(enemyProjectileObj2.hitbox.points, 0, 1)
-          enemyProjectileObj2.hitbox.movement(enemyProjectileObj2.hitbox.points)
-           
-        }
-      
-       break;
-   case "left":
-  
-      if (Number(enemyProjectile2.style.left.substring(0, enemyProjectile2.style.left.length - 2))<=0){
-          
-       }else{
-           enemyProjectile2.style.left=Number(enemyProjectile2.style.left.substring(0, enemyProjectile2.style.left.length - 2))-1+"px";
-           enemyProjectileObj2.hitbox.endMovement()
-          enemyProjectileObj2.hitbox.pointChange(enemyProjectileObj2.hitbox.points,  -1, 0)
-          enemyProjectileObj2.hitbox.movement(enemyProjectileObj2.hitbox.points)
-           
-        }
-      
-       break;
-   case"right":
-   
-    if (Number(enemyProjectile2.style.left.substring(0, enemyProjectile2.style.left.length - 2))>=canvas.width){
-        
-       }else{
-           enemyProjectile2.style.left=Number(enemyProjectile2.style.left.substring(0, enemyProjectile2.style.left.length - 2))+1+"px";
-           
-           enemyProjectileObj2.hitbox.endMovement()
-          enemyProjectileObj2.hitbox.pointChange(enemyProjectileObj2.hitbox.points,1, 0     )
-          enemyProjectileObj2.hitbox.movement(enemyProjectileObj2.hitbox.points)
-       }
-      
-       break;
-   default:
-}
-        break;
-        case 3:
-    switch(direction){
-   //if the direction is up
-   case "up":
-  
-       //used to decide how much the value(top or left) is being changed by
-       changer = -1;
-      
-       //checks if it is within limits
-       if (Number(enemyProjectile3.style.top.substring(0, enemyProjectile3.style.top.length - 2))<=00){
-          
-       }else{
-           //actually changes value
-           enemyProjectile3.style.top=Number(enemyProjectile3.style.top.substring(0, enemyProjectile3.style.top.length - 2))+changer+"px";
-           enemyProjectileObj3.hitbox.endMovement()
-          enemyProjectileObj3.hitbox.pointChange(enemyProjectileObj3.hitbox.points, 0, -1)
-          enemyProjectileObj3.hitbox.movement(enemyProjectileObj3.hitbox.points)
-            
-        }
-      
-       break;
-       //direction is down
- 
-       case "down":
-      
-       changer = 1
-      
-       //see above for all of these
-   if (Number(enemyProjectile3.style.top.substring(0, enemyProjectile3.style.top.length - 2))>=canvas.height){
-   
-       }else{
-           enemyProjectile3.style.top=Number(enemyProjectile3.style.top.substring(0, enemyProjectile3.style.top.length - 2))+changer+"px";
-           enemyProjectileObj3.hitbox.endMovement()
-          enemyProjectileObj3.hitbox.pointChange(enemyProjectileObj3.hitbox.points, 0, 1)
-          enemyProjectileObj3.hitbox.movement(enemyProjectileObj3.hitbox.points)
-            
-           
-        }
-      
-       break;
-   case "left":
-  
-      if (Number(enemyProjectile3.style.left.substring(0, enemyProjectile3.style.left.length - 2))<=0){
-          
-       }else{
-           enemyProjectile3.style.left=Number(enemyProjectile3.style.left.substring(0, enemyProjectile3.style.left.length - 2))-1+"px";
-           enemyProjectileObj3.hitbox.endMovement()
-          enemyProjectileObj3.hitbox.pointChange(enemyProjectileObj3.hitbox.points,  -1, 0)
-          enemyProjectileObj3.hitbox.movement(enemyProjectileObj3.hitbox.points)
-            
-           
-        }
-      
-       break;
-   case"right":
-   
-    if (Number(enemyProjectile3.style.left.substring(0, enemyProjectile3.style.left.length - 2))>=canvas.width){
-        
-       }else{
-           enemyProjectile3.style.left=Number(enemyProjectile3.style.left.substring(0, enemyProjectile3.style.left.length - 2))+1+"px";
-          
-           enemyProjectileObj3.hitbox.endMovement()
-          enemyProjectileObj3.hitbox.pointChange(enemyProjectileObj3.hitbox.points, 1, 0)
-          enemyProjectileObj3.hitbox.movement(enemyProjectileObj3.hitbox.points)
-            
-       }
-      
-       break;
-   default:
-}
-break;
-case 4:
-    switch(direction){
-   //if the direction is up
-   case "up":
-  
-       //used to decide how much the value(top or left) is being changed by
-       changer = -1;
-      
-       //checks if it is within limits
-       if (Number(enemyProjectile4.style.top.substring(0, enemyProjectile4.style.top.length - 2))<=00){
-          
-       }else{
-           //actually changes value
-           enemyProjectile4.style.top=Number(enemyProjectile4.style.top.substring(0, enemyProjectile4.style.top.length - 2))+changer+"px";
-           enemyProjectileObj4.hitbox.endMovement()
-          enemyProjectileObj4.hitbox.pointChange(enemyProjectileObj4.hitbox.points, 0, -1)
-          enemyProjectileObj4.hitbox.movement(enemyProjectileObj4.hitbox.points)
+           eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px";
+           eval("enemyProjectileObj"+number).hitbox.endMovement()
+          eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 0, changer)
+          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points)
             
             
         }
@@ -847,13 +640,13 @@ case 4:
        changer = 1
       
        //see above for all of these
-   if (Number(enemyProjectile4.style.top.substring(0, enemyProjectile4.style.top.length - 2))>=canvas.height){
+   if (Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))>=canvas.height){
    
        }else{
-           enemyProjectile4.style.top=Number(enemyProjectile4.style.top.substring(0, enemyProjectile4.style.top.length - 2))+changer+"px";
-           enemyProjectileObj4.hitbox.endMovement()
-          enemyProjectileObj4.hitbox.pointChange(enemyProjectileObj4.hitbox.points, 0, 1)
-          enemyProjectileObj4.hitbox.movement(enemyProjectileObj4.hitbox.points)
+           eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px";
+           eval("enemyProjectileObj"+number).hitbox.endMovement()
+          eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 0, changer)
+          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points)
             
            
         }
@@ -861,13 +654,13 @@ case 4:
        break;
    case "left":
   
-      if (Number(enemyProjectile4.style.left.substring(0, enemyProjectile4.style.left.length - 2))<=0){
+      if (Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))<=0){
           
        }else{
-           enemyProjectile4.style.left=Number(enemyProjectile4.style.left.substring(0, enemyProjectile4.style.left.length - 2))-1+"px";
-           enemyProjectileObj4.hitbox.endMovement()
-          enemyProjectileObj4.hitbox.pointChange(enemyProjectileObj4.hitbox.points,  -1, 0)
-          enemyProjectileObj4.hitbox.movement(enemyProjectileObj4.hitbox.points)
+           eval("enemyProjectile"+number).style.left=Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))-1+"px";
+           eval("enemyProjectileObj"+number).hitbox.endMovement()
+          eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points,  -1, changer)
+          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points)
             
            
         }
@@ -875,23 +668,22 @@ case 4:
        break;
    case"right":
    
-    if (Number(enemyProjectile4.style.left.substring(0, enemyProjectile4.style.left.length - 2))>=canvas.width){
+    if (Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))>=canvas.width){
         
        }else{
-           enemyProjectile4.style.left=Number(enemyProjectile4.style.left.substring(0, enemyProjectile4.style.left.length - 2))+1+"px";
-           enemyProjectileObj4.hitbox.endMovement()
-          enemyProjectileObj4.hitbox.pointChange(enemyProjectileObj4.hitbox.points, 1, 0)
-          enemyProjectileObj4.hitbox.movement(enemyProjectileObj4.hitbox.points)
+           eval("enemyProjectile"+number).style.left=Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))+1+"px";
+           eval("enemyProjectileObj"+number).hitbox.endMovement()
+          eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 1, changer)
+          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points)
             
        }
       
        break;
    default:
 }
-break;
-    default:
+
    }
-}
+
 
 
 //used to check whether the key has already been pressed, to prevent the function from creating infinite intervals
