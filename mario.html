@@ -609,7 +609,7 @@ function move_m(direction){
            mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))+1+"px";
            marioObj.hitbox.endMovement()
            marioObj.hitbox.pointChange(marioObj.hitbox.points,1,0)
-           marioObj.hitbox.movement(marioObj.hitbox.points)
+           enemyObj.hitbox.movement(enemyObj.hitbox.points)
            
        }
       
@@ -671,13 +671,13 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
       
        break;
    case "left":
-  
+        changer=-1
       if (Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))<=0){
           
        }else{
            eval("enemyProjectile"+number).style.left=Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))-1+"px";
            eval("enemyProjectileObj"+number).hitbox.endMovement()
-          eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points,  -1, changer)
+          eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points,  changer, 0)
           //console.log("enemyProjectileObj"+number+" left")
           eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points)
             
@@ -686,13 +686,13 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
       
        break;
    case"right":
-   
+        changer=1
     if (Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))>=canvas.width){
         
        }else{
            eval("enemyProjectile"+number).style.left=Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))+1+"px";
            eval("enemyProjectileObj"+number).hitbox.endMovement()
-          eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 1, changer)
+          eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, changer, 0)
           //console.log("enemyProjectileObj"+number+" right")
           eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points)
             
@@ -703,7 +703,77 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
 }
 
    }
-
+   function enemyMovement(direction){
+    var changer = 0;
+    switch(direction){
+   //if the direction is up
+   case "up":
+  
+       //used to decide how much the value(top or left) is being changed by
+       changer = -1;
+      
+       //checks if it is within limits
+       if (Number(enemy.style.top.substring(0, enemy.style.top.length - 2))<=0){
+          
+       }else{
+           //actually changes value
+           enemy.style.top=Number(enemy.style.top.substring(0, enemy.style.top.length - 2))+changer+"px";
+           enemyObj.hitbox.endMovement()
+           enemyObj.hitbox.pointChange(enemyObj.hitbox.points,0,-1)
+            enemyObj.hitbox.movement(enemyObj.hitbox.points)
+            
+        }
+      
+       break;
+       //direction is down
+ 
+       case "down":
+      
+       changer = 1
+      
+       //see above for all of these
+   if (Number(enemy.style.top.substring(0, enemy.style.top.length - 2))>=canvas.height){
+   
+       }else{
+           enemy.style.top=Number(enemy.style.top.substring(0, enemy.style.top.length - 2))+changer+"px";
+           enemyObj.hitbox.endMovement()
+           enemyObj.hitbox.pointChange(enemyObj.hitbox.points,0,1)
+           enemyObj.hitbox.movement( enemyObj.hitbox.points)
+           
+        }
+      
+       break;
+   case "left":
+  
+      if (Number(enemy.style.left.substring(0, enemy.style.left.length - 2))<=0){
+          
+       }else{
+           enemy.style.left=Number(enemy.style.left.substring(0, enemy.style.left.length - 2))-1+"px";
+           enemyObj.hitbox.endMovement()
+           
+           enemyObj.hitbox.pointChange(enemyObj.hitbox.points,-1,0)
+           enemyObj.hitbox.movement( enemyObj.hitbox.points)
+           
+           
+        }
+      
+       break;
+   case"right":
+   
+    if (Number(enemy.style.left.substring(0, enemy.style.left.length - 2))>=canvas.width){
+       
+       }else{
+           enemy.style.left=Number(enemy.style.left.substring(0, enemy.style.left.length - 2))+1+"px";
+           enemyObj.hitbox.endMovement()
+           enemyObj.hitbox.pointChange(enemyObj.hitbox.points,1,0)
+           enemyObj.hitbox.movement(enemyObj.hitbox.points)
+           
+       }
+      
+       break;
+   default:
+}
+   }
 
 var worker;
 //used to check whether the key has already been pressed, to prevent the function from creating infinite intervals
@@ -846,7 +916,7 @@ function hitboxCollision(collider, collidee, colliderPointsArr, collideePointsAr
         var Xmaximum = Math.max.apply(Math,xArr)
         var Ymaximum = Math.max.apply(Math,yArr)
        borderArr.push(Xminimum, Yminimum, Xmaximum, Ymaximum)
-       
+      
       for(var p=Yminimum;p<=Ymaximum;p++){
         for(var q = Xminimum; q<=Xmaximum;q++){
                  collideeTrue = collidee.collisionDetect(collidee.points, q, p, collidee.horizontalTrue, collidee.aboveBelow) 
