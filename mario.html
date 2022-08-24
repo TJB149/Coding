@@ -38,8 +38,8 @@
     position: absolute;
     left: 0;
     top: 0;
-    height: 28px;
-    width: 45px;
+    height: 78px;
+    width: 135px;
     
     
 }
@@ -494,7 +494,7 @@ mario.style.top = marioStyle.getPropertyValue("top")
     }
 console.log(enemyStyle.getPropertyValue("left"))
 //x and ys of main character
-var marioPosArr = [6,-2,22,5,41,1,48, 15,41,28,22,25,6,32, 6,-2]
+var marioPosArr = [6,2,22,9,41,5,48, 19,41,32,22,29,6,36, 6,2]
 //orientation of the lines of the hitbox, 0=diagonal, 1=vertical, 2=horizontal
 var marioOrientationArr = [ 0,0 , 0, 0,0, 0 , 1 ]
 //defines where a point must be to be within the hitbox, true is above a given line, false is below, (left/right respectively for vertical lines)
@@ -734,7 +734,7 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
            enemyObj.hitbox.endMovement()
            enemyObj.hitbox.pointChange(enemyObj.hitbox.points,0,-1)
             enemyObj.hitbox.movement(enemyObj.hitbox.points)
-            console.log(enemyObj.hitbox.points)
+              
         }
       
        break;
@@ -752,7 +752,7 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
            enemyObj.hitbox.endMovement()
            enemyObj.hitbox.pointChange(enemyObj.hitbox.points,0,1)
            enemyObj.hitbox.movement( enemyObj.hitbox.points)
-           console.log(enemyObj.hitbox.points)
+             
         }
       
        break;
@@ -766,7 +766,7 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
            
            enemyObj.hitbox.pointChange(enemyObj.hitbox.points,-1,0)
            enemyObj.hitbox.movement( enemyObj.hitbox.points)
-           console.log(enemyObj.hitbox.points)
+             
            
         }
       
@@ -781,7 +781,7 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
            enemyObj.hitbox.endMovement()
            enemyObj.hitbox.pointChange(enemyObj.hitbox.points,1,0)
            enemyObj.hitbox.movement(enemyObj.hitbox.points)
-           console.log(enemyObj.hitbox.points)
+             
            
        }
       
@@ -978,10 +978,11 @@ var marioDamage = setInterval(function(){
         </script>
     </head>
     <body id="body">
-        <img src = "https://i.ibb.co/mRwRWB4/sr27d6b04dafa25.jpg" alt = "its a me a" id  =  "mario">
-        <img src="https://i.ibb.co/M5m4Jpn/pixilart-drawing-1.png" alt="enem" id="enemy">
+        <img src = "https://i.ibb.co/3cdyx1Y/d-sub-pixilart-3.jpg" alt = "its a me a" id  =  "mario">
+        <img src="https://i.ibb.co/M5m4Jpn/pixilart-drawing-1.png" alt="enemy" id="enemy">
+      
        <canvas id="canvas"style = "   left: 0px; top: 0px;"  ></canvas>
-
+      
 <p>Use WASD or the buttons to move</p>
 <p id="mousex">hello</p>
 <p id = "mousey">l</p>
