@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("canvas")
     //context of canvas
     const ctx = canvas.getContext("2d")
-   
+    
     //interval to change the canvas resolution when the window is resized
     var x=setInterval(function(){
     canvas.width=document.body.clientWidth
@@ -481,7 +481,8 @@ class gameObj{
     }
 }
 
-    var enemyProjAlive=[true, true, true, true]
+  
+
 //x and ys of main character
 var marioPosArr = [6,-2,22,5,41,1,48, 15,41,28,22,25,6,32, 6,-2]
 //orientation of the lines of the hitbox, 0=diagonal, 1=vertical, 2=horizontal
@@ -493,20 +494,25 @@ var enemyProjectilePosArrays = [[3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0], 
 var enemyProjectileOrientationArrays = [ [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0]]
 var enemyProjectileContentArrays = [false, false, true, true, true, true, false, false ]
 //within gameSprite, the arguments are health, name, damage, type of damage, and damage that can be received
+//gameObj for declaring the hitbox, gamesprite
 var enemyProjectileObj1 = new gameObj(new Hitbox(...[[...enemyProjectilePosArrays[0]],[...enemyProjectileOrientationArrays[0]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile1", -10, 0,false, false, 0,  ...[1, 3]))
 var enemyProjectileObj2 = new gameObj(new Hitbox( ...[[...enemyProjectilePosArrays[1]],[...enemyProjectileOrientationArrays[1]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile2" , -10, 0,false, false, 0, ...[1, 3]))
 var enemyProjectileObj3 = new gameObj(new Hitbox(...[[...enemyProjectilePosArrays[2]],[...enemyProjectileOrientationArrays[2]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile3", -10, 0,false, false, 0,  ...[1, 3]))
 var enemyProjectileObj4 = new gameObj(new Hitbox( ...[[...enemyProjectilePosArrays[3]],[...enemyProjectileOrientationArrays[3]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile4",-10, 0,false, false, 0, ...[1, 3]))
-//multidimensional arr and declaring the hitbox
 
+var enemyPosArr = [303, 309, 330, 307, 352, 300, 374, 307, 383, 319, 374, 331, 352, 339, 330, 332, 303, 331, 297, 319, 303, 309]
+var enemyOrientationArr = [0,0,0,0,0,0,0,0,0,  0]
+var enemyContentsArr = [false, false, false, false, true, true, true, true, true, false]
+var enemyObj = new gameObj(new Hitbox(...[[...enemyPosArr], [...enemyOrientationArr], [...enemyContentsArr]]), new GameSprite(100, "enemy", -1, 3, false, true, 250, ...[3, 1]))
 
-
+//starting all hitboxes
 enemyProjectileObj1.hitbox.movement( enemyProjectilePosArrays[0])
 enemyProjectileObj2.hitbox.movement(enemyProjectilePosArrays[1])
 enemyProjectileObj3.hitbox.movement( enemyProjectilePosArrays[2])
 enemyProjectileObj4.hitbox.movement(enemyProjectilePosArrays[3])
 
 marioObj.hitbox.movement(marioObj.hitbox.points)
+enemyObj.hitbox.movement(enemyObj.hitbox.points)
 function buttonControl(freq, btn, btnstring){
     //on mouse down , runs start move
     btn.addEventListener("mousedown", startMove);
@@ -522,7 +528,7 @@ function buttonControl(freq, btn, btnstring){
     xPara.innerHTML = Math.floor(mouseAngle)
         work = setInterval(function(){
             move_m(btnstring)
-            
+            enemyProjMovement(1, "right")
           
    
 }, freq);
@@ -841,7 +847,7 @@ function hitboxCollision(collider, collidee, colliderPointsArr, collideePointsAr
         var Ymaximum = Math.max.apply(Math,yArr)
        borderArr.push(Xminimum, Yminimum, Xmaximum, Ymaximum)
        
-      /* for(var p=Yminimum;p<=Ymaximum;p++){
+      for(var p=Yminimum;p<=Ymaximum;p++){
         for(var q = Xminimum; q<=Xmaximum;q++){
                  collideeTrue = collidee.collisionDetect(collidee.points, q, p, collidee.horizontalTrue, collidee.aboveBelow) 
                  colliderTrue = collider.collisionDetect(collider.points, q, p, collider.horizontalTrue, collider.aboveBelow)
@@ -855,13 +861,13 @@ function hitboxCollision(collider, collidee, colliderPointsArr, collideePointsAr
                  
         }
        }
-       */
+       
        if(collision!=true){
         collision=false
        }
       return collision
     }
-   
+
 
    
 
@@ -872,7 +878,7 @@ var marioDamage = setInterval(function(){
         marioObj.gamesprite.damageReceiver(enemyProjectileObj1, marioObj.gamesprite, enemyProjectileObj1.gamesprite, 50000, 50000 )
       
     }
-    enemyProjectileObj1.gamesprite.respawn(300, 300, true, enemyProjectileObj1)
+    enemyProjectileObj1.gamesprite.respawn(300, 300, false, enemyProjectileObj1)
 
 }, 200)
 
@@ -888,7 +894,7 @@ var marioDamage = setInterval(function(){
     </head>
     <body id="body">
         <img src = "https://i.ibb.co/mRwRWB4/sr27d6b04dafa25.jpg" alt = "its a me a" id  =  "mario">
-        <img src="https://i.ibb.co/M5m4Jpn/pixilart-drawing-1.png" alt="enemy" id="enemy"
+        <img src="https://i.ibb.co/M5m4Jpn/pixilart-drawing-1.png" alt="enemy" id="enemy">
        <canvas id="canvas"style = "   left: 0px; top: 0px;"  ></canvas>
 <button id="up">up</button>
 <button id = "down">down</button>
