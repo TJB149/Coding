@@ -27,7 +27,13 @@
 	        left:150px;
 	        top: 340px;
             }
-
+#enemy{
+    position: absolute;
+    left: 300px;
+    top:300px;
+    height: 38px;
+    width: 80px;
+}
 #mario{
     position: absolute;
     left: 0;
@@ -90,7 +96,9 @@ position: absolute;
 
 
 //this makes the js load after the html to prevent errors from being thrown up about event lister
+var reDrawObj={
 
+}
 document.addEventListener("DOMContentLoaded", () => {
     //canvas
     const canvas = document.getElementById("canvas")
@@ -119,6 +127,8 @@ var enemyProjectile1=document.getElementById("enemyProjectile1")
 var enemyProjectile2 =  document.getElementById("enemyProjectile2")
 var enemyProjectile3= document.getElementById("enemyProjectile3")
 var enemyProjectile4 =  document.getElementById("enemyProjectile4")
+//enemy
+var enemy=document.getElementById("enemy")
 //mario image
 var mario = document.getElementById("mario");
 //up button(NEED TO CHANGE TO KEYS)
@@ -224,6 +234,7 @@ class GameSprite{
         obj.hitbox.endMovement()
         obj.hitbox.pointChange(obj.hitbox.points, xDiff, yDiff)
         if(hidden==true){
+            obj.hitbox.endMovement()
             eval(obj.gamesprite.name).style.visibility="hidden" 
         }
         
@@ -236,11 +247,11 @@ class Hitbox{
     //multistring is a 2d array - you need to pas multiple arrays into this function. 
     constructor(  ...multiArr){
         
-        this.reDraw
+        
         this.points=multiArr[0];
         this.horizontalTrue=multiArr[1]
         this.aboveBelow=multiArr[2]
-
+       
        
        
     }
@@ -253,7 +264,7 @@ class Hitbox{
         var ycoord;
         //used to check whether or not the part of the points array   you are iterating over is x or why
         var hasX=false;
-        
+       
         //interval to repeatedly redraw the hitbox
         reDraw=setInterval(function(){
            
@@ -722,9 +733,7 @@ function keyControl(freq){
             case 68: 
             //d to move right
             worker = setInterval(function(){move_m("right")
-            enemyProjMovement(2, "down")
-    //enemyProjMovement(3, "down")
-    //enemyProjMovement(4, "right")
+          
         }, freq);
             
             
@@ -832,7 +841,7 @@ function hitboxCollision(collider, collidee, colliderPointsArr, collideePointsAr
         var Ymaximum = Math.max.apply(Math,yArr)
        borderArr.push(Xminimum, Yminimum, Xmaximum, Ymaximum)
        
-       for(var p=Yminimum;p<=Ymaximum;p++){
+      /* for(var p=Yminimum;p<=Ymaximum;p++){
         for(var q = Xminimum; q<=Xmaximum;q++){
                  collideeTrue = collidee.collisionDetect(collidee.points, q, p, collidee.horizontalTrue, collidee.aboveBelow) 
                  colliderTrue = collider.collisionDetect(collider.points, q, p, collider.horizontalTrue, collider.aboveBelow)
@@ -846,6 +855,7 @@ function hitboxCollision(collider, collidee, colliderPointsArr, collideePointsAr
                  
         }
        }
+       */
        if(collision!=true){
         collision=false
        }
@@ -862,7 +872,8 @@ var marioDamage = setInterval(function(){
         marioObj.gamesprite.damageReceiver(enemyProjectileObj1, marioObj.gamesprite, enemyProjectileObj1.gamesprite, 50000, 50000 )
       
     }
-    
+    enemyProjectileObj1.gamesprite.respawn(300, 300, true, enemyProjectileObj1)
+
 }, 200)
 
 
@@ -877,6 +888,7 @@ var marioDamage = setInterval(function(){
     </head>
     <body id="body">
         <img src = "https://i.ibb.co/mRwRWB4/sr27d6b04dafa25.jpg" alt = "its a me a" id  =  "mario">
+        <img src="https://i.ibb.co/M5m4Jpn/pixilart-drawing-1.png" alt="enemy" id="enemy"
        <canvas id="canvas"style = "   left: 0px; top: 0px;"  ></canvas>
 <button id="up">up</button>
 <button id = "down">down</button>
