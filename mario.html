@@ -105,8 +105,10 @@ document.addEventListener("DOMContentLoaded", () => {
     
     //interval to change the canvas resolution when the window is resized
     var x=setInterval(function(){
+        
     canvas.width=document.body.clientWidth
      canvas.height=window.innerHeight
+     
      lol=true
           }, 10)
           //used as an interval for visual representation of hitbox
@@ -904,7 +906,7 @@ document.addEventListener("mousemove",function(event){
     mouseX = event.clientX;
 
     mouseY = event.clientY;
-    //console.log(aimingRadical(marioObj.hitbox.points[2]+3, marioObj.hitbox.points[3]))
+    console.log(aimingRadical(marioObj.hitbox.points[2]+3, marioObj.hitbox.points[3]))
     //aimingRadical(marioObj.hitbox.points[2]+3, marioObj.hitbox.points[3])
    //using trigenometry to figure out the angle between the player and the mouse
     mouseAngle = angleCalc(marioX, marioY, mouseX, mouseY);
@@ -982,15 +984,18 @@ var marioDamage = setInterval(function(){
         marioObj.gamesprite.damageReceiver(enemyProjectileObj1, marioObj.gamesprite, enemyProjectileObj1.gamesprite, 50000, 50000 )
       
     }
-    enemyProjectileObj1.gamesprite.respawn(300, 300, false, enemyProjectileObj1)
+  
 
 }, 200)
 function aimingRadical(gunX, gunY){
     var aimGradient = (mouseY-gunY)/(mouseX-gunX)
   
     var aimYIntercept = mouseY-(aimGradient*mouseX)
-    console.log(aimYIntercept)
-    var finalY = aimGradient*mouseY+aimYIntercept
+
+    var finalY = aimGradient*document.body.clientWidth+aimYIntercept
+    ctx.moveTo(gunX, gunY)
+    ctx.lineTo(document.body.clientWidth, finalY)
+    ctx.stroke
     return finalY
 }
 
