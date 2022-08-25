@@ -162,14 +162,16 @@ function radiansToDegrees(radians){
 }
 
 class GameSprite{
-    constructor(health, name, damage, damageClass,damageImmunityStore, damageImmunityToggle,damageImmunityTime, ...damageClassReceiveable){
+    constructor(health, name, damage, damageClass,damageImmunityStore, damageImmunityToggle,damageImmunityTime, ...allArr){
         this.health=health
         this.name=name
         this.damage=damage
         this.damageClass=damageClass
         this.damageImmunityStore=damageImmunityStore
         this.damageImmunityToggle=damageImmunityToggle
-        this.damageImmunityTime=damageImmunityTime
+        this.allArr=allArr
+      
+        this.gunPoints=allArr[0]
     }
     kill(afterTime, img, killX, obj ){
         setTimeout(function(){
@@ -238,18 +240,19 @@ class GameSprite{
         
 
     }
-    shoot(projObj, gunX, gunY, targetX,targetY,  timeTaken){
-        projObj.gamesprite.respawn(gunX, gunY, true, projObj)
+    shoot(projObj, gunX, gunY, targetX,targetY, timeTaken){
+        projObj.gamesprite.respawn(gunX, gunY, false, projObj)
         var xTravel = targetX-gunX
         var yTravel = targetY-gunY 
         var iterationX = xTravel/(timeTaken/10)
-        var iterationY = yTravel/(timteTaken/10)
+        var iterationY = yTravel/(timeTaken/10)
          projTerval = setInterval(function(){
             projObj.hitbox.endMovement()
             projObj.hitbox.pointChange(projObj.hitbox.points, iterationX, iterationY)
             projObj.hitbox.movement(projObj.hitbox.points)
-            eval(projObj.gamesprite.name).style.left+=iterationX
-            eval(projObj.gamesprite.name).style.top+=iterationY
+            eval(projObj.gamesprite.name).style.left=(Number(eval(projObj.gamesprite.name).style.left.substring(0, eval(projObj.gamesprite.name).style.left.length-2))+iterationX)+"px"
+            eval(projObj.gamesprite.name).style.top=(Number(eval(projObj.gamesprite.name).style.top.substring(0, eval(projObj.gamesprite.name).style.top.length-2))+iterationY)+"px"
+            
         }, 10)
         setTimeout(function(){
             clearInterval(projTerval)
@@ -507,28 +510,28 @@ mario.style.top = marioStyle.getPropertyValue("top")
         eval("enemyProjectile"+(m+1)).style.left=enemyProjStyles[m].getPropertyValue("left")
         eval("enemyProjectile"+(m+1)).style.top=enemyProjStyles[m].getPropertyValue("top")
     }
-console.log(enemyStyle.getPropertyValue("left"))
+
 //x and ys of main character
 var marioPosArr = [19, 23,67,0,123,24,138, 46,120,77,67,67,23,80,-2, 46,  19,23]
 //orientation of the lines of the hitbox, 0=diagonal, 1=vertical, 2=horizontal
 var marioOrientationArr = [ 0,0 , 0, 0,0, 0 , 0,0 ]
 //defines where a point must be to be within the hitbox, true is above a given line, false is below, (left/right respectively for vertical lines)
 var marioContentsArr= [false, false, false, true, true, true, true, false]
-var marioObj = new gameObj(new Hitbox(  ...[[...marioPosArr],[...marioOrientationArr],[...marioContentsArr]]),new GameSprite(50000, "mario", -1, 3,false,true, 250,  ...[0]) )
+var marioObj = new gameObj(new Hitbox(  ...[[...marioPosArr],[...marioOrientationArr],[...marioContentsArr]]),new GameSprite(50000, "mario", -1, 3,false,true, 250,  ...[...[71,6]]) )
 var enemyProjectilePosArrays = [[3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0], [3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0], [3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0],[3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0]] 
 var enemyProjectileOrientationArrays = [ [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0]]
 var enemyProjectileContentArrays = [false, false, true, true, true, true, false, false ]
 //within gameSprite, the arguments are health, name, damage, type of damage, and damage that can be received
 //gameObj for declaring the hitbox, gamesprite
-var enemyProjectileObj1 = new gameObj(new Hitbox(...[[...enemyProjectilePosArrays[0]],[...enemyProjectileOrientationArrays[0]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile1", -10, 0,false, false, 0,  ...[1, 3]))
-var enemyProjectileObj2 = new gameObj(new Hitbox( ...[[...enemyProjectilePosArrays[1]],[...enemyProjectileOrientationArrays[1]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile2" , -10, 0,false, false, 0, ...[1, 3]))
-var enemyProjectileObj3 = new gameObj(new Hitbox(...[[...enemyProjectilePosArrays[2]],[...enemyProjectileOrientationArrays[2]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile3", -10, 0,false, false, 0,  ...[1, 3]))
-var enemyProjectileObj4 = new gameObj(new Hitbox( ...[[...enemyProjectilePosArrays[3]],[...enemyProjectileOrientationArrays[3]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile4",-10, 0,false, false, 0, ...[1, 3]))
+var enemyProjectileObj1 = new gameObj(new Hitbox(...[[...enemyProjectilePosArrays[0]],[...enemyProjectileOrientationArrays[0]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile1", -10, 0,false, false, 0,  ...[...[]]))
+var enemyProjectileObj2 = new gameObj(new Hitbox( ...[[...enemyProjectilePosArrays[1]],[...enemyProjectileOrientationArrays[1]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile2" , -10, 0,false, false, 0,  ...[...[]]))
+var enemyProjectileObj3 = new gameObj(new Hitbox(...[[...enemyProjectilePosArrays[2]],[...enemyProjectileOrientationArrays[2]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile3", -10, 0,false, false, 0,   ...[...[]]))
+var enemyProjectileObj4 = new gameObj(new Hitbox( ...[[...enemyProjectilePosArrays[3]],[...enemyProjectileOrientationArrays[3]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile4",-10, 0,false, false, 0, ...[...[]]))
 
 var enemyPosArr = [309, 327, 390, 321, 456, 300, 522, 321, 549,  357, 522, 393, 456, 408, 390, 396, 309, 393, 291, 357, 309, 327]
 var enemyOrientationArr = [0,0,0,0,0,0,0,0,0,  0]
 var enemyContentsArr = [false, false, false, false, true, true, true, true, true, false]
-var enemyObj = new gameObj(new Hitbox(...[[...enemyPosArr], [...enemyOrientationArr], [...enemyContentsArr]]), new GameSprite(100, "enemy", -1, 2, false, true, 250, ...[3, 1]))
+var enemyObj = new gameObj(new Hitbox(...[[...enemyPosArr], [...enemyOrientationArr], [...enemyContentsArr]]), new GameSprite(100, "enemy", -1, 2, false, true, 250, ...[...[325, 333, 325, 384]]))
 new GameSprite()
 
 //starting all hitboxes
@@ -732,7 +735,7 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
    function enemyMovement(direction){
     var changer = 0;
     
-    console.log("l")
+ 
     switch(direction){
    //if the direction is up
    case "up":
@@ -742,7 +745,7 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
       
        //checks if it is within limits
        if (Number(enemy.style.top.substring(0, enemy.style.top.length - 2))<=0){
-        console.log(enemy)
+     
        }else{
            //actually changes value
            enemy.style.top=Number(enemy.style.top.substring(0, enemy.style.top.length - 2))+changer+"px";
@@ -792,7 +795,7 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
        
        }else{
            enemy.style.left=Number(enemy.style.left.substring(0, enemy.style.left.length - 2))+1+"px";
-           console.log(enemy.style.left.substring(0, enemy.style.left.length - 2))
+           
            enemyObj.hitbox.endMovement()
            enemyObj.hitbox.pointChange(enemyObj.hitbox.points,1,0)
            enemyObj.hitbox.movement(enemyObj.hitbox.points)
@@ -839,7 +842,7 @@ function keyControl(freq){
             case 68: 
             //d to move right
             worker = setInterval(function(){move_m("right")
-          
+                    
         }, freq);
             
             
@@ -901,7 +904,8 @@ document.addEventListener("mousemove",function(event){
     mouseX = event.clientX;
 
     mouseY = event.clientY;
-
+    //console.log(aimingRadical(marioObj.hitbox.points[2]+3, marioObj.hitbox.points[3]))
+    //aimingRadical(marioObj.hitbox.points[2]+3, marioObj.hitbox.points[3])
    //using trigenometry to figure out the angle between the player and the mouse
     mouseAngle = angleCalc(marioX, marioY, mouseX, mouseY);
    
@@ -981,9 +985,16 @@ var marioDamage = setInterval(function(){
     enemyProjectileObj1.gamesprite.respawn(300, 300, false, enemyProjectileObj1)
 
 }, 200)
-marioObj.gamesprite.shoot(enemyProjectileObj2, 150, 150, 300, 300, 5000)
-conosle.log(enemyProjectileObj2.hitbox.points[0])
-console.log("l")
+function aimingRadical(gunX, gunY){
+    var aimGradient = (mouseY-gunY)/(mouseX-gunX)
+  
+    var aimYIntercept = mouseY-(aimGradient*mouseX)
+    console.log(aimYIntercept)
+    var finalY = aimGradient*mouseY+aimYIntercept
+    return finalY
+}
+
+
 //END OF JS CODE HERE  
 });
 
