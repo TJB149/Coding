@@ -31,8 +31,8 @@
     position: absolute;
     left:300px;
     top:300px;
-    height: 38px;
-    width: 80px;
+    height: 114px;
+    width: 240px;
 }
 #mario{
     position: absolute;
@@ -239,6 +239,9 @@ class GameSprite{
         }
         
 
+    }
+    shoot(projObj, gunX, gunY, angle){
+        projObj.respawn
     }
 }
 //hitbox creator - also used to log collisions          
@@ -494,11 +497,11 @@ mario.style.top = marioStyle.getPropertyValue("top")
     }
 console.log(enemyStyle.getPropertyValue("left"))
 //x and ys of main character
-var marioPosArr = [6,2,22,9,41,5,48, 19,41,32,22,29,6,36, 6,2]
+var marioPosArr = [19, 23,67,0,123,24,138, 46,120,77,67,67,23,80,-2, 46,  19,23]
 //orientation of the lines of the hitbox, 0=diagonal, 1=vertical, 2=horizontal
-var marioOrientationArr = [ 0,0 , 0, 0,0, 0 , 1 ]
+var marioOrientationArr = [ 0,0 , 0, 0,0, 0 , 0,0 ]
 //defines where a point must be to be within the hitbox, true is above a given line, false is below, (left/right respectively for vertical lines)
-var marioContentsArr= [false, false, false, true, true, true, false]
+var marioContentsArr= [false, false, false, true, true, true, true, false]
 var marioObj = new gameObj(new Hitbox(  ...[[...marioPosArr],[...marioOrientationArr],[...marioContentsArr]]),new GameSprite(50000, "mario", -1, 3,false,true, 250,  ...[0]) )
 var enemyProjectilePosArrays = [[3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0], [3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0], [3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0],[3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0]] 
 var enemyProjectileOrientationArrays = [ [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0]]
@@ -510,7 +513,7 @@ var enemyProjectileObj2 = new gameObj(new Hitbox( ...[[...enemyProjectilePosArra
 var enemyProjectileObj3 = new gameObj(new Hitbox(...[[...enemyProjectilePosArrays[2]],[...enemyProjectileOrientationArrays[2]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile3", -10, 0,false, false, 0,  ...[1, 3]))
 var enemyProjectileObj4 = new gameObj(new Hitbox( ...[[...enemyProjectilePosArrays[3]],[...enemyProjectileOrientationArrays[3]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile4",-10, 0,false, false, 0, ...[1, 3]))
 
-var enemyPosArr = [303, 309, 330, 307, 352, 300, 374, 307, 383, 319, 374, 331, 352, 339, 330, 332, 303, 331, 297, 319, 303, 309]
+var enemyPosArr = [309, 327, 390, 321, 456, 300, 522, 321, 549,  357, 522, 393, 456, 408, 390, 396, 309, 393, 291, 357, 309, 327]
 var enemyOrientationArr = [0,0,0,0,0,0,0,0,0,  0]
 var enemyContentsArr = [false, false, false, false, true, true, true, true, true, false]
 var enemyObj = new gameObj(new Hitbox(...[[...enemyPosArr], [...enemyOrientationArr], [...enemyContentsArr]]), new GameSprite(100, "enemy", -1, 2, false, true, 250, ...[3, 1]))
