@@ -96,9 +96,7 @@ position: absolute;
 
 
 //this makes the js load after the html to prevent errors from being thrown up about event lister
-var reDrawObj={
-
-}
+var projTerval;
 document.addEventListener("DOMContentLoaded", () => {
     //canvas
     const canvas = document.getElementById("canvas")
@@ -240,8 +238,22 @@ class GameSprite{
         
 
     }
-    shoot(projObj, gunX, gunY, angle){
-        projObj.respawn
+    shoot(projObj, gunX, gunY, targetX,targetY,  timeTaken){
+        projObj.gamesprite.respawn(gunX, gunY, true, projObj)
+        var xTravel = targetX-gunX
+        var yTravel = targetY-gunY 
+        var iterationX = xTravel/(timeTaken/10)
+        var iterationY = yTravel/(timteTaken/10)
+         projTerval = setInterval(function(){
+            projObj.hitbox.endMovement()
+            projObj.hitbox.pointChange(projObj.hitbox.points, iterationX, iterationY)
+            projObj.hitbox.movement(projObj.hitbox.points)
+            eval(projObj.gamesprite.name).style.left+=iterationX
+            eval(projObj.gamesprite.name).style.top+=iterationY
+        }, 10)
+        setTimeout(function(){
+            clearInterval(projTerval)
+        }, timeTaken)
     }
 }
 //hitbox creator - also used to log collisions          
@@ -969,8 +981,9 @@ var marioDamage = setInterval(function(){
     enemyProjectileObj1.gamesprite.respawn(300, 300, false, enemyProjectileObj1)
 
 }, 200)
-
-
+marioObj.gamesprite.shoot(enemyProjectileObj2, 150, 150, 300, 300, 5000)
+conosle.log(enemyProjectileObj2.hitbox.points[0])
+console.log("l")
 //END OF JS CODE HERE  
 });
 
