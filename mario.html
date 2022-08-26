@@ -108,7 +108,13 @@ document.addEventListener("DOMContentLoaded", () => {
         
     canvas.width=document.body.clientWidth
      canvas.height=window.innerHeight
-     
+     document.addEventListener("mouseover", function(event){
+        mouseX = event.clientX;
+
+mouseY = event.clientY;
+//console.log(mouseX)
+    })
+
      lol=true
           }, 10)
           //used as an interval for visual representation of hitbox
@@ -534,7 +540,7 @@ var enemyPosArr = [309, 327, 390, 321, 456, 300, 522, 321, 549,  357, 522, 393, 
 var enemyOrientationArr = [0,0,0,0,0,0,0,0,0,  0]
 var enemyContentsArr = [false, false, false, false, true, true, true, true, true, false]
 var enemyObj = new gameObj(new Hitbox(...[[...enemyPosArr], [...enemyOrientationArr], [...enemyContentsArr]]), new GameSprite(100, "enemy", -1, 2, false, true, 250, ...[...[325, 333, 325, 384]]))
-new GameSprite()
+
 
 //starting all hitboxes
 enemyProjectileObj1.hitbox.movement( enemyProjectilePosArrays[0])
@@ -903,11 +909,8 @@ function angleCalc(personX, personY, objX, objY){
 document.addEventListener("mousemove",function(event){
      marioX = Number(mario.style.left.substring(0, mario.style.left.length - 2));
      marioY = Number(mario.style.top.substring(0, mario.style.top.length - 2));
-    mouseX = event.clientX;
-
-    mouseY = event.clientY;
-    console.log(aimingRadical(marioObj.hitbox.points[2]+3, marioObj.hitbox.points[3]))
-    //aimingRadical(marioObj.hitbox.points[2]+3, marioObj.hitbox.points[3])
+   
+   
    //using trigenometry to figure out the angle between the player and the mouse
     mouseAngle = angleCalc(marioX, marioY, mouseX, mouseY);
    
@@ -977,17 +980,22 @@ function hitboxCollision(collider, collidee, colliderPointsArr, collideePointsAr
 
    
 
-
+/*
 var marioDamage = setInterval(function(){
     collide = hitboxCollision( marioObj.hitbox,enemyProjectileObj1.hitbox, marioObj.hitbox.points,enemyProjectileObj1.hitbox.points, )
     if(collide==true){
         marioObj.gamesprite.damageReceiver(enemyProjectileObj1, marioObj.gamesprite, enemyProjectileObj1.gamesprite, 50000, 50000 )
       
     }
+
   
 
 }, 200)
+*/
+var aimingRadicalInterval;
+var aimRadicalHitbox;
 function aimingRadical(gunX, gunY){
+    console.log(mouseX)
     var aimGradient = (mouseY-gunY)/(mouseX-gunX)
   
     var aimYIntercept = mouseY-(aimGradient*mouseX)
@@ -995,9 +1003,29 @@ function aimingRadical(gunX, gunY){
     var finalY = aimGradient*document.body.clientWidth+aimYIntercept
     ctx.moveTo(gunX, gunY)
     ctx.lineTo(document.body.clientWidth, finalY)
-    ctx.stroke
-    return finalY
+    ctx.stroke()
+   
+     aimRadicalHitbox = new Hitbox(...[[mouseX, mouseY, mouseX, gunY, gunX, gunY, gunX, mouseY, mouseX, mouseY], ...[1,2,1,2], ...[]])
+     aimingRadicalInterval = setInterval(function(){
+        //console.log("hello")
+        //console.log(aimRadicalHitbox.points)
+        console.log(gunX)
+        console.log(gunY)
+        aimRadicalHitbox.pointChange(aimRadicalhitbox.points, )
+        aimRadicalHitbox.movement(aimRadicalHitbox.points)
+     }, 10)
+     
 }
+
+setTimeout(function(){
+    aimingRadical(marioObj.hitbox.points[2], marioObj.hitbox.points[3])
+    for (var o=0;o<aimRadicalHitbox.points.length;o++){
+        console.log(aimRadicalHitbox.points[o])
+    }
+}, 2000)
+
+//aimingRadical(marioObj.hitbox.points[2], marioObj.hitbox.points[3])
+
 
 
 //END OF JS CODE HERE  
