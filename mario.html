@@ -994,34 +994,30 @@ var marioDamage = setInterval(function(){
 */
 var aimingRadicalInterval;
 var aimRadicalHitbox;
+
 function aimingRadical(gunX, gunY){
-    console.log(mouseX)
+    
+
     var aimGradient = (mouseY-gunY)/(mouseX-gunX)
   
     var aimYIntercept = mouseY-(aimGradient*mouseX)
 
     var finalY = aimGradient*document.body.clientWidth+aimYIntercept
-    ctx.moveTo(gunX, gunY)
-    ctx.lineTo(document.body.clientWidth, finalY)
-    ctx.stroke()
+ 
    
-     aimRadicalHitbox = new Hitbox(...[[mouseX, mouseY, mouseX, gunY, gunX, gunY, gunX, mouseY, mouseX, mouseY], ...[1,2,1,2], ...[]])
+    aimRadicalHitbox = new Hitbox(...[[mouseX, mouseY, mouseX, gunY, gunX, gunY, gunX, mouseY, mouseX, mouseY], ...[1,2,1,2], ...[]])
      aimingRadicalInterval = setInterval(function(){
-        //console.log("hello")
-        //console.log(aimRadicalHitbox.points)
-        console.log(gunX)
-        console.log(gunY)
-        aimRadicalHitbox.pointChange(aimRadicalhitbox.points, )
+        aimRadicalHitbox.endMovement()
+        aimRadicalHitbox.pointChange(aimRadicalHitbox.points, mouseX-aimRadicalHitbox.points[8], mouseY-aimRadicalHitbox.points[9])
         aimRadicalHitbox.movement(aimRadicalHitbox.points)
-     }, 10)
+       
+     }, 1)
      
 }
 
 setTimeout(function(){
     aimingRadical(marioObj.hitbox.points[2], marioObj.hitbox.points[3])
-    for (var o=0;o<aimRadicalHitbox.points.length;o++){
-        console.log(aimRadicalHitbox.points[o])
-    }
+    
 }, 2000)
 
 //aimingRadical(marioObj.hitbox.points[2], marioObj.hitbox.points[3])
