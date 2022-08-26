@@ -43,7 +43,7 @@
     
     
 }
-#canvas{
+#devCanvas{
     position: absolute;
  
     width: 100%;
@@ -52,7 +52,15 @@
     
 }
 
+
+#graphicCanvas{
+    position: absolute;
+ 
+    width: 100%;
+    height: 100%;
    
+    
+}
     
 
 
@@ -99,10 +107,11 @@ position: absolute;
 var projTerval;
 document.addEventListener("DOMContentLoaded", () => {
     //canvas
-    const canvas = document.getElementById("canvas")
+    const canvas = document.getElementById("devCanvas")
     //context of canvas
     const ctx = canvas.getContext("2d")
-    
+    const graphic = document.getElementById("graphicCanvas")
+    const gCtx = graphic.getContext("2d")
     //interval to change the canvas resolution when the window is resized
     
         
@@ -252,6 +261,7 @@ class GameSprite{
 
     }
     shoot(projObj, gunX, gunY, targetX,targetY, timeTaken){
+        console.log(targetX+" "+targetY)
         projObj.gamesprite.respawn(gunX, gunY, false, projObj)
         var xTravel = targetX-gunX
         var yTravel = targetY-gunY 
@@ -1004,31 +1014,42 @@ var aimGradient;
 function aimingRadical(gunX, gunY){
     
 
-    aimGradient = (mouseY-gunY)/(mouseX-gunX)
   
-    aimYIntercept = mouseY-(aimGradient*mouseX)
-
-     finalY=aimGradient*document.body.clientWidth+aimYIntercept
      
    
     aimRadicalHitbox = new Hitbox(...[[eval(gunX), eval(gunY), mouseX, mouseY], ...[0], ...[]])
     
      aimingRadicalInterval = setInterval(function(){
+        if((mouseY-eval(gunY))/(mouseX-eval(gunX))!=Infinity){
+        aimGradient = (mouseY-eval(gunY))/(mouseX-eval(gunX))
+        }
         
+aimYIntercept = mouseY-(aimGradient*mouseX)
+
+ finalY=aimGradient*document.body.clientWidth+aimYIntercept
         aimRadicalHitbox.endMovement()
+      
         aimRadicalHitbox.points[0]=eval(gunX)
         aimRadicalHitbox.points[1]=eval(gunY)
         aimRadicalHitbox.points[2]=mouseX
         aimRadicalHitbox.points[3]=mouseY
        
         aimRadicalHitbox.movement(aimRadicalHitbox.points, 6)
-       
-     }, 10)
+        
+     }, 5)
+    
      document.addEventListener("mousedown", function(){
+        //var a =performance.now()
+if (mouseX>eval(gunX)&&mouseX>0){
+marioObj.gamesprite.shoot(enemyProjectileObj2, eval(gunX), eval(gunY),  document.body.clientWidth,finalY, 500)
 
-marioObj.gamesprite.shoot(enemyProjectileObj2, eval(gunX), eval(gunY),  300,300, 500)
-
+}
+    
+    
+//var b=performance.now()
+//console.log(b-a)
 })
+
      
     
 }
@@ -1038,7 +1059,7 @@ setTimeout(function(){
     
 }, 2000)
 
-console.log("l")
+
 
 //END OF JS CODE HERE  
 });
@@ -1053,7 +1074,7 @@ console.log("l")
         <img src = "https://i.ibb.co/3cdyx1Y/d-sub-pixilart-3.jpg" alt = "its a me a" id  =  "mario">
         <img src="https://i.ibb.co/M5m4Jpn/pixilart-drawing-1.png" alt="enemy" id="enemy">
       
-       <canvas id="canvas"style = "   left: 0px; top: 0px;"  ></canvas>
+       <canvas id="devCanvas"style = "   left: 0px; top: 0px;"  ></canvas>
       
 <p>Use WASD or the buttons to move</p>
 <p id="mousex">hello</p>
@@ -1067,6 +1088,7 @@ console.log("l")
 <button id = "down">down</button>
 <button id = "right">right</button>
 <button id ="left">left</button>
+<canvas id="graphicCanvas" ></canvas>
 
     </body>
 
