@@ -1008,8 +1008,8 @@ function aimingRadical(gunX, gunY){
   
     aimYIntercept = mouseY-(aimGradient*mouseX)
 
-     aimGradient*document.body.clientWidth+aimYIntercept
- 
+     finalY=aimGradient*document.body.clientWidth+aimYIntercept
+     
    
     aimRadicalHitbox = new Hitbox(...[[eval(gunX), eval(gunY), mouseX, mouseY], ...[0], ...[]])
     
@@ -1020,13 +1020,15 @@ function aimingRadical(gunX, gunY){
         aimRadicalHitbox.points[1]=eval(gunY)
         aimRadicalHitbox.points[2]=mouseX
         aimRadicalHitbox.points[3]=mouseY
-       document.addEventListener("mousedown", function(){
-
-        marioObj.gamesprite.shoot(enemyProjectileObj2, eval(gunX), eval(gunY),  document.body.clientWidth,finalY, 5000 )
-       })
+       
         aimRadicalHitbox.movement(aimRadicalHitbox.points, 6)
        
      }, 10)
+     document.addEventListener("mousedown", function(){
+
+marioObj.gamesprite.shoot(enemyProjectileObj2, eval(gunX), eval(gunY),  300,300, 500)
+
+})
      
     
 }
@@ -1036,7 +1038,7 @@ setTimeout(function(){
     
 }, 2000)
 
-
+console.log("l")
 
 //END OF JS CODE HERE  
 });
