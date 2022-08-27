@@ -191,7 +191,7 @@ class GameSprite{
         this.damageImmunityToggle=damageImmunityToggle
         this.shotDelayToggle=false
         this.allArr=allArr
-        
+        this.intervalCleared=false
         this.gunPoints=allArr[0]
     }
     kill(afterTime, img, killX, obj ){
@@ -261,14 +261,19 @@ class GameSprite{
         
 
     }
+
     shoot(projObj, gunX, gunY, targetX,targetY,  shotDelayToggleString, shotDelay,movementCount){
         if (eval(shotDelayToggleString)==false){
-            console.log(eval(shotDelayToggleString))
+            
         projObj.gamesprite.respawn(gunX, gunY, false, projObj)
         var xTravel = targetX-gunX
         var yTravel = targetY-gunY 
         var iterationX = xTravel/movementCount
         var iterationY = yTravel/movementCount
+        while(iterationX>5||iterationY>5){
+            iterationX/=2
+            iterationY/=2
+        }
          projTerval = setInterval(function(){
             projObj.hitbox.endMovement()
             projObj.hitbox.pointChange(projObj.hitbox.points, iterationX, iterationY)
@@ -282,14 +287,18 @@ class GameSprite{
         }, movementCount*10)
 
         eval(shotDelayToggleString+"="+true)
+    }else{
         
         setTimeout(function(){
+          eval(shotDelayToggleString+"="+false)
             eval(shotDelayToggleString+"="+false)
         }, shotDelay)
-   
+      
+    }
+
 }
     }
-}
+
 //hitbox creator - also used to log collisions          
 class Hitbox{
     //parameters: x and y of object you create hitbox for
@@ -1021,7 +1030,8 @@ var aimRadicalHitbox;
 var finalY;
 var aimYIntercept;
 var aimGradient;
-
+var mouseDelay;
+var mouseTrue=false;
 function aimingRadical(gunX, gunY){
     
 
@@ -1047,13 +1057,18 @@ aimYIntercept = mouseY-(aimGradient*mouseX)
        
         aimRadicalHitbox.movement(aimRadicalHitbox.points, 6)
         
-     }, 5)
+
+        
+     }, 20)
     
      document.addEventListener("mousedown", function(){
         //var a =performance.now()
-if (mouseX>eval(gunX)&&mouseX>0){
-marioObj.gamesprite.shoot(enemyProjectileObj2, eval(gunX), eval(gunY),  document.body.clientWidth,finalY,"marioObj.gamesprite.shotDelayToggle", 5000,  500)
-
+        
+if (mouseX>eval(gunX)&&mouseX>0&&mouseTrue==false){
+marioObj.gamesprite.shoot(enemyProjectileObj2, eval(gunX), eval(gunY),  document.body.clientWidth+240,finalY,"marioObj.gamesprite.shotDelayToggle", 750,  500)
+mouseTrue=true 
+console.log(document.body.clientWidth)
+setTimeout( function(){mouseTrue=false}, 500)
 }
     
     
@@ -1069,6 +1084,9 @@ setTimeout(function(){
     aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]")
     
 }, 2000)
+function enemyAI(difficulty   ){
+
+}
 
 
 
