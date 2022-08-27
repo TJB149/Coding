@@ -263,11 +263,12 @@ class GameSprite{
     }
     shoot(projObj, gunX, gunY, targetX,targetY,  shotDelayToggleString, shotDelay,movementCount){
         if (eval(shotDelayToggleString)==false){
-            console.log("shotDelay not active")
+            console.log(eval(shotDelayToggleString))
         projObj.gamesprite.respawn(gunX, gunY, false, projObj)
         var xTravel = targetX-gunX
         var yTravel = targetY-gunY 
         var iterationX = xTravel/movementCount
+        var iterationY = yTravel/movementCount
          projTerval = setInterval(function(){
             projObj.hitbox.endMovement()
             projObj.hitbox.pointChange(projObj.hitbox.points, iterationX, iterationY)
@@ -281,12 +282,12 @@ class GameSprite{
         }, movementCount*10)
 
         eval(shotDelayToggleString+"="+true)
-    }else{
+        
         setTimeout(function(){
-          eval(shotDelayTogglString+"="+false)
+            eval(shotDelayToggleString+"="+false)
         }, shotDelay)
-        console.log("shot delay active")
-    }
+   
+}
     }
 }
 //hitbox creator - also used to log collisions          
