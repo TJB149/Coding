@@ -55,7 +55,8 @@
 
 #graphicCanvas{
     position: absolute;
- 
+    top:0;
+    left:0;
     width: 100%;
     height: 100%;
    
@@ -114,7 +115,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const gCtx = graphic.getContext("2d")
     //interval to change the canvas resolution when the window is resized
     
-        
+        graphic.width=document.body.clientWidth
+        graphic.height=window.innerWidth
    
      document.addEventListener("mousemove", function(event){
         mouseX = event.clientX;
@@ -180,7 +182,224 @@ function radiansToDegrees(radians){
   var pi = Math.PI;
   return radians * (180/pi);
 }
+var directionRand;
+var distanceRand;
+class enemyAI{
+   constructor(){
+    this.directionRand=0
+    this.distanceRand=0
+   }
+   randomMovement(directionRandString, distanceRandString){ 
+    var pathDir;
+    var dist;
+    var randInterval;
+     var generator = setInterval(function(){
+        endMover()
+        eval(directionRandString+"="+Math.round(Math.random()*24)) 
+        eval(distanceRandString+ "="+Math.random()*(document.body.width>window.innerHeight?document.body.width:window.innerHeight))
+        eval(distanceRandString+"/="+10) 
+        mover()
 
+    }, 500)
+    function mover(){
+    var numberIterated=0
+    
+    //move based on distance and directionRand Strings
+        if (eval(directionRandString)<=6){
+        //allows it to move up and left
+        randInterval= setInterval(function(){
+            
+            if(numberIterated<eval(distanceRandString)){
+                switch(eval(directionRandString)){
+                    case 1: 
+                    for (var i=0;i<5;i++){
+                        enemyMovement("up")
+                    }
+                    enemyMovement("right")
+                    case 2: 
+                    for (var i=0;i<4;i++){
+                        enemyMovement("up")
+                    }
+                    enemyMovement("right")
+                    enemyMovement("right")
+                    case 3: 
+                    for (var i=0;i<3;i++){
+                        enemyMovement("up")
+                    }
+                    for (var i=0;i<3;i++){
+                        enemyMovement("right")
+                    }
+                    case 4: 
+                    for (var i=0;i<2;i++){
+                        enemyMovement("right")
+                    }
+                    for (var i=0;i<4;i++){
+                        enemyMovement("right")
+                    }
+                    case 5: 
+                    
+                        enemyMovement("up")
+                    
+                    for (var i=0;i<5;i++){
+                        enemyMovement("right")
+                    }
+                    case 6:
+                    for (var i=0;i<6;i++){
+                        enemyMovement("right")
+                    } 
+                    default:
+                }
+            }
+            numberIterated+=1
+        }, 30)
+        }else if (eval(directionRandString)<=12){
+        //allows it to move down and right
+            randInterval= setInterval(function(){
+            
+            if(numberIterated<eval(distanceRandString)){
+                switch(eval(directionRandString)){
+                    case 7: 
+                    for (var i=0;i<5;i++){
+                        enemyMovement("right")
+                    }
+                    enemyMovement("down")
+                    case 8: 
+                    for (var i=0;i<4;i++){
+                        enemyMovement("right")
+                    }
+                    enemyMovement("down")
+                    enemyMovement("down")
+                    case 9: 
+                    for (var i=0;i<3;i++){
+                        enemyMovement("right")
+                    }
+                    for (var i=0;i<3;i++){
+                        enemyMovement("down")
+                    }
+                    case 10: 
+                    for (var i=0;i<2;i++){
+                        enemyMovement("right")
+                    }
+                    for (var i=0;i<4;i++){
+                        enemyMovement("down")
+                    }
+                    case 11: 
+                    
+                        enemyMovement("right")
+                    
+                    for (var i=0;i<5;i++){
+                        enemyMovement("down")
+                    }
+                    case 12:
+                    for (var i=0;i<6;i++){
+                        enemyMovement("right")
+                    } 
+                    default:
+                }
+            }
+            numberIterated+=1
+        }, 30)
+        }else if (eval(directionRandString)<=18){
+        //allows it to move down and left
+            randInterval= setInterval(function(){
+            
+            if(numberIterated<eval(distanceRandString)){
+                switch(eval(directionRandString)){
+                    case 13: 
+                    for (var i=0;i<5;i++){
+                        enemyMovement("down")
+                    }
+                    enemyMovement("left")
+                    case 14: 
+                    for (var i=0;i<4;i++){
+                        enemyMovement("down")
+                    }
+                    enemyMovement("left")
+                    enemyMovement("left")
+                    case 15: 
+                    for (var i=0;i<3;i++){
+                        enemyMovement("down")
+                    }
+                    for (var i=0;i<3;i++){
+                        enemyMovement("left")
+                    }
+                    case 16: 
+                    for (var i=0;i<2;i++){
+                        enemyMovement("down")
+                    }
+                    for (var i=0;i<4;i++){
+                        enemyMovement("left")
+                    }
+                    case 17: 
+                    
+                        enemyMovement("down")
+                    
+                    for (var i=0;i<5;i++){
+                        enemyMovement("left")
+                    }
+                    case 18:
+                    for (var i=0;i<6;i++){
+                        enemyMovement("left")
+                    } 
+                    default:
+                }
+            }
+            numberIterated+=1
+        }, 30)
+        }else if (eval(directionRandString)<=24){
+        //alows it to move up and left
+            randInterval= setInterval(function(){
+            
+            if(numberIterated<eval(distanceRandString)){
+                switch(eval(directionRandString)){
+                    case 19: 
+                    for (var i=0;i<5;i++){
+                        enemyMovement("left")
+                    }
+                    enemyMovement("up")
+                    case 20: 
+                    for (var i=0;i<4;i++){
+                        enemyMovement("left")
+                    }
+                    enemyMovement("up")
+                    enemyMovement("up")
+                    case 21: 
+                    for (var i=0;i<3;i++){
+                        enemyMovement("left")
+                    }
+                    for (var i=0;i<3;i++){
+                        enemyMovement("up")
+                    }
+                    case 22: 
+                    for (var i=0;i<2;i++){
+                        enemyMovement("left")
+                    }
+                    for (var i=0;i<4;i++){
+                        enemyMovement("up")
+                    }
+                    case 23: 
+                    
+                        enemyMovement("left")
+                    
+                    for (var i=0;i<5;i++){
+                        enemyMovement("up")
+                    }
+                    case 24:
+                    for (var i=0;i<6;i++){
+                        enemyMovement("left")
+                    } 
+                    default:
+                }
+            }
+            numberIterated+=1
+        }, 30)
+        }
+    }
+    function endMover(){
+        clearInterval(  randInterval)
+    }
+    }
+}
 class GameSprite{
     constructor(health, name, damage, damageClass,damageImmunityStore, damageImmunityToggle,damageImmunityTime,  ...allArr){
         this.health=health
@@ -1032,6 +1251,7 @@ var aimYIntercept;
 var aimGradient;
 var mouseDelay;
 var mouseTrue=false;
+
 function aimingRadical(gunX, gunY){
     
 
@@ -1044,30 +1264,37 @@ function aimingRadical(gunX, gunY){
         if((mouseY-eval(gunY))/(mouseX-eval(gunX))!=Infinity){
         aimGradient = (mouseY-eval(gunY))/(mouseX-eval(gunX))
         }
-        
+
 aimYIntercept = mouseY-(aimGradient*mouseX)
 
  finalY=aimGradient*document.body.clientWidth+aimYIntercept
         aimRadicalHitbox.endMovement()
-      
+        gCtx.clearRect(0,0,graphic.width, graphic.height)
+       
+        
+       
         aimRadicalHitbox.points[0]=eval(gunX)
         aimRadicalHitbox.points[1]=eval(gunY)
         aimRadicalHitbox.points[2]=mouseX
         aimRadicalHitbox.points[3]=mouseY
+        gCtx.beginPath()
+        gCtx.strokeStyle = "#000000";
+        gCtx.lineWidth = 6;
+        gCtx.moveTo(eval(gunX), eval(gunY))
+        gCtx.lineTo(mouseX, mouseY-3)
+        gCtx.stroke()
+        gCtx.closePath()
        
-        aimRadicalHitbox.movement(aimRadicalHitbox.points, 6)
         
-
-        
-     }, 20)
+     }, 5)
     
      document.addEventListener("mousedown", function(){
         //var a =performance.now()
         
 if (mouseX>eval(gunX)&&mouseX>0&&mouseTrue==false){
-marioObj.gamesprite.shoot(enemyProjectileObj2, eval(gunX), eval(gunY),  document.body.clientWidth+240,finalY,"marioObj.gamesprite.shotDelayToggle", 750,  500)
+marioObj.gamesprite.shoot(enemyProjectileObj2, eval(gunX), eval(gunY),  document.body.clientWidth+250,finalY,"marioObj.gamesprite.shotDelayToggle", 750,  500)
 mouseTrue=true 
-console.log(document.body.clientWidth)
+
 setTimeout( function(){mouseTrue=false}, 500)
 }
     
@@ -1084,9 +1311,8 @@ setTimeout(function(){
     aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]")
     
 }, 2000)
-function enemyAI(difficulty   ){
-
-}
+var enem = new enemyAI()
+enem.randomMovement("enem.distanceRand", "enem.directionRand")
 
 
 
