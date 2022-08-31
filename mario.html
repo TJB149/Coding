@@ -111,27 +111,35 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("devCanvas")
     //context of canvas
     const ctx = canvas.getContext("2d")
+    //graphic canvas used for aiming radicals/tutorial
     const graphic = document.getElementById("graphicCanvas")
     const gCtx = graphic.getContext("2d")
     //interval to change the canvas resolution when the window is resized
-    
+        //yall shouldn't resize the page abeg
+        var graphicStyle = getComputedStyle(graphic)
         graphic.width=document.body.clientWidth
-        graphic.height=window.innerWidth
+        graphic.height=window.innerHeight
         graphic.style.width=document.body.clientWidth
-        graphic.style.height=window.innerWidth
-   
+        graphic.style.height=window.innerHeight
+        graphic.style.width=graphicStyle.getPropertyValue("width")
+        graphic.style.height=graphicStyle.getPropertyValue("height")
+      
+   //mouseX and mouseY used later in the code
      document.addEventListener("mousemove", function(event){
         mouseX = event.clientX;
 
 mouseY = event.clientY;
 //console.log(mouseX)
-    
+
 
      lol=true
           }, 10)
           var canvasResize= setInterval(function(){
+            //dev canvas is constantly resizing bc im lazy
             canvas.width=document.body.clientWidth
      canvas.height=window.innerHeight
+ 
+        
           }, 10)
           //used as an interval for visual representation of hitbox
           var reDraw;
@@ -139,12 +147,12 @@ mouseY = event.clientY;
           
     
       
-        
+        //importing html DOM elements
         //top paragraph
     var xPara = document.getElementById("mousex");
     //bottom paragraph
 var yPara = document.getElementById("mousey");
-//enemy projectiles
+//enemy projectiles img
 var enemyProjectile1=document.getElementById("enemyProjectile1")
 var enemyProjectile2 =  document.getElementById("enemyProjectile2")
 var enemyProjectile3= document.getElementById("enemyProjectile3")
@@ -178,14 +186,16 @@ var marioWidth = mario.clientWidth
 
 //interval for moving mario 
 var work;
-//attaches button to mario
+
 //converts radians to degrees
 function radiansToDegrees(radians){
   var pi = Math.PI;
   return radians * (180/pi);
 }
+//used to store the random direction and distance for the enemy movement
 var directionRand;
 var distanceRand;
+//used to control the randomly generated enemy movement
 class enemyAI{
    constructor(){
     this.directionRand=0
@@ -203,11 +213,15 @@ class enemyAI{
         lifelessMover()
 
     }, 500)
+    
     function lifelessMover(){
         
-    var numberIterated=0
+        var numberIterated=0
     
     //move based on distance and directionRand Strings
+    //currently moves a total of 6 px per iteration(every 10 ms)
+    //directionRandString controls number of iterations(maximum 500ms)
+    //need to make this a fit-all difficulty function
         if (eval(directionRandString)<=6){
         //allows it to move up and left
         randInterval= setInterval(function(){
@@ -398,11 +412,13 @@ class enemyAI{
         }, 30)
         }
     }
+    //stops the game lagging out from too many intervals
     function endMover(){
         clearInterval(  randInterval)
     }
     }
 }
+//carrys out function s such as shooting and killing things
 class GameSprite{
     constructor(health, name, damage, damageClass,damageImmunityStore, damageImmunityToggle,damageImmunityTime,  ...allArr){
         this.health=health
@@ -416,6 +432,7 @@ class GameSprite{
         this.intervalCleared=false
         this.gunPoints=allArr[0]
     }
+    //moves the img and hitbox to a given place(very var X)
     kill(afterTime, img, killX, obj ){
         setTimeout(function(){
             
@@ -428,6 +445,7 @@ class GameSprite{
          
         }, afterTime)
     }
+    //allows the sprite's health to be changed - calls kill when necessary
     healthChange( sprite, change,  killX, obj){
         sprite.health+=change
 
@@ -438,6 +456,9 @@ class GameSprite{
             
         
     }
+    //allows you to incorporate damage immunity(if i can acc be asked)
+    //damage immunity toggle asks whether damage immunity is enabled
+    //damage immunity store asks whether the immunity is active
     damageReceiver(obj, damagerSprite, damageeSprite, killXer, killXee ){
         
        if(damagerSprite.damageImmunityToggle==true){
@@ -468,6 +489,7 @@ class GameSprite{
 
         
     }
+    //returns the img and the hitbox to the specified x and y from ~50,000px
     respawn(returnX, returnY, hidden, obj){
       var yDiff=returnY-obj.hitbox.points[1]
       var xDiff=returnX-obj.hitbox.points[0]
@@ -483,18 +505,21 @@ class GameSprite{
         
 
     }
-
-    shoot(projObj, gunX, gunY, targetX,targetY,  shotDelayToggleString, shotDelay,movementCount){
+    //shoots the projectile from the gun X  - movement is limited to 5px in either direction
+    //allows for shot delay - damage immunity kinda unnecessary now. 
+    shoot(projObj, gunXString, gunYString, targetXString,targetYString,  shotDelayToggleString, shotDelay,movementCount){
+        var iterationX
+        var iterationY;
         if (eval(shotDelayToggleString)==false){
             
-        projObj.gamesprite.respawn(gunX, gunY, false, projObj)
-        var xTravel = targetX-gunX
-        var yTravel = targetY-gunY 
-        var iterationX = xTravel/movementCount
-        var iterationY = yTravel/movementCount
+        projObj.gamesprite.respawn(eval(gunXString), eval(gunYString), false, projObj)
+        var xTravel = eval(targetXString+"-"+gunXString)
+        var yTravel = eval(targetYString+"-"+gunYString) 
+      iterationX = xTravel/movementCount
+       iterationY = yTravel/movementCount
         while(iterationX>5||iterationY>5){
-            iterationX/=2
-            iterationY/=2
+            iterationX/=3
+            iterationY/=3
         }
          projTerval = setInterval(function(){
             projObj.hitbox.endMovement()
@@ -502,11 +527,16 @@ class GameSprite{
             projObj.hitbox.movement(projObj.hitbox.points, 1)
             eval(projObj.gamesprite.name).style.left=(Number(eval(projObj.gamesprite.name).style.left.substring(0, eval(projObj.gamesprite.name).style.left.length-2))+iterationX)+"px"
             eval(projObj.gamesprite.name).style.top=(Number(eval(projObj.gamesprite.name).style.top.substring(0, eval(projObj.gamesprite.name).style.top.length-2))+iterationY)+"px"
-            
-        }, 10)
-        setTimeout(function(){
+            console.log(iterationX+"  "+iterationY)
+            setTimeout(function(){
+            //stops the projectile moving
+            //problem with this timeout - not clearing as expected
+            iterationX = xTravel/movementCount
+            iterationY = yTravel/movementCount
             clearInterval(projTerval)
-        }, movementCount*10)
+        }, movementCount*50)
+        }, 10)
+   
 
         eval(shotDelayToggleString+"="+true)
     }else{
@@ -613,7 +643,7 @@ pointChange( points, x, y){
     }
     
 collisionDetect(points, checkingX, checkingY, horizontalTrue, aboveBelow){
-   
+   //checks whether a given point is inside a hitbox, using the equation of each line(y=mx+c)
     var newX = true
     var firstPointCounter = true
     var point1X;
@@ -754,13 +784,14 @@ for( var k=0;k<points.length;k++){
     
 }
 class gameObj{
+    //used to store hitbox and gameObj in one place for simplicity
     constructor(hitbox, gamesprite){
         this.hitbox=hitbox
         this.gamesprite=gamesprite
         
     }
 }
-
+    //used to get dynamic styles, so that you dont hav e to define styles in css to access them in js
   var enemyStyle = getComputedStyle(enemy)
   var marioStyle = getComputedStyle(mario)
 var enemyProjStyles = [getComputedStyle(enemyProjectile1), getComputedStyle(enemyProjectile2), getComputedStyle(enemyProjectile3), getComputedStyle(enemyProjectile4)]
@@ -769,6 +800,7 @@ enemy.style.top=enemyStyle.getPropertyValue("top")
 mario.style.left = marioStyle.getPropertyValue("left")
 mario.style.top = marioStyle.getPropertyValue("top")
     for (var m=0;m<enemyProjStyles.length;m++){
+        //did the projectiles in a for loop bc im lazy
         eval("enemyProjectile"+(m+1)).style.left=enemyProjStyles[m].getPropertyValue("left")
         eval("enemyProjectile"+(m+1)).style.top=enemyProjStyles[m].getPropertyValue("top")
     }
@@ -916,6 +948,7 @@ function move_m(direction){
 }
 
 // (canvas.style.left)
+// moves enemy projectiles in the same fashion as the main character
 function enemyProjMovement(number, direction){
    var changer = 0
 eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px"
@@ -1145,7 +1178,7 @@ buttonControl(10, right, "right");
 //up
 buttonControl(10, up, "up");
 function angleCalc(personX, personY, objX, objY){
-    
+    //finds the angle between points using trig function tan^-1
      width = personX-objX;
  
      height = personY-objY;
@@ -1162,6 +1195,7 @@ function angleCalc(personX, personY, objX, objY){
 
 }
 document.addEventListener("mousemove",function(event){
+    //on mouse move it updates marioX and mouseAngle
      marioX = Number(mario.style.left.substring(0, mario.style.left.length - 2));
      marioY = Number(mario.style.top.substring(0, mario.style.top.length - 2));
    
@@ -1177,7 +1211,7 @@ document.addEventListener("mousemove",function(event){
 document.addEventListener("keydown", function(){
     marioX = Number(mario.style.left.substring(0, mario.style.left.length - 2));
      marioY = Number(mario.style.top.substring(0, mario.style.top.length - 2));
-    
+    //on kedown it updates marioX and mouseAngle
 
    //using trigenometry to figure out the angle between the player and the mouse
     mouseAngle = angleCalc(marioX, marioY, mouseX, mouseY);
@@ -1187,6 +1221,7 @@ document.addEventListener("keydown", function(){
 });
 
 function hitboxCollision(collider, collidee, colliderPointsArr, collideePointsArr){
+    //creates a rectangle around a hitbox, and iterates over all the points within it. if any point is within both of the  hitboxes this function returns true, otherwise false
         var xArr = []
         var yArr = []
         var borderArr = []
@@ -1235,7 +1270,7 @@ function hitboxCollision(collider, collidee, colliderPointsArr, collideePointsAr
 
    
 
-
+/*
 var marioDamage = setInterval(function(){
     collide = hitboxCollision( marioObj.hitbox,enemyProjectileObj1.hitbox, marioObj.hitbox.points,enemyProjectileObj1.hitbox.points, )
     if(collide==true){
@@ -1246,7 +1281,7 @@ var marioDamage = setInterval(function(){
   
 
 }, 200)
-
+*/
 var aimingRadicalInterval;
 var aimRadicalHitbox;
 var finalY;
@@ -1256,7 +1291,7 @@ var mouseDelay;
 var mouseTrue=false;
 
 function aimingRadical(gunX, gunY){
-    
+    //creates an animation that shows where projectiles will be shot
 
   
      
@@ -1295,7 +1330,8 @@ aimYIntercept = mouseY-(aimGradient*mouseX)
         //var a =performance.now()
         
 if (mouseX>eval(gunX)&&mouseX>0&&mouseTrue==false){
-marioObj.gamesprite.shoot(enemyProjectileObj2, eval(gunX), eval(gunY),  document.body.clientWidth+250,finalY,"marioObj.gamesprite.shotDelayToggle", 750,  500)
+marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle", 750,  window.innerWidth/6)
+
 mouseTrue=true 
 
 setTimeout( function(){mouseTrue=false}, 500)
@@ -1316,7 +1352,6 @@ setTimeout(function(){
 }, 2000)
 var enem = new enemyAI()
 enem.randomMovement("enem.distanceRand", "enem.directionRand")
-
 
 
 //END OF JS CODE HERE  
