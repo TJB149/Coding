@@ -135,7 +135,7 @@ mouseY = event.clientY;
 
      lol=true
           }, 10)
-          var canvasResize= setInterval(function(){
+          var canvasClear= setInterval(function(){
             //dev canvas is constantly resizing bc im lazy
             canvas.width=document.body.clientWidth
      canvas.height=window.innerHeight
@@ -440,6 +440,7 @@ class GameSprite{
     }
     //moves the img and hitbox to a given place(very var X)
     kill(afterTime, img, killX, obj ){
+      
         setTimeout(function(){
             
             
@@ -447,16 +448,17 @@ class GameSprite{
             
                 obj.hitbox.pointChange(obj.hitbox.points, killX, 0)
                 obj.hitbox.movement(obj.hitbox.points, 1)
-                eval(img).style.left=killX+"px"
-         
+                eval(img).style.left=killX
+            
+
         }, afterTime)
     }
     //allows the sprite's health to be changed - calls kill when necessary
     healthChange( sprite, change,  killX, obj){
         sprite.health+=change
-
+  
         if (sprite.health<=0){
-         
+           
             sprite.kill(20, sprite.name, killX, obj)   
         }
             
@@ -1244,72 +1246,91 @@ document.addEventListener("keydown", function(){
 
 });
 
-function hitboxCollision(collider, collidee, colliderPointsArr, collideePointsArr){
+function hitboxCollision(colliderObj, collideeObj){
     //creates a rectangle around a hitbox, and iterates over all the points within it. if any point is within both of the  hitboxes this function returns true, otherwise false
-        var xArr = []
-        var yArr = []
-        var borderArr = []
-        var colliderTrue;
-
-      var collideeTrue;
-      var collision;
-     
-        for(var n=0;n<collideePointsArr.length;n++){
-            if(n%2==0){
-                xArr.push(collideePointsArr[n])
-                
-            }else{
-                yArr.push(collideePointsArr[n])
-                
+       var curX;
+       var curY;
+       var eeTrue=false
+       var erTrue
+       var collide=false
+       var isX = true
+       //gets the lowest and highest x and y in the hitbox
+       var largeX=collideeObj.hitbox.points[0]
+       var largeY=collideeObj.hitbox.points[1]
+       var smolX=collideeObj.hitbox.points[0]
+       var smolY=collideeObj.hitbox.points[1]
+       
+       for(var i = 0;i<collideeObj.hitbox.points.length;i++){
+      
+        if(isX){
+            //x
+            curX=collideeObj.hitbox.points[i]
+            isX=false
+        }else{
+            //y
+            curY=collideeObj.hitbox.points[i]
+            isX=true
+        }
+       
+        if(curX<smolX){
+            
+            smolX=curX
+        }
+        if(curY<smolY){
+            smolY=curY
+        }
+        if(largeX<curX){
+            largeX=curX
+        }
+        if(largeY<curY){
+            largeY=curY
+        }
+        
+    }/*
+    console.log(smolX)
+    console.log(smolY)
+    console.log(largeX)
+    console.log(largeY)
+    */
+   
+ 
+    for(var n=smolX;n<largeX;n++){
+        
+        for(var o=smolY;o<largeY;o++){
+            console.log(n+","+o)
+      eeTrue=collideeObj.hitbox.collisionDetect(collideeObj.hitbox.points,n, o, collideeObj.hitbox.horizontalTrue, collideeObj.hitbox.aboveBelow)
+           
+      if(eeTrue){
+        //console.log(eeTrue)
+      }
+       erTrue=colliderObj.hitbox.collisionDetect(colliderObj.hitbox.points, n, o, colliderObj.hitbox.horizontalTrue, colliderObj.hitbox.aboveBelow)
+            if(eeTrue&&erTrue){
+                collide=true
             }
         }
-    
-        var Xminimum = Math.min.apply(Math,xArr)
-        var Yminimum = Math.min.apply(Math,yArr)
-        var Xmaximum = Math.max.apply(Math,xArr)
-        var Ymaximum = Math.max.apply(Math,yArr)
-        //changes it into a 2*2 area at the centre of the object. Increase the area by increasing the 1
-        Xmaximum+=(Xminimum-Xmaximum+1)/2
-        Xminimum-=(Xminimum-Xmaximum+1)/2
-        Ymaximum+=(Yminimum-Ymaximum+1)/2
-        Yminimum-=(Xminimum-Xmaximum+1)/2
-       borderArr.push(Xminimum, Yminimum, Xmaximum, Ymaximum)
-      
-      for(var p=Yminimum;p<=Ymaximum;p++){
-        for(var q = Xminimum; q<=Xmaximum;q++){
-                 collideeTrue = collidee.collisionDetect(collidee.points, q, p, collidee.horizontalTrue, collidee.aboveBelow) 
-                 colliderTrue = collider.collisionDetect(collider.points, q, p, collider.horizontalTrue, collider.aboveBelow)
-               
-                
-               
-                 if(collideeTrue==true&&colliderTrue==true){
-                    collision=true
-                    console.log(" collision")
-                 }
-                 
-        }
-       }
-       
-       if(collision!=true){
-        collision=false
-      
-       }
-      return collision
+    }
+    return collide;
     }
 
 
    
 
-
+var collide;
 var enemyDamage = setInterval(function(){
-    collide=hitboxCollision(enemyObj.hitbox, enemyProjectileObj2.hitbox,   enemyObj.hitbox.points, enemyProjectileObj2.hitbox.points)
+    collide=hitboxCollision(enemyObj, enemyProjectileObj2)
+    //console.log(collide)
     if(collide==true){
         enemyObj.gamesprite.damageReceiver(enemyObj, enemyObj.gamesprite, enemyProjectileObj2.gamesprite, 50000, 50000)
+       
     }
-
-   
-
-}, 10)
+    enemyObj.hitbox.movement(enemyObj.hitbox.points, 1)
+    /*
+    console.log(enemyProjectileObj2.hitbox.collisionDetect(enemyProjectileObj2.hitbox.points, enemyProjectileObj2.hitbox.points[0]+5, enemyProjectileObj2.hitbox.points[1]+5, enemyProjectileObj2.hitbox.horizontalTrue, enemyProjectileObj2.hitbox.aboveBelow))
+    console.log(enemyProjectileObj2.hitbox.points[0]+5)
+    console.log(enemyProjectileObj2.hitbox.points[1]+5)
+    */
+    
+}, 100)
 
 var aimingRadicalInterval;
 var aimRadicalHitbox;
@@ -1359,9 +1380,11 @@ aimYIntercept = mouseY-(aimGradient*mouseX)
     
      document.addEventListener("mousedown", function(event){
         //var a =performance.now()
+       
+        
 if (mouseX>eval(gunX)&&mouseX>0&&mouseTrue==false&&event.button==0){
     mouseTrue=true 
-marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle", 750,  window.innerWidth/6)
+marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle", 1000,  window.innerWidth/6)
 
 
 setTimeout( function(){mouseTrue=false}, 500)
@@ -1376,6 +1399,7 @@ setTimeout( function(){mouseTrue=false}, 500)
      
     
 }
+
 
 setTimeout(function(){
     aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]")
