@@ -2,6 +2,7 @@
 <html>
     <head>
         <style>
+            /*l*/
             #body{
                 height: 100%;
                 margin: 0px;
@@ -130,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mouseX = event.clientX;
 
 mouseY = event.clientY;
-//console.log(mouseX)
+////console.log(mouseX)
 
 
      lol=true
@@ -629,7 +630,7 @@ class Hitbox{
                 ctx.lineTo(xcoord, ycoord)
                    
             }
-            //console.log(xcoord+", "+ycoord)
+            ////console.log(xcoord+", "+ycoord)
             
         
         
@@ -680,7 +681,7 @@ collisionDetect(points, checkingX, checkingY, horizontalTrue, aboveBelow){
     var yIntercept;
     var lines = []
     var fitsAllCriteria  = true;
-var lineCount = (points.length-1)/2
+
 
 for( var k=0;k<points.length;k++){
     
@@ -706,103 +707,116 @@ for( var k=0;k<points.length;k++){
                 newX=true
                 
             }  
-            gradient = (point2Y-point1Y)/(point2X-point1X)
-            yIntercept = point1Y-(gradient*point1X)
+            
             if(k>2&&(k+1)%2==0){
-            function stores(gradient, yIntercept, point1X, point1Y, point2X, point2Y){
-                this.gradient=gradient
-                this.yIntercept=yIntercept
-                this.point1X=point1X
-                this.point1Y=point1Y
-                this.point2X=point2X
+            function stores( point1X, point1Y, point2X, point2Y){
+                this.gradient=(point2Y-point1Y)/(point2X-point1X)
+                this.yIntercept=(point1Y)/(gradient*point1X)
+
                 this.point2Y=point2Y
+                this.point2X=point2X
+                this.point1Y=point1Y
+                this.point1X=point1X
             }
-            lines.push(new stores(gradient, yIntercept, point1X, point1Y,point2X,point2Y))
-            
-            
+            lines.push(new stores( point1X, point1Y,point2X,point2Y))
            
+           
+
         }
-        
-        
+           
+    
+        }
+////console.log(points.length)
+for( var k=0;k<points.length;k++){
+////console.log(points.length)
+       
+          
+            
+
             } 
-              
+
             for(var l=0; l<horizontalTrue.length; l++){
-                
-                
+
+
                 if (horizontalTrue[l]==2){
-                   
+                    //console.log("current item is horizontal")
+                   // //console.log(lines.length)
                     if(aboveBelow[l]==true){
-                        
+                        //console.log("point must be above line")
                         if(checkingY<=points[2*l]){
 
                         } else{
-                   
+                            console.log("failed")
                             fitsAllCriteria=false
 
                         }
                     }else{
-                      
+                        //console.log("point must be below line")
                         if(checkingY>=points[2*l]){
-                            
+
                         }else{
-                           
+                            console.log("failed")
+                            //here's the problem
+                            console.log(lines.length)
                             fitsAllCriteria=false
                         }
                       }
                 }else if(horizontalTrue[l]==1){
-             
-                
+                    //console.log("current item is  vertical")
                     if(aboveBelow[l]==true){
-          
-                        if(checkingX<=points[2*l]){
-                            
+                        //console.log("point must be to the left of  line")
+                        if(checkingY<=points[2*l+1]){
+
                         }else{
-                             
+                            console.log("failed")
                             fitsAllCriteria=false
                         }
                     }else{
-                     
-                        
-                        if(checkingY>=points[2*l]){
+                        //console.log("point must be below line")
+                        if(checkingY>=points[2*l+1]){
 
                         } else{
-                        
+                            console.log("failed")
                             fitsAllCriteria=false
                         }
 
                     }
                 }else{
-                if (!(Math.min(lines[l].point1X, point2X, checkingX)!=checkingX&&Math.max(lines[l].point1X, point2X, checkingX)!=checkingX)){
-                
+                    //console.log("current item is diagonal")
                     if(aboveBelow[l]==true){
-                        
+                        //console.log("point must be above line")
                             if(checkingY<=(lines[l].gradient*checkingX)+lines[l].yIntercept){
 
                             }else{
-                               
+                            console.log("failed")
+                            //console.log((lines[l].gradient*checkingX)+lines[l].yIntercept)
                             fitsAllCriteria=false
                         }
                     }else{
-                       
+                        //console.log("point must be below line")
 
                         if(checkingY>=((lines[l].gradient*checkingX)+lines[l].yIntercept)){
-                                
+
                             }else{
-                                 
-                                 
+                           
+                            //console.log((lines[l].gradient*checkingX)+lines[l].yIntercept)
+                            //console.log("failed")
                             fitsAllCriteria=false
-                            
-                            
+
+
                         }
+
                     
-                    
-                }
-            }else{}
                 }
             
-            }  
             return fitsAllCriteria  
 }
+
+
+
+}
+}
+
 
 
 
@@ -994,7 +1008,7 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
            eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px";
            eval("enemyProjectileObj"+number).hitbox.endMovement()
           eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 0, changer)
-         // console.log("enemyProjectileObj"+number+" up")
+         // //console.log("enemyProjectileObj"+number+" up")
           eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1)
             
             
@@ -1014,7 +1028,7 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
            eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px";
            eval("enemyProjectileObj"+number).hitbox.endMovement()
           eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 0, changer)
-          //console.log("enemyProjectileObj"+number+" down")
+          ////console.log("enemyProjectileObj"+number+" down")
           eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1)
             
            
@@ -1029,7 +1043,7 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
            eval("enemyProjectile"+number).style.left=Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))-1+"px";
            eval("enemyProjectileObj"+number).hitbox.endMovement()
           eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points,  changer, 0)
-          //console.log("enemyProjectileObj"+number+" left")
+          ////console.log("enemyProjectileObj"+number+" left")
           eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1)
             
            
@@ -1044,7 +1058,7 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
            eval("enemyProjectile"+number).style.left=Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))+1+"px";
            eval("enemyProjectileObj"+number).hitbox.endMovement()
           eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, changer, 0)
-          //console.log("enemyProjectileObj"+number+" right")
+          ////console.log("enemyProjectileObj"+number+" right")
           eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1)
             
        }
@@ -1149,22 +1163,24 @@ function keyControl(freq){
             case 87: 
             //w to move up
             worker = setInterval(function(){move_m("up")
-       
+       enemyProjMovement(2, "up")
         }, freq);
             
             
             break;
             case 83: 
             //s to move down
+            
            worker = setInterval(function(){move_m("down")
-           
+           enemyProjMovement(2, "down")
          
     }, freq);
             break;
             case 68: 
             //d to move right
+            
             worker = setInterval(function(){move_m("right")
-                    
+            enemyProjMovement(2, "right")  
         }, freq);
             
             
@@ -1172,7 +1188,9 @@ function keyControl(freq){
             case 65: 
             //a to move left
             
-            worker = setInterval(function(){move_m("left")}, freq);
+            worker = setInterval(function(){move_m("left")
+            enemyProjMovement(2, "left")
+        }, freq);
             break;
             default:
                 
@@ -1287,24 +1305,25 @@ function hitboxCollision(colliderObj, collideeObj){
         }
         
     }/*
-    console.log(smolX)
-    console.log(smolY)
-    console.log(largeX)
-    console.log(largeY)
+    //console.log(smolX)
+    //console.log(smolY)
+    //console.log(largeX)
+    //console.log(largeY)
     */
    
  
     for(var n=smolX;n<largeX;n++){
         
         for(var o=smolY;o<largeY;o++){
-            console.log(n+","+o)
+            ////console.log(n+","+o)
       eeTrue=collideeObj.hitbox.collisionDetect(collideeObj.hitbox.points,n, o, collideeObj.hitbox.horizontalTrue, collideeObj.hitbox.aboveBelow)
            
-      if(eeTrue){
-        //console.log(eeTrue)
-      }
+      
+        
+      
        erTrue=colliderObj.hitbox.collisionDetect(colliderObj.hitbox.points, n, o, colliderObj.hitbox.horizontalTrue, colliderObj.hitbox.aboveBelow)
-            if(eeTrue&&erTrue){
+        
+       if(eeTrue&&erTrue){
                 collide=true
             }
         }
@@ -1318,17 +1337,18 @@ function hitboxCollision(colliderObj, collideeObj){
 var collide;
 var enemyDamage = setInterval(function(){
     collide=hitboxCollision(enemyObj, enemyProjectileObj2)
+    
     //console.log(collide)
     if(collide==true){
         enemyObj.gamesprite.damageReceiver(enemyObj, enemyObj.gamesprite, enemyProjectileObj2.gamesprite, 50000, 50000)
        
     }
     enemyObj.hitbox.movement(enemyObj.hitbox.points, 1)
-    /*
-    console.log(enemyProjectileObj2.hitbox.collisionDetect(enemyProjectileObj2.hitbox.points, enemyProjectileObj2.hitbox.points[0]+5, enemyProjectileObj2.hitbox.points[1]+5, enemyProjectileObj2.hitbox.horizontalTrue, enemyProjectileObj2.hitbox.aboveBelow))
-    console.log(enemyProjectileObj2.hitbox.points[0]+5)
-    console.log(enemyProjectileObj2.hitbox.points[1]+5)
-    */
+    
+    //console.log(enemyProjectileObj2.hitbox.collisionDetect(enemyProjectileObj2.hitbox.points, enemyProjectileObj2.hitbox.points[0]+5, enemyProjectileObj2.hitbox.points[1]+5, enemyProjectileObj2.hitbox.horizontalTrue, enemyProjectileObj2.hitbox.aboveBelow))
+    //console.log(enemyProjectileObj2.hitbox.points[0]+5)
+    //console.log(enemyProjectileObj2.hitbox.points[1]+5)
+    
     
 }, 100)
 
@@ -1393,7 +1413,7 @@ setTimeout( function(){mouseTrue=false}, 500)
 
     
 //var b=performance.now()
-//console.log(b-a)
+////console.log(b-a)
 })
 
      
@@ -1406,10 +1426,10 @@ setTimeout(function(){
     
 }, 2000)
 //0.7 is easiest, 0 is hardes
-/*
+
 var enem = new enemyAI(0.7)
-enem.randomMovement("enem.distanceRand", "enem.directionRand", enem.difficulty)
-*/
+//enem.randomMovement("enem.distanceRand", "enem.directionRand", enem.difficulty)
+
 
 //END OF JS CODE HERE  
 });
@@ -1426,7 +1446,7 @@ enem.randomMovement("enem.distanceRand", "enem.directionRand", enem.difficulty)
       
        <canvas id="devCanvas"style = "   left: 0px; top: 0px;"  ></canvas>
       
-<p>Use WASD or the buttons to move</p>
+<p>currently fixing line  758. always showing failed. </p>
 <p id="mousex">hello</p>
 <p id = "mousey">l</p>
 
