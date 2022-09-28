@@ -755,10 +755,14 @@ for( var k=0;k<points.length;k++){
                         if(checkingY>=points[2*l]){
 
                         }else{
-                            console.log("failed")
+                            //console.log("failed horizontal below")
+                          
+                            //console.log(points.length)
+                            //console.log(checkingY)
+                            
                             //here's the problem
-                            console.log(lines.length)
-                            fitsAllCriteria=false
+                            
+                            //fitsAllCriteria=false
                         }
                       }
                 }else if(horizontalTrue[l]==1){
@@ -789,7 +793,7 @@ for( var k=0;k<points.length;k++){
 
                             }else{
                             console.log("failed")
-                            //console.log((lines[l].gradient*checkingX)+lines[l].yIntercept)
+                            
                             fitsAllCriteria=false
                         }
                     }else{
@@ -798,10 +802,12 @@ for( var k=0;k<points.length;k++){
                         if(checkingY>=((lines[l].gradient*checkingX)+lines[l].yIntercept)){
 
                             }else{
-                           
+                           if(points[2*l]==13){
                             //console.log((lines[l].gradient*checkingX)+lines[l].yIntercept)
-                            //console.log("failed")
-                            fitsAllCriteria=false
+                            
+                           }
+                          
+                           console.log(points[2*l])
 
 
                         }
@@ -855,7 +861,7 @@ var marioObj = new gameObj(new Hitbox(  ...[[...marioPosArr],[...marioOrientatio
 x=new GameSprite()
 var enemyProjectilePosArrays = [[3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0], [3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0], [3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0],[3,0,13,0,17,5,17,13,9,18,1,18,-2,13,-2,5,3,0]] 
 var enemyProjectileOrientationArrays = [ [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0], [2,0, 1, 0, 2, 0, 1, 0]]
-var enemyProjectileContentArrays = [false, false, true, true, true, true, false, false ]
+var enemyProjectileContentArrays = [false,false, true, true, true, true, false, false ]
 //within gameSprite, the arguments are health, name, damage, type of damage, and damage that can be received
 //gameObj for declaring the hitbox, gamesprite
 var enemyProjectileObj1 = new gameObj(new Hitbox(...[[...enemyProjectilePosArrays[0]],[...enemyProjectileOrientationArrays[0]] , [...enemyProjectileContentArrays]]), new GameSprite(1, "enemyProjectile1", -10, 0,false, false, 0,  ...[...[]]))
@@ -1338,7 +1344,7 @@ var collide;
 var enemyDamage = setInterval(function(){
     collide=hitboxCollision(enemyObj, enemyProjectileObj2)
     
-    //console.log(collide)
+    console.log(collide)
     if(collide==true){
         enemyObj.gamesprite.damageReceiver(enemyObj, enemyObj.gamesprite, enemyProjectileObj2.gamesprite, 50000, 50000)
        
@@ -1350,7 +1356,7 @@ var enemyDamage = setInterval(function(){
     //console.log(enemyProjectileObj2.hitbox.points[1]+5)
     
     
-}, 100)
+}, 500)
 
 var aimingRadicalInterval;
 var aimRadicalHitbox;
@@ -1446,7 +1452,7 @@ var enem = new enemyAI(0.7)
       
        <canvas id="devCanvas"style = "   left: 0px; top: 0px;"  ></canvas>
       
-<p>currently fixing line  758. always showing failed. </p>
+<p>is a problem with calculating the y intercept in hitboxCOllision function. still havent fixed line 758 </p>
 <p id="mousex">hello</p>
 <p id = "mousey">l</p>
 
