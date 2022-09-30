@@ -140,8 +140,8 @@ mouseY = event.clientY;
             //dev canvas is constantly resizing bc im lazy
             canvas.width=document.body.clientWidth
      canvas.height=window.innerHeight
- 
-        
+ //console.log(canvas.height)
+     
           }, 10)
           //used as an interval for visual representation of hitbox
           var reDraw;
@@ -710,18 +710,18 @@ for( var k=0;k<points.length;k++){
             
             if(k>2&&(k+1)%2==0){
             function stores( point1X, point1Y, point2X, point2Y){
-                this.gradient=(point2Y-point1Y)/(point2X-point1X)
-                this.yIntercept=(point1Y)/(gradient*point1X)
-
+                this.gradient=0.0
+                this.yIntercept=0.0
+               
                 this.point2Y=point2Y
                 this.point2X=point2X
                 this.point1Y=point1Y
                 this.point1X=point1X
             }
             lines.push(new stores( point1X, point1Y,point2X,point2Y))
-           
-           
-
+           lines[Math.floor(k/4)].yIntercept=lines[Math.floor(k/4)].point1Y-(lines[Math.floor(k/4)].gradient*lines[Math.floor(k/4)].point1X)
+            lines[Math.floor(k/4)].gradient=(point2Y-point1Y)/(point2X-point1X)
+            //console.log( lines[Math.floor(k/4)].gradient)
         }
            
     
@@ -756,13 +756,15 @@ for( var k=0;k<points.length;k++){
 
                         }else{
                             //console.log("failed horizontal below")
+
                           
                             //console.log(points.length)
                             //console.log(checkingY)
                             
                             //here's the problem
                             
-                            //fitsAllCriteria=false
+                            fitsAllCriteria=false
+                            
                         }
                       }
                 }else if(horizontalTrue[l]==1){
@@ -799,15 +801,12 @@ for( var k=0;k<points.length;k++){
                     }else{
                         //console.log("point must be below line")
 
-                        if(checkingY>=((lines[l].gradient*checkingX)+lines[l].yIntercept)){
+                        if(checkingY>=((lines[l].gradient*checkingX)+lines[l].yIntercept)||lines[l].gradient==Infinity){
 
                             }else{
-                           if(points[2*l]==13){
-                            //console.log((lines[l].gradient*checkingX)+lines[l].yIntercept)
-                            
-                           }
-                          
-                          //console.log(points[2*l])
+                           
+                           fitsAllCriteria=false
+                          console.log(lines[l].gradient)
 
 
                         }
@@ -997,6 +996,7 @@ function move_m(direction){
 // moves enemy projectiles in the same fashion as the main character
 function enemyProjMovement(number, direction){
    var changer = 0
+  
 eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px"
 
     switch(direction){
@@ -1029,8 +1029,9 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
       
        //see above for all of these
    if (Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))>=canvas.height){
-   
+    
        }else{
+        
            eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px";
            eval("enemyProjectileObj"+number).hitbox.endMovement()
           eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 0, changer)
@@ -1354,7 +1355,7 @@ var enemyDamage = setInterval(function(){
     //console.log(enemyProjectileObj2.hitbox.collisionDetect(enemyProjectileObj2.hitbox.points, enemyProjectileObj2.hitbox.points[0]+5, enemyProjectileObj2.hitbox.points[1]+5, enemyProjectileObj2.hitbox.horizontalTrue, enemyProjectileObj2.hitbox.aboveBelow))
     //console.log(enemyProjectileObj2.hitbox.points[0]+5)
     //console.log(enemyProjectileObj2.hitbox.points[1]+5)
-    console.log(enemyObj.points[0])
+   
     
 }, 500)
 
@@ -1431,7 +1432,13 @@ setTimeout(function(){
     aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]")
     
 }, 2000)
-//0.7 is easiest, 0 is hardes
+//0.7 is easiest, 0 is hardest
+setTimeout(function(){
+    for(var i=0;i<350;i++){
+    enemyProjMovement(2, "right")
+    enemyProjMovement(2, "down")
+}
+}, 200)
 
 var enem = new enemyAI(0.7)
 //enem.randomMovement("enem.distanceRand", "enem.directionRand", enem.difficulty)
