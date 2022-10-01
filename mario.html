@@ -1477,7 +1477,17 @@ class Joystick{
         joystick.innerY=y
     }
     joyFollow(joystick){
-       
+        document.addEventListener("touchstart", function(){
+            joyBase = setInterval(function(){
+            gCtx.beginPath()
+    gCtx.fillStyle = "#8dc5fc"
+    gCtx.arc(joystick.joyX, joystick.joyY, 75, 0, 2*Math.PI)
+   
+    gCtx.fill()
+    gCtx.closePath()
+   
+        }, 5)
+        })
         document.addEventListener("touchmove", function(event){
              moveCentre = setInterval(function(){
                 gCtx.beginPath()
@@ -1488,32 +1498,25 @@ class Joystick{
     gCtx.closePath()
     joystick.innerX=event.clientX
     joystick.innerY=event.clientY
+    console.log("cont")
             }, 5)
            
         })
-        document.addEventListener("touchstart", function(){
-            joyBase = setInterval(function(){
-            gCtx.beginPath()
-    gCtx.fillStyle = "#8dc5fc"
-    gCtx.arc(joystick.joyX, joystick.joyY, 75, 0, 2*Math.PI)
-   
-    gCtx.fill()
-    gCtx.closePath()
-        }, 5)
-        })
-        document.addEventListener("touchEnd"){
+        
+        document.addEventListener("touchEnd", function(){
             clearInterval(moveCentre)
             clearInterval(joyBase)
-        }
+        })
 
     }
     
-    joyBind(joystick, func){
-        
-    }
+    
 }
 var shotJoystick = new Joystick(canvas.width-250, canvas.height-250)
-var joystickOperate = setInterval(function(){})
+var joystickOperate = setInterval(function(){
+    shotJoystick.joyFollow(shotJoystick)
+    shotJoystick.moveJoy(shotJoystick, shotJoystick.joyX, shotJoystick.joyY)
+}, 10)
 //END OF JS CODE HERE  
 });
 
