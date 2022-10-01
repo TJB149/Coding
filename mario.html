@@ -109,6 +109,7 @@ position: absolute;
 var projTerval = []
 var projIteration = -1;
 document.addEventListener("DOMContentLoaded", () => {
+
     var isMobile = false; //initiate as false
 // device detection
 if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent) 
@@ -132,6 +133,13 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
         graphic.style.width=graphicStyle.getPropertyValue("width")
         graphic.style.height=graphicStyle.getPropertyValue("height")
       
+    var canvasStyle=getComputedStyle(canvas)
+        canvas.width=document.body.clientWidth
+        canvas.height=window.innerHeight
+        canvas.style.width=document.body.clientWidth
+        canvas.style.height=window.innerHeight
+        canvas.style.width=canvasStyle.getPropertyValue("width")
+        canvas.style.height=canvasStyle.getPropertyValue("height")
    //mouseX and mouseY used later in the code
      document.addEventListener("mousemove", function(event){
         mouseX = event.clientX;
@@ -144,11 +152,10 @@ mouseY = event.clientY;
           }, 10)
           var canvasClear= setInterval(function(){
             //dev canvas is constantly resizing bc im lazy
-            canvas.width=document.body.clientWidth
-     canvas.height=window.innerHeight
+            
  //console.log(canvas.height)
      
-          }, 10)
+          }, 5)
           //used as an interval for visual representation of hitbox
           var reDraw;
          
@@ -448,7 +455,7 @@ class GameSprite{
     }
     //moves the img and hitbox to a given place(very var X)
     kill(afterTime, img, killX, obj ){
-      console.log(img)
+     
         setTimeout(function(){
             
             
@@ -1178,7 +1185,7 @@ function keyControl(freq){
             case 87: 
             //w to move up
             worker = setInterval(function(){move_m("up")
-       enemyProjMovement(2, "up")
+      
         }, freq);
             
             
@@ -1187,7 +1194,7 @@ function keyControl(freq){
             //s to move down
             
            worker = setInterval(function(){move_m("down")
-           enemyProjMovement(2, "down")
+    
          
     }, freq);
             break;
@@ -1195,7 +1202,7 @@ function keyControl(freq){
             //d to move right
             
             worker = setInterval(function(){move_m("right")
-            enemyProjMovement(2, "right")  
+           
         }, freq);
             
             
@@ -1204,7 +1211,7 @@ function keyControl(freq){
             //a to move left
             
             worker = setInterval(function(){move_m("left")
-            enemyProjMovement(2, "left")
+            
         }, freq);
             break;
             default:
@@ -1377,36 +1384,37 @@ var mouseTrue=false;
     
     
 
-function aimingRadical(gunX, gunY){
+function aimingRadical(gunX, gunY, followX, followY){
     //creates an animation that shows where projectiles will be shot
 
   
      
    
-    aimRadicalHitbox = new Hitbox(...[[eval(gunX), eval(gunY), mouseX, mouseY], ...[0], ...[]])
+    aimRadicalHitbox = new Hitbox(...[[eval(gunX), eval(gunY), eval(followX), eval(followY)], ...[0], ...[]])
     
      aimingRadicalInterval = setInterval(function(){
-        if((mouseY-eval(gunY))/(mouseX-eval(gunX))!=Infinity){
-        aimGradient = (mouseY-eval(gunY))/(mouseX-eval(gunX))
+        if((eval(followY)-eval(gunY))/(eval(followX)-eval(gunX))!=Infinity){
+        aimGradient = (eval(followY)-eval(gunY))/(eval(followX)-eval(gunX))
         }
 
-aimYIntercept = mouseY-(aimGradient*mouseX)
+aimYIntercept = eval(followY)-(aimGradient*eval(followX))
 
  finalY=aimGradient*document.body.clientWidth+aimYIntercept
         aimRadicalHitbox.endMovement()
-        gCtx.clearRect(0,0,graphic.width, graphic.height)
+        ctx.clearRect(0,0,canvas.width, canvas.height)
+     gCtx.clearRect(0,0,graphic.width, graphic.height)
        
         
        
         aimRadicalHitbox.points[0]=eval(gunX)
         aimRadicalHitbox.points[1]=eval(gunY)
-        aimRadicalHitbox.points[2]=mouseX
-        aimRadicalHitbox.points[3]=mouseY
+        aimRadicalHitbox.points[2]=eval(followX)
+        aimRadicalHitbox.points[3]=eval(followY)
         gCtx.beginPath()
         gCtx.strokeStyle = "#000000";
         gCtx.lineWidth = 6;
         gCtx.moveTo(eval(gunX), eval(gunY))
-        gCtx.lineTo(mouseX, mouseY-3)
+        gCtx.lineTo(eval(followX), eval(followY)-3)
         gCtx.stroke()
         gCtx.closePath()
        
@@ -1417,7 +1425,7 @@ aimYIntercept = mouseY-(aimGradient*mouseX)
         //var a =performance.now()
        
         
-if (mouseX>eval(gunX)&&mouseX>0&&mouseTrue==false&&event.button==0){
+if (eval(followX)>eval(gunX)&&eval(followX)>0&&mouseTrue==false&&event.button==0){
     mouseTrue=true 
 marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle", 1000,  window.innerWidth/6)
 
@@ -1434,13 +1442,12 @@ setTimeout( function(){mouseTrue=false}, 500)
      
     
 }
-
-if(isMobile==true){
+var infEnem=setInterval(enemyObj.gamesprite.respawn(300, 300, false, enemyObj, 10),10)
 setTimeout(function(){
     aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]")
     
 }, 2000)
-}
+
 //0.7 is easiest, 0 is hardest
 setTimeout(function(){
     for(var i=0;i<350;i++){
@@ -1450,9 +1457,63 @@ setTimeout(function(){
 }, 200)
 
 var enem = new enemyAI(0.7)
-//enem.randomMovement("enem.distanceRand", "enem.directionRand", enem.difficulty)
+enem.randomMovement("enem.distanceRand", "enem.directionRand", enem.difficulty)
+//joystic
 
+var joyBase;
+var moveCentre;
+class Joystick{
+    constructor(joyX, joyY){
+        this.joyX=joyX
+        this.joyY=joyY
+        this.innerX=joyX
+        this.innerY=joyY
+    }
+   
+    moveJoy(joystick, x, y){
+        joystick.joyX=x
+        joystick.joyY=y
+        joystick.innerX=x
+        joystick.innerY=y
+    }
+    joyFollow(joystick){
+       
+        document.addEventListener("touchmove", function(event){
+             moveCentre = setInterval(function(){
+                gCtx.beginPath()
+    gCtx.fillStyle = "#0381fc"
+    gCtx.arc(event.clientX, event.clientY, 25, 0, 2*Math.PI)
+   
+    gCtx.fill()
+    gCtx.closePath()
+    joystick.innerX=event.clientX
+    joystick.innerY=event.clientY
+            }, 5)
+           
+        })
+        document.addEventListener("touchstart", function(){
+            joyBase = setInterval(function(){
+            gCtx.beginPath()
+    gCtx.fillStyle = "#8dc5fc"
+    gCtx.arc(joystick.joyX, joystick.joyY, 75, 0, 2*Math.PI)
+   
+    gCtx.fill()
+    gCtx.closePath()
+        }, 5)
+        })
+        document.addEventListener("touchEnd"){
+            clearInterval(moveCentre)
+            clearInterval(joyBase)
+        }
 
+    }
+    
+    joyBind(joystick, func){
+        
+    }
+}
+var shotJoystick = new Joystick(canvas.width-250, canvas.height-250)
+var joystickOperate = setInterval(function(){})
 //END OF JS CODE HERE  
 });
 
