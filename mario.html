@@ -3,6 +3,7 @@
     <head>
         <style>
             /*l*/
+            html, body {margin: 0; height: 100%; overflow: hidden}
             #body{
                 height: 100%;
                 margin: 0px;
@@ -1381,7 +1382,8 @@ var aimYIntercept;
 var aimGradient;
 var mouseDelay;
 var mouseTrue=false;
-    
+    var oldX;
+    var oldY;
     
 
 function aimingRadical(gunX, gunY, followX, followY){
@@ -1389,7 +1391,8 @@ function aimingRadical(gunX, gunY, followX, followY){
 
   
      
-   
+    oldX=eval(followX)
+oldY=eval(followY)
     aimRadicalHitbox = new Hitbox(...[[eval(gunX), eval(gunY), eval(followX), eval(followY)], ...[0], ...[]])
     
      aimingRadicalInterval = setInterval(function(){
@@ -1402,10 +1405,18 @@ aimYIntercept = eval(followY)-(aimGradient*eval(followX))
  finalY=aimGradient*document.body.clientWidth+aimYIntercept
         aimRadicalHitbox.endMovement()
         ctx.clearRect(0,0,canvas.width, canvas.height)
-     gCtx.clearRect(0,0,graphic.width, graphic.height)
+     //gCtx.clearRect(0,0,graphic.width, graphic.height)
        
+     gCtx.beginPath()
+     gCtx.strokeStyle = "#FFFFFF";
+     gCtx.lineWidth = 10;
+        gCtx.moveTo(eval(gunX), eval(gunY))
         
-       
+        gCtx.lineTo(oldX+0.5,oldY-3)
+        gCtx.stroke()
+                    gCtx.closePath()
+                    oldX=eval(followX)
+oldY=eval(followY)
         aimRadicalHitbox.points[0]=eval(gunX)
         aimRadicalHitbox.points[1]=eval(gunY)
         aimRadicalHitbox.points[2]=eval(followX)
@@ -1444,7 +1455,7 @@ setTimeout( function(){mouseTrue=false}, 500)
 }
 var infEnem=setInterval(enemyObj.gamesprite.respawn(300, 300, false, enemyObj, 10),10)
 setTimeout(function(){
-    aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]")
+    aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", "mouseX", "mouseY")
     
 }, 2000)
 
@@ -1477,46 +1488,112 @@ class Joystick{
         joystick.innerY=y
     }
     joyFollow(joystick){
-        document.addEventListener("touchstart", function(){
+       
             joyBase = setInterval(function(){
-            gCtx.beginPath()
+               
+                document.addEventListener("touchstart", (event)=>{
+                    gCtx.beginPath()
+                    gCtx.fillStyle = "#ffffff"
+                    gCtx.arc(joystick.joyX, joystick.joyY, 52, 0, 2*Math.PI)
+                    gCtx.fill()
+                    gCtx.closePath()
+           gCtx.beginPath()
     gCtx.fillStyle = "#8dc5fc"
-    gCtx.arc(joystick.joyX, joystick.joyY, 75, 0, 2*Math.PI)
+    gCtx.arc(joystick.joyX, joystick.joyY, 50, 0, 2*Math.PI)
+    
+    joystick.joyX=event.changedTouches[0].clientX
+           joystick.joyY=event.changedTouches[0].clientY
+        
+           
+    gCtx.fill()
+    gCtx.closePath()
+})
+        }, 2000)
+        
+       joyBase = setInterval(function(){
+                document.addEventListener("touchmove", function(){
+                    gCtx.beginPath()
+                    gCtx.fillStyle = "#ffffff"
+                    gCtx.arc(joystick.joyX, joystick.joyY, 52, 0, 2*Math.PI)
+                    gCtx.fill()
+                    gCtx.closePath()
+           gCtx.beginPath()
+    gCtx.fillStyle = "#8dc5fc"
+    gCtx.arc(joystick.joyX, joystick.joyY, 50, 0, 2*Math.PI)
    
     gCtx.fill()
     gCtx.closePath()
-   
-        }, 5)
-        })
-        document.addEventListener("touchmove", function(event){
+})
+        }, 2000)
+      
+        
+            
              moveCentre = setInterval(function(){
+                document.addEventListener("touchmove", (event) => {
+                    gCtx.beginPath()
+                    gCtx.fillStyle = "#ffffff"
+                    gCtx.arc(joystick.innerX, joystick.innerY, 27, 0, 2*Math.PI)
+                    gCtx.fill()
+                    gCtx.closePath()
                 gCtx.beginPath()
     gCtx.fillStyle = "#0381fc"
-    gCtx.arc(event.clientX, event.clientY, 25, 0, 2*Math.PI)
+    if(event.touches[0].clientX>joystick.joyX-50&&event.touches[0].clientX<joystick.joyX+50&&event.touches[0].clientY>joystick.joyY-50&&event.touches[0].clientY<joystick.joyY+50){
+        gCtx.arc(event.touches[0].clientX, event.touches[0].clientY, 25, 0, 2*Math.PI)
+        joystick.innerX=event.touches[0].clientX
+    joystick.innerY=event.touches[0].clientY
+    }else if(event.touches[0].clientX>joystick.joyX-100&&event.touches[0].clientX<joystick.joyX+100&&event.touches[0].clientY>joystick.joyY-100&&event.touches[0].clientY<joystick.joyY+100){
+       
+        var accDist = Math.sqrt(Math.pow(event.touches[0].clientX-joystick.joyX, 2) + Math.pow(event.touches[0].clientY-joystick.joyY, 2))
+        var scaleFac = accDist/50
+       console.log(scaleFac)
+      
+        var adjX = joystick.joyX+((event.touches[0].clientX-joystick.joyX)/scaleFac)
+        var adjY = joystick.joyY+((event.touches[0].clientY-joystick.joyY)/scaleFac)
+        gCtx.arc(adjX, adjY, 25, 0, 2*Math.PI)
+       
+       
+        joystick.innerX=adjX
+    joystick.innerY=adjY
+    
+
+    }
+  
    
     gCtx.fill()
     gCtx.closePath()
-    joystick.innerX=event.clientX
-    joystick.innerY=event.clientY
-    console.log("cont")
-            }, 5)
+  
+   
+
+})
+            }, 2000)
+           
+       
+        
+        document.addEventListener("touchend", (event)=>{
+            clearInterval(moveCentre)
+            //console.log(moveCentre)
+            clearInterval(joyBase)
+            gCtx.beginPath()
+                    gCtx.fillStyle = "#ffffff"
+                    gCtx.arc(joystick.joyX, joystick.joyY, 75, 0, 2*Math.PI)
+                    gCtx.fill()
+                    gCtx.closePath()
            
         })
-        
-        document.addEventListener("touchEnd", function(){
-            clearInterval(moveCentre)
-            clearInterval(joyBase)
-        })
+
+    }
+    joyBind(){
 
     }
     
     
 }
 var shotJoystick = new Joystick(canvas.width-250, canvas.height-250)
-var joystickOperate = setInterval(function(){
+
     shotJoystick.joyFollow(shotJoystick)
     shotJoystick.moveJoy(shotJoystick, shotJoystick.joyX, shotJoystick.joyY)
-}, 10)
+
+
 //END OF JS CODE HERE  
 });
 
@@ -1527,15 +1604,16 @@ var joystickOperate = setInterval(function(){
         </script>
     </head>
     <body id="body">
+        
+       <canvas id="graphicCanvas" ></canvas>
         <img src = "https://i.ibb.co/3cdyx1Y/d-sub-pixilart-3.jpg" alt = "its a me a" id  =  "mario">
         <img src="https://i.ibb.co/M5m4Jpn/pixilart-drawing-1.png" alt="enemy" id="enemy">
       
-       <canvas id="devCanvas"style = "   left: 0px; top: 0px;"  ></canvas>
-      
+       
 <p>is a problem with calculating the y intercept in hitboxCOllision function. still havent fixed line 758 </p>
 <p id="mousex">hello</p>
 <p id = "mousey">l</p>
-
+<canvas id="devCanvas"style = "   left: 0px; top: 0px;"  ></canvas>
 <img  id = "enemyProjectile1"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
 <img   id = "enemyProjectile2"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
 <img   id = "enemyProjectile3"src="https://i.ibb.co/G354M3H/pixil-frame-0-1-2.jpg" alt="enemyProjectile" border="0">
@@ -1544,7 +1622,7 @@ var joystickOperate = setInterval(function(){
 <button id = "down">down</button>
 <button id = "right">right</button>
 <button id ="left">left</button>
-<canvas id="graphicCanvas" ></canvas>
+
 
     </body>
 
