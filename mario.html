@@ -47,7 +47,7 @@
 }
 #devCanvas{
     position: absolute;
- z-index:-1;
+ z-index:1;
     width: 100%;
     height: 100%;
    
@@ -1493,22 +1493,16 @@ class Joystick{
             joyBase = setInterval(function(){
                
                 document.addEventListener("touchstart", (event)=>{
-                    gCtx.beginPath()
-                    gCtx.fillStyle = "#ffffff"
-                    gCtx.arc(joystick.joyX, joystick.joyY, 52, 0, 2*Math.PI)
-                    gCtx.fill()
-                    gCtx.closePath()
-           gCtx.beginPath()
-    gCtx.fillStyle = "#8dc5fc"
-    gCtx.arc(joystick.joyX, joystick.joyY, 50, 0, 2*Math.PI)
-    
-    joystick.joyX=event.changedTouches[0].clientX
-           joystick.joyY=event.changedTouches[0].clientY
+                 
+    joystick.joyX=event.touches[0].clientX
+           joystick.joyY=event.touches[0].clientY
         
            
-    gCtx.fill()
-    gCtx.closePath()
+  
+    
 })
+
+
         }, 2000)
         
        joyBase = setInterval(function(){
@@ -1551,7 +1545,7 @@ class Joystick{
         var adjX = joystick.joyX+((event.touches[0].clientX-joystick.joyX)/scaleFac)
         var adjY = joystick.joyY+((event.touches[0].clientY-joystick.joyY)/scaleFac)
         gCtx.arc(adjX, adjY, 25, 0, 2*Math.PI)
-       
+       gCtx.closePath()
        
         joystick.innerX=adjX
     joystick.innerY=adjY
@@ -1583,8 +1577,8 @@ class Joystick{
         })
 
     }
-    joyBind(){
-
+    joyBind(joystick, joyName){
+        aimingRadical("enemyObj.hitbox.points[3]", "enemyObj.hitbox.points[4]", joyName+".innerX", joyName+".innerY")
     }
     
     
@@ -1593,7 +1587,7 @@ var shotJoystick = new Joystick(canvas.width-250, canvas.height-250)
 
     shotJoystick.joyFollow(shotJoystick)
     shotJoystick.moveJoy(shotJoystick, shotJoystick.joyX, shotJoystick.joyY)
-
+    shotJoystick.joyBind(shotJoystick, "shotJoystick")
 
 //END OF JS CODE HERE  
 });
