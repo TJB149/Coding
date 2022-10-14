@@ -537,22 +537,29 @@ class GameSprite{
         var iterationY;
       
         if (eval(shotDelayToggleString)==false){
-      
+            intervalClearer(projIteration)
         projObj.gamesprite.respawn(eval(gunXString), eval(gunYString), false, projObj, projObj.gamesprite.maxHealth)
-   
+        
         var xTravel = eval(targetXString+"-"+gunXString)
         var yTravel = eval(targetYString+"-"+gunYString) 
-      
-        while(iterationX>5||iterationY>5){
-            iterationX/=3
-            iterationY/=3
+        iterationX = xTravel/movementCount
+       iterationY = yTravel/movementCount
+        while(iterationX<2||iterationY<2){
+            iterationX*=1.025
+            iterationY*=1.025
+            
         }
+        while(iterationX>3||iterationY>3){
+            iterationX/=1.025
+            iterationY/=1.025
+            
+        }
+        console.log(iterationX)
         projIteration++
          projTerval.push( 
             setInterval(function(){
                 
-                iterationX = xTravel/movementCount
-       iterationY = yTravel/movementCount
+                console.log(iterationX)
 
             projObj.hitbox.endMovement()
             projObj.hitbox.pointChange(projObj.hitbox.points, iterationX, iterationY)
@@ -567,23 +574,23 @@ class GameSprite{
          intervalClearer(projIteration)
         function intervalClearer(num){
             
-            iterationX = xTravel/movementCount
-            iterationY = yTravel/movementCount
+        
             
      setTimeout(function(){
             //stops tzhe projectile moving
             //problem with this timeout - not clearing as expected
             clearInterval(projTerval[num])
-            
+            console.log("chai gawd")
             
        projObj.gamesprite.kill(0, eval(projObj.gamesprite.name), 50000, projObj)
-        }, (movementCount*10))
+        }, (movementCount*5))
         }
 
         eval(shotDelayToggleString+"="+true)
         setTimeout(function(){
           eval(shotDelayToggleString+"="+false)
             eval(shotDelayToggleString+"="+false)
+            
          
         }, shotDelay)
     }else{
@@ -1437,9 +1444,10 @@ oldY=eval(followY)
         //var a =performance.now()
        
         
-if (eval(followX)>eval(gunX)&&eval(followX)>0&&mouseTrue==false&&event.button==0){
+if (eval(followX)>eval(gunX)&&eval(followX)>0&&mouseTrue==false&&event.button==0&&isMobile==false){
     mouseTrue=true 
-marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle", 1000,  window.innerWidth/6)
+    console.log("chai gawd")
+marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle", 1000,  window.innerWidth)
 
 
 setTimeout( function(){mouseTrue=false}, 500)
@@ -1456,9 +1464,11 @@ setTimeout( function(){mouseTrue=false}, 500)
 }
 var infEnem=setInterval(enemyObj.gamesprite.respawn(300, 300, false, enemyObj, 10),10)
 setTimeout(function(){
+    if(isMobile==false){
     aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", "mouseX", "mouseY")
-    
-}, 2000)
+    console.log("clown")
+    }
+}, 20)
 
 //0.7 is easiest, 0 is hardest
 setTimeout(function(){
@@ -1474,12 +1484,14 @@ enem.randomMovement("enem.distanceRand", "enem.directionRand", enem.difficulty)
 
 var joyBase;
 var moveCentre;
-class Joystick{
+class AimJoystick{
     constructor(joyX, joyY){
         this.joyX=joyX
         this.joyY=joyY
         this.innerX=joyX
         this.innerY=joyY
+        this.convertX;
+        this.convertY;
     }
    
     moveJoy(joystick, x, y){
@@ -1487,6 +1499,7 @@ class Joystick{
         joystick.joyY=y
         joystick.innerX=x
         joystick.innerY=y
+        
     }
     joyFollow(joystick){
        
@@ -1573,22 +1586,51 @@ class Joystick{
                     gCtx.arc(joystick.joyX, joystick.joyY, 75, 0, 2*Math.PI)
                     gCtx.fill()
                     gCtx.closePath()
-           
+                    if(mouseTrue==false){
+                    marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle", 5000,  window.innerWidth)
+                    mouseTrue=true
+                    }
+                    setTimeout( function(){mouseTrue=false}, 100)
         })
 
     }
     joyBind(joystick, joyName){
-        aimingRadical("enemyObj.hitbox.points[3]", "enemyObj.hitbox.points[4]", joyName+".innerX", joyName+".innerY")
+     
+        setInterval(function(){
+        var xOffset= joystick.innerX-joystick.joyX
+        var yOffset = joystick.innerY-joystick.joyY
+       
+
+        
+        xOffset*=4.5
+        yOffset*=4.5
+        joystick.convertX=xOffset+marioObj.hitbox.points[2]
+        joystick.convertY = yOffset+marioObj.hitbox.points[3]
+       
+       
+        
+        if((eval(joyName+".convertX")-marioObj.hitbox.points[2])/(eval(joyName+".convertY")-marioObj.hitbox.points[3])!=Infinity){
+        aimGradient = (eval(joyName+".convertX")-marioObj.hitbox.points[2])/(eval(joyName+".convertY")-marioObj.hitbox.points[3])
+        }
+
+    aimYIntercept = eval(joyName+".convertX")-(aimGradient*eval(joyName+".convertY"))
+
+    finalY=aimGradient*document.body.clientWidth+aimYIntercept
+    //console.log(aimGradient)
+        }, 5)
+        setTimeout(aimingRadical, 6, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", joyName+".convertX", joyName+".convertY")
+        aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", joyName+".convertX", joyName+".convertY")
+    
     }
     
     
 }
-var shotJoystick = new Joystick(canvas.width-250, canvas.height-250)
-
+var shotJoystick = new AimJoystick(canvas.width-250, canvas.height-250)
+if(isMobile==true){
     shotJoystick.joyFollow(shotJoystick)
     shotJoystick.moveJoy(shotJoystick, shotJoystick.joyX, shotJoystick.joyY)
     shotJoystick.joyBind(shotJoystick, "shotJoystick")
-
+}
 //END OF JS CODE HERE  
 });
 
