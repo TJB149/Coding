@@ -535,31 +535,38 @@ class GameSprite{
     shoot(projObj, gunXString, gunYString, targetXString,targetYString,  shotDelayToggleString, shotDelay,movementCount){
         var iterationX
         var iterationY;
+        clearInterval(projTerval[projIteration])
       
         if (eval(shotDelayToggleString)==false){
+         
+            intervalClearer(projIteration-2)
             intervalClearer(projIteration)
+            clearInterval(projTerval[projIteration-2])
         projObj.gamesprite.respawn(eval(gunXString), eval(gunYString), false, projObj, projObj.gamesprite.maxHealth)
         
         var xTravel = eval(targetXString+"-"+gunXString)
         var yTravel = eval(targetYString+"-"+gunYString) 
         iterationX = xTravel/movementCount
        iterationY = yTravel/movementCount
-        while(iterationX<2||iterationY<2){
+        while(iterationX<3.5||iterationY<3.5){
             iterationX*=1.025
             iterationY*=1.025
             
         }
-        while(iterationX>3||iterationY>3){
+        while(iterationX>4||iterationY>4){
             iterationX/=1.025
             iterationY/=1.025
             
         }
-        console.log(iterationX)
+       
+        
         projIteration++
+       
          projTerval.push( 
+            
             setInterval(function(){
                 
-                console.log(iterationX)
+              
 
             projObj.hitbox.endMovement()
             projObj.hitbox.pointChange(projObj.hitbox.points, iterationX, iterationY)
@@ -571,6 +578,7 @@ class GameSprite{
         
         }, 10)
          )
+         intervalClearer(projIteration-1)
          intervalClearer(projIteration)
         function intervalClearer(num){
             
@@ -1447,7 +1455,8 @@ oldY=eval(followY)
 if (eval(followX)>eval(gunX)&&eval(followX)>0&&mouseTrue==false&&event.button==0&&isMobile==false){
     mouseTrue=true 
     console.log("chai gawd")
-marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle", 1000,  window.innerWidth)
+    
+marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle",window.innerWidth/4,  window.innerWidth)
 
 
 setTimeout( function(){mouseTrue=false}, 500)
@@ -1479,7 +1488,7 @@ setTimeout(function(){
 }, 200)
 
 var enem = new enemyAI(0.7)
-enem.randomMovement("enem.distanceRand", "enem.directionRand", enem.difficulty)
+//enem.randomMovement("enem.distanceRand", "enem.directionRand", enem.difficulty)
 //joystic
 
 var joyBase;
@@ -1587,7 +1596,7 @@ class AimJoystick{
                     gCtx.fill()
                     gCtx.closePath()
                     if(mouseTrue==false){
-                    marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle", 5000,  window.innerWidth)
+                    marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle",window.innerWidth/6,  window.innerWidth)
                     mouseTrue=true
                     }
                     setTimeout( function(){mouseTrue=false}, 100)
