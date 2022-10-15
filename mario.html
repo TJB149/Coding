@@ -1512,7 +1512,7 @@ class AimJoystick{
     }
     joyFollow(joystick){
        
-            joyBase = setInterval(function(){
+        
                
                 document.addEventListener("touchstart", (event)=>{
                  
@@ -1525,9 +1525,9 @@ class AimJoystick{
 })
 
 
-        }, 2000)
+       
         
-       joyBase = setInterval(function(){
+
                 document.addEventListener("touchmove", function(){
                     gCtx.beginPath()
                     gCtx.fillStyle = "#ffffff"
@@ -1541,11 +1541,11 @@ class AimJoystick{
     gCtx.fill()
     gCtx.closePath()
 })
-        }, 2000)
+       
       
         
             
-             moveCentre = setInterval(function(){
+            
                 document.addEventListener("touchmove", (event) => {
                     gCtx.beginPath()
                     gCtx.fillStyle = "#ffffff"
@@ -1582,7 +1582,7 @@ class AimJoystick{
    
 
 })
-            }, 2000)
+          
            
        
         
@@ -1633,6 +1633,78 @@ class AimJoystick{
     }
     
     
+}
+class moveJoystick{
+    constructor(joyX, joyY){
+        this.joyX=joyX
+        this.joyY=joyY
+        this.innerX=joyX
+        this.innerY=joyY
+      
+    }
+    joyFollow(joystick){
+        document.addEventListener("touchstart", (event)=>{
+                 
+                 joystick.joyX=event.touches[0].clientX
+                        joystick.joyY=event.touches[0].clientY
+                     
+                        
+               
+                 
+             })
+             
+        document.addEventListener("touchmove", function(){
+                    gCtx.beginPath()
+                    gCtx.fillStyle = "#ffffff"
+                    gCtx.arc(joystick.joyX, joystick.joyY, 52, 0, 2*Math.PI)
+                    gCtx.fill()
+                    gCtx.closePath()
+           gCtx.beginPath()
+    gCtx.fillStyle = "#723a03"
+    gCtx.arc(joystick.joyX, joystick.joyY, 50, 0, 2*Math.PI)
+   
+    gCtx.fill()
+    gCtx.closePath()
+})
+document.addEventListener("touchmove", (event) => {
+                    gCtx.beginPath()
+                    gCtx.fillStyle = "#ffffff"
+                    gCtx.arc(joystick.innerX, joystick.innerY, 27, 0, 2*Math.PI)
+                    gCtx.fill()
+                    gCtx.closePath()
+                gCtx.beginPath()
+    gCtx.fillStyle = "#0381fc"
+    if(event.touches[0].clientX>joystick.joyX-50&&event.touches[0].clientX<joystick.joyX+50&&event.touches[0].clientY>joystick.joyY-50&&event.touches[0].clientY<joystick.joyY+50){
+        gCtx.arc(event.touches[0].clientX, event.touches[0].clientY, 25, 0, 2*Math.PI)
+        joystick.innerX=event.touches[0].clientX
+    joystick.innerY=event.touches[0].clientY
+    }else if(event.touches[0].clientX>joystick.joyX-100&&event.touches[0].clientX<joystick.joyX+100&&event.touches[0].clientY>joystick.joyY-100&&event.touches[0].clientY<joystick.joyY+100){
+       
+        var accDist = Math.sqrt(Math.pow(event.touches[0].clientX-joystick.joyX, 2) + Math.pow(event.touches[0].clientY-joystick.joyY, 2))
+        var scaleFac = accDist/50
+       
+      
+        var adjX = joystick.joyX+((event.touches[0].clientX-joystick.joyX)/scaleFac)
+        var adjY = joystick.joyY+((event.touches[0].clientY-joystick.joyY)/scaleFac)
+        
+        gCtx.arc(adjX, adjY, 25, 0, 2*Math.PI)
+       gCtx.closePath()
+       
+        joystick.innerX=adjX
+    joystick.innerY=adjY
+    
+
+    }
+  
+   
+    gCtx.fill()
+    gCtx.closePath()
+  
+   
+
+})
+       
+    }
 }
 var shotJoystick = new AimJoystick(canvas.width-250, canvas.height-250)
 if(isMobile==true){
