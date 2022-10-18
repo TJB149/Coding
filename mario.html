@@ -1518,7 +1518,7 @@ class Joystick{
         joystick.innerY=y
         
     }
-    joyFollow(joystick, leftBound, rightBound){
+    joyFollow(joystick, leftBound, rightBound, outColour, inColour){
        
         
                
@@ -1543,7 +1543,7 @@ class Joystick{
                     gCtx.fill()
                     gCtx.closePath()
            gCtx.beginPath()
-    gCtx.fillStyle = "#8dc5fc"
+    gCtx.fillStyle = outColour
     gCtx.arc(joystick.joyX, joystick.joyY, 50, 0, 2*Math.PI)
    
     gCtx.fill()
@@ -1666,10 +1666,11 @@ function moveBind(joystick, joyName){
 
 }
 if(isMobile==true){
-    shotJoystick.joyFollow(shotJoystick, window.innerWidth/2, window.innerWidth)
+    
+    shotJoystick.joyFollow(shotJoystick, window.innerWidth/2, window.innerWidth, "#8dc5fc", "#0381fc")
     shotJoystick.moveJoy(shotJoystick, shotJoystick.joyX, shotJoystick.joyY)
     shotJoystick.joyBind("shotBind", shotJoystick, "shotJoystick")
-    moveJoystick.joyFollow(moveJoystick, 0, window.innerWidth/2)
+    moveJoystick.joyFollow(moveJoystick, 0, window.innerWidth/2, "#723a03","#fc7e03" )
     moveJoystick.moveJoy(moveJoystick, moveJoystick.joyX,moveJoystick.joyY )
     moveJoystick.joyBind("moveBind", moveJoystick, "moveJoystick")
     
