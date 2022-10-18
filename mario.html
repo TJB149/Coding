@@ -1501,7 +1501,7 @@ var enem = new enemyAI(0.7)
 
 var joyBase;
 var moveCentre;
-class AimJoystick{
+class Joystick{
     constructor(joyX, joyY){
         this.joyX=joyX
         this.joyY=joyY
@@ -1518,7 +1518,7 @@ class AimJoystick{
         joystick.innerY=y
         
     }
-    joyFollow(joystick){
+    joyFollow(joystick, leftBound, rightBound){
        
         
                
@@ -1555,6 +1555,8 @@ class AimJoystick{
             
             
                 document.addEventListener("touchmove", (event) => {
+                    if(event.touches[0].clientX>leftBound&&event.touches[0].clientX<rightBound){
+                    
                     gCtx.beginPath()
                     gCtx.fillStyle = "#ffffff"
                     gCtx.arc(joystick.innerX, joystick.innerY, 27, 0, 2*Math.PI)
@@ -1580,6 +1582,7 @@ class AimJoystick{
         joystick.innerX=adjX
     joystick.innerY=adjY
     
+    }
 
     }
   
@@ -1619,79 +1622,8 @@ class AimJoystick{
     
     
 }
-class moveJoystick{
-    constructor(joyX, joyY){
-        this.joyX=joyX
-        this.joyY=joyY
-        this.innerX=joyX
-        this.innerY=joyY
-      
-    }
-    joyFollow(joystick){
-        document.addEventListener("touchstart", (event)=>{
-                 
-                 joystick.joyX=event.touches[0].clientX
-                        joystick.joyY=event.touches[0].clientY
-                     
-                        
-               
-                 
-             })
-             
-        document.addEventListener("touchmove", function(){
-                    gCtx.beginPath()
-                    gCtx.fillStyle = "#ffffff"
-                    gCtx.arc(joystick.joyX, joystick.joyY, 52, 0, 2*Math.PI)
-                    gCtx.fill()
-                    gCtx.closePath()
-           gCtx.beginPath()
-    gCtx.fillStyle = "#723a03"
-    gCtx.arc(joystick.joyX, joystick.joyY, 50, 0, 2*Math.PI)
-   
-    gCtx.fill()
-    gCtx.closePath()
-})
-document.addEventListener("touchmove", (event) => {
-                    gCtx.beginPath()
-                    gCtx.fillStyle = "#ffffff"
-                    gCtx.arc(joystick.innerX, joystick.innerY, 27, 0, 2*Math.PI)
-                    gCtx.fill()
-                    gCtx.closePath()
-                gCtx.beginPath()
-    gCtx.fillStyle = "#fc7e03"
-    if(event.touches[0].clientX>joystick.joyX-50&&event.touches[0].clientX<joystick.joyX+50&&event.touches[0].clientY>joystick.joyY-50&&event.touches[0].clientY<joystick.joyY+50){
-        gCtx.arc(event.touches[0].clientX, event.touches[0].clientY, 25, 0, 2*Math.PI)
-        joystick.innerX=event.touches[0].clientX
-    joystick.innerY=event.touches[0].clientY
-    }else if(event.touches[0].clientX>joystick.joyX-100&&event.touches[0].clientX<joystick.joyX+100&&event.touches[0].clientY>joystick.joyY-100&&event.touches[0].clientY<joystick.joyY+100){
-       
-        var accDist = Math.sqrt(Math.pow(event.touches[0].clientX-joystick.joyX, 2) + Math.pow(event.touches[0].clientY-joystick.joyY, 2))
-        var scaleFac = accDist/50
-       
-      
-        var adjX = joystick.joyX+((event.touches[0].clientX-joystick.joyX)/scaleFac)
-        var adjY = joystick.joyY+((event.touches[0].clientY-joystick.joyY)/scaleFac)
-        
-        gCtx.arc(adjX, adjY, 25, 0, 2*Math.PI)
-       gCtx.closePath()
-       
-        joystick.innerX=adjX
-    joystick.innerY=adjY
-    
-
-    }
-  
-   
-    gCtx.fill()
-    gCtx.closePath()
-  
-   
-
-})
-       
-    }
-}
-var shotJoystick = new AimJoystick(canvas.width-250, canvas.height-250)
+var moveJoystick = new Joystick(250, 250)
+var shotJoystick = new Joystick(canvas.width-250, canvas.height-250)
 function shotBind(joystick, joyName){
     setInterval(function(){
         var xOffset= joystick.innerX-joystick.joyX
@@ -1718,10 +1650,30 @@ function shotBind(joystick, joyName){
         setTimeout(aimingRadical, 6, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", joyName+".convertX", joyName+".convertY")
         aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", joyName+".convertX", joyName+".convertY")
 }
+function moveBind(joystick, joyName){
+ setInterval(function(){
+    var xOffset= joystick.innerX-joystick.joyX
+        var yOffset = joystick.innerY-joystick.joyY
+       
+
+        
+        xOffset/=4.5
+        yOffset/=4.5
+        marioObj.hitbox.pointChange(marioObj.hitbox.points, xOffset, yOffset)
+        mario.style.top=Number(mario.style.top.substring(0, mario.style.top.length - 2))+yOffset+"px"
+        mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))+xOffset+"px"
+ }, 5)
+
+}
 if(isMobile==true){
-    shotJoystick.joyFollow(shotJoystick)
+    shotJoystick.joyFollow(shotJoystick, window.innerWidth/2, window.innerWidth)
     shotJoystick.moveJoy(shotJoystick, shotJoystick.joyX, shotJoystick.joyY)
     shotJoystick.joyBind("shotBind", shotJoystick, "shotJoystick")
+    moveJoystick.joyFollow(moveJoystick, 0, window.innerWidth/2)
+    moveJoystick.moveJoy(moveJoystick, moveJoystick.joyX,moveJoystick.joyY )
+    moveJoystick.joyBind("moveBind", moveJoystick, "moveJoystick")
+    
+    
 } 
 //END OF JS CODE HERE  
 });
