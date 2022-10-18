@@ -548,11 +548,19 @@ class GameSprite{
         var yTravel = eval(targetYString+"-"+gunYString) 
         iterationX = xTravel/movementCount
        iterationY = yTravel/movementCount
+       if(iterationY>0){
         while(iterationX<3.5||iterationY<3.5){
             iterationX*=1.025
             iterationY*=1.025
             
         }
+    }else{
+        while(iterationX<3.5){
+            iterationX*=1.025
+            iterationY*=1.025
+            
+        }
+    }
         while(iterationX>4||iterationY>4){
             iterationX/=1.025
             iterationY/=1.025
