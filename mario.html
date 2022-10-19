@@ -1400,7 +1400,7 @@ var enemyDamage = setInterval(function(){
 }, 500)
 
 var aimingRadicalInterval;
-var aimRadicalHitbox;
+
 var finalY;
 var aimYIntercept;
 var aimGradient;
@@ -1417,7 +1417,7 @@ function aimingRadical(gunX, gunY, followX, followY){
      
     oldX=eval(followX)
 oldY=eval(followY)
-    aimRadicalHitbox = new Hitbox(...[[eval(gunX), eval(gunY), eval(followX), eval(followY)], ...[0], ...[]])
+  
     
      aimingRadicalInterval = setInterval(function(){
         if((eval(followY)-eval(gunY))/(eval(followX)-eval(gunX))!=Infinity){
@@ -1427,7 +1427,7 @@ oldY=eval(followY)
 aimYIntercept = eval(followY)-(aimGradient*eval(followX))
 
  finalY=aimGradient*document.body.clientWidth+aimYIntercept
-        aimRadicalHitbox.endMovement()
+       
         ctx.clearRect(0,0,canvas.width, canvas.height)
      //gCtx.clearRect(0,0,graphic.width, graphic.height)
        
@@ -1441,10 +1441,7 @@ aimYIntercept = eval(followY)-(aimGradient*eval(followX))
                     gCtx.closePath()
                     oldX=eval(followX)
 oldY=eval(followY)
-        aimRadicalHitbox.points[0]=eval(gunX)
-        aimRadicalHitbox.points[1]=eval(gunY)
-        aimRadicalHitbox.points[2]=eval(followX)
-        aimRadicalHitbox.points[3]=eval(followY)
+ 
         gCtx.beginPath()
         gCtx.strokeStyle = "#000000";
         gCtx.lineWidth = 6;
@@ -1453,7 +1450,7 @@ oldY=eval(followY)
         gCtx.stroke()
         gCtx.closePath()
        
-        
+        console.log(aimingRadicalInterval)
      }, 5)
     
      document.addEventListener("mousedown", function(event){
@@ -1462,7 +1459,7 @@ oldY=eval(followY)
         
 if (eval(followX)>eval(gunX)&&eval(followX)>0&&mouseTrue==false&&event.button==0&&isMobile==false){
     mouseTrue=true 
-    console.log("chai gawd")
+    console.log("desktop shot")
     
 marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle",window.innerWidth/4,  window.innerWidth)
 
@@ -1502,13 +1499,16 @@ var enem = new enemyAI(0.7)
 var joyBase;
 var moveCentre;
 class Joystick{
-    constructor(joyX, joyY){
+    constructor(joyX, joyY, name){
         this.joyX=joyX
         this.joyY=joyY
         this.innerX=joyX
         this.innerY=joyY
         this.convertX;
         this.convertY;
+        this.name=name;
+        this.withinBounds;
+        
     }
    
     moveJoy(joystick, x, y){
@@ -1526,8 +1526,10 @@ class Joystick{
                  
     joystick.joyX=event.touches[0].clientX
            joystick.joyY=event.touches[0].clientY
-        
-           
+           if(event.touches[0].clientX>leftBound&&event.touches[0].clientX<rightBound){
+            clearInterval(aimingRadicalInterval)
+         aimingRadical( "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", joystick.convertX, joystick.convertY)
+           }
   
     
 })
@@ -1536,7 +1538,10 @@ class Joystick{
        
         
 
-                document.addEventListener("touchmove", function(){
+                document.addEventListener("touchmove", (event) => {
+                    if(event.touches[0].clientX>leftBound&&event.touches[0].clientX<rightBound){
+                        joystick.withinBounds=true
+                       // console.log("lol")
                     gCtx.beginPath()
                     gCtx.fillStyle = "#ffffff"
                     gCtx.arc(joystick.joyX, joystick.joyY, 52, 0, 2*Math.PI)
@@ -1548,6 +1553,9 @@ class Joystick{
    
     gCtx.fill()
     gCtx.closePath()
+                    }else{
+                        joystick.withinBounds=false
+                    }
 })
        
       
@@ -1556,7 +1564,8 @@ class Joystick{
             
                 document.addEventListener("touchmove", (event) => {
                     if(event.touches[0].clientX>leftBound&&event.touches[0].clientX<rightBound){
-                    
+                        joystick.withinBounds=true
+                    //console.log("lol")
                     gCtx.beginPath()
                     gCtx.fillStyle = "#ffffff"
                     gCtx.arc(joystick.innerX, joystick.innerY, 27, 0, 2*Math.PI)
@@ -1584,7 +1593,9 @@ class Joystick{
     
     }
 
-    }
+    }else{
+                        joystick.withinBounds=false
+                    }
   
    
     gCtx.fill()
@@ -1597,24 +1608,11 @@ class Joystick{
            
        
         
-        document.addEventListener("touchend", (event)=>{
-            clearInterval(moveCentre)
-            //console.log(moveCentre)
-            clearInterval(joyBase)
-            gCtx.beginPath()
-                    gCtx.fillStyle = "#ffffff"
-                    gCtx.arc(joystick.joyX, joystick.joyY, 75, 0, 2*Math.PI)
-                    gCtx.fill()
-                    gCtx.closePath()
-                    if(mouseTrue==false){
-                    marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle",window.innerWidth/6,  window.innerWidth)
-                    mouseTrue=true
-                    }
-                    setTimeout( function(){mouseTrue=false}, 100)
-        })
+        
 
     }
     joyBind(funcString, joystick, joyName){
+
      eval(funcString+"(joystick, joyName)")
         
     
@@ -1622,8 +1620,8 @@ class Joystick{
     
     
 }
-var moveJoystick = new Joystick(250, 250)
-var shotJoystick = new Joystick(canvas.width-250, canvas.height-250)
+var moveJoystick = new Joystick(250, 250, "moveJoystick")
+var shotJoystick = new Joystick(canvas.width-250, canvas.height-250, "shotJoystick")
 function shotBind(joystick, joyName){
     setInterval(function(){
         var xOffset= joystick.innerX-joystick.joyX
@@ -1647,8 +1645,32 @@ function shotBind(joystick, joyName){
     finalY=aimGradient*document.body.clientWidth+aimYIntercept
     //console.log(aimGradient)
         }, 5)
+     
+        document.addEventListener("touchend", (event)=>{
+           
+            if(joystick.withinBounds==true){   
+                
+            console.log("YAE")                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+            clearInterval(moveCentre)
+            //console.log(moveCentre)
+            clearInterval(joyBase)
+            gCtx.beginPath()
+                    gCtx.fillStyle = "#ffffff"
+                    gCtx.arc(joystick.joyX, joystick.joyY, 75, 0, 2*Math.PI)
+                    gCtx.fill()
+                    gCtx.closePath()
+                    if(mouseTrue==false){
+                    marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle",window.innerWidth/6,  window.innerWidth)
+                    mouseTrue=true
+                    }
+                    setTimeout( function(){mouseTrue=false}, 100)
+                }
+                
+        })
+    
         setTimeout(aimingRadical, 6, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", joyName+".convertX", joyName+".convertY")
-        aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", joyName+".convertX", joyName+".convertY")
+        //aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", joyName+".convertX", joyName+".convertY")
+    
 }
 function moveBind(joystick, joyName){
  setInterval(function(){
@@ -1670,9 +1692,9 @@ if(isMobile==true){
     shotJoystick.joyFollow(shotJoystick, window.innerWidth/2, window.innerWidth, "#8dc5fc", "#0381fc")
     shotJoystick.moveJoy(shotJoystick, shotJoystick.joyX, shotJoystick.joyY)
     shotJoystick.joyBind("shotBind", shotJoystick, "shotJoystick")
-    moveJoystick.joyFollow(moveJoystick, 0, window.innerWidth/2, "#723a03","#fc7e03" )
-    moveJoystick.moveJoy(moveJoystick, moveJoystick.joyX,moveJoystick.joyY )
-    moveJoystick.joyBind("moveBind", moveJoystick, "moveJoystick")
+    //moveJoystick.joyFollow(moveJoystick, 0, window.innerWidth/2, "#723a03","#fc7e03" )
+    //moveJoystick.moveJoy(moveJoystick, moveJoystick.joyX,moveJoystick.joyY )
+    //moveJoystick.joyBind("moveBind", moveJoystick, "moveJoystick")
     
     
 } 
