@@ -101,6 +101,13 @@ position: absolute;
     left: 0px; 
     top: 1px;
 }
+#start{
+    z-index:1;
+}
+#end{
+    z-index:1;
+    display:none;
+}
 
 
         </style>
@@ -512,8 +519,11 @@ class GameSprite{
     }
     //allows the sprite's health to be changed - calls kill when necessary
     healthChange(  change,  killX, obj){
+        
         obj.gamesprite.health+=change
-       
+        if(obj.gamesprite.health>obj.gamesprite.maxHealth){
+            obj.gamesprite.health-=(obj.gamesprite.health-obj.gamesprite.maxHealth)
+        }
         if (obj.gamesprite.health<=0){
            
             obj.gamesprite.kill(20, obj.gamesprite.name, killX, obj)   
@@ -1781,24 +1791,25 @@ function healthBar(obj, healthX, healthY, colour ){
     var healthBarRatio=obj.gamesprite.health/obj.gamesprite.maxHealth
     setInterval(function(){
         healthBarRatio=obj.gamesprite.health/obj.gamesprite.maxHealth
-
+       
+        
         if(healthBarRatio>0){
             gCtx.fillStyle=colour
             gCtx.beginPath()
             gCtx.arc(healthX+20, healthY+12.5, 6.5, Math.PI/2,  1.5*Math.PI, false)
             gCtx.fill()
-            gCtx.closePath
-            for(var p=0;p<(Math.round(healthBarRatio*10))+1;p++){
-                gCtx.fillRect(healthX+20, healthY+5, (p+1)*6, 15)
-                if(p==10){
-                gCtx.arc(healthX+80, healthY+12.5, 6.5, Math.PI/2,  1.5*Math.PI, false)
-            
-            }
-            
-            }
-          
+            gCtx.closePath()
+            gCtx.beginPath()
+           gCtx.fillRect(healthX+20, healthY+5, healthBarRatio*60, 15)
+           gCtx.closePath()
+           gCtx.beginPath()
+           if(healthBarRatio>=0.9){
+           gCtx.arc(healthX+80, healthY+12.5, 6.5, Math.PI/2,  1.5*Math.PI, true)  
+           }
+           gCtx.fill()
+           gCtx.closePath()
         }
-        console.log(Math.round(healthBarRatio*10))
+       
         gCtx.strokeStyle="#000000"
         gCtx.lineWidth=1
     gCtx.beginPath()
@@ -1827,8 +1838,46 @@ function healthBar(obj, healthX, healthY, colour ){
 }
 healthBar(marioObj, 0,0, "#00FF00")
 healthBar(enemyObj, window.innerWidth-100, 0, "#FF0000")
-var ex=setInterval(marioObj.gamesprite.healthChange, 500, -5000, 50000, marioObj )
-setTimeout(clearInterval, 5000, ex)
+
+class Bow{
+    constructor(point1X, point2X, point3X, point4X, point1Y, point2Y, point3Y, point4Y, ...colourArr){
+        this.point1X=point1X
+        this.point2X=point2X
+        this.point3X=point3X
+        this.point4X=point4X
+        this.point1Y=point1Y
+        this.point2Y=point2Y
+        this.point3Y=point3Y
+        this.point4Y=point4Y
+        this.colourArr=colourArr
+
+    }
+    drawBow(bow){
+        var verticalHeight=bow.point4Y-bow.point2Y
+        var bodyWidth=bow.point4X-bow.point2X
+        px1=1/verticalHeight+verticalheight
+        relSize=1/verticalHeight
+        gCtx.fillStyle=colourArr[0]
+        gCtx.fillRect(bow.point2X, bow.point2Y, 2*relSize, 2*relSize)
+        gCtx.fillStyle=colourArr[1]
+        gCtx.fillRect(bow.point2X+px1, bow.point2Y+(px1+1/verticalHeight), 4*relSize,2*relSize )
+        px1+=1/verticalHeight
+        gCtx.fillStyle=colourArr[2]
+        gCtx.fillRect(bow.point2X+px1, bow.point2Y+(px1+1/verticalHeight), 3*relSize,4*relSize )
+        px1+=1/verticalHeight
+        gCtx.fillStyle=colourArr[3]
+        gCtx.fillRect(bow.point2X+px1, bow.point2Y+(px1+1/verticalHeight), 3*relSize, 4*relSize)
+        px1+=1/verticalHeight
+        gCtx.fillStyle=colourArr[4]
+        gCtx.fillRect(bow.point2X+px1, bow.point2Y+(px1+1/verticalHeight), 3*relSize, 4*relSize)
+        px1+=1/verticalHeight
+        gCtx.fillStyle=colourArr[5]
+        gCtx.fillRect(bow.point2X+px1, bow.point2Y+(px1+1/verticalHeight), 3*relSize, 5*relSize)
+
+     
+    }
+}
+
 
 //END OF JS CODE HERE  
 });
@@ -1858,6 +1907,14 @@ setTimeout(clearInterval, 5000, ex)
 <button id = "down">down</button>
 <button id = "right">right</button>
 <button id ="left">left</button>
+<div id = "start">
+
+
+</div>
+<div id="end">
+
+
+</div>
 
 
     </body>
