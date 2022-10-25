@@ -1849,35 +1849,82 @@ class Bow{
         this.point2Y=point2Y
         this.point3Y=point3Y
         this.point4Y=point4Y
-        this.colourArr=colourArr
+        this.colourArr=colourArr[0]
 
     }
     drawBow(bow){
-        var verticalHeight=bow.point4Y-bow.point2Y
+        var verticalHeight=bow.point4Y-bow.point2Y-14
         var bodyWidth=bow.point4X-bow.point2X
-        px1=1/verticalHeight+verticalheight
-        relSize=1/verticalHeight
-        gCtx.fillStyle=colourArr[0]
-        gCtx.fillRect(bow.point2X, bow.point2Y, 2*relSize, 2*relSize)
-        gCtx.fillStyle=colourArr[1]
-        gCtx.fillRect(bow.point2X+px1, bow.point2Y+(px1+1/verticalHeight), 4*relSize,2*relSize )
-        px1+=1/verticalHeight
-        gCtx.fillStyle=colourArr[2]
-        gCtx.fillRect(bow.point2X+px1, bow.point2Y+(px1+1/verticalHeight), 3*relSize,4*relSize )
-        px1+=1/verticalHeight
-        gCtx.fillStyle=colourArr[3]
-        gCtx.fillRect(bow.point2X+px1, bow.point2Y+(px1+1/verticalHeight), 3*relSize, 4*relSize)
-        px1+=1/verticalHeight
-        gCtx.fillStyle=colourArr[4]
-        gCtx.fillRect(bow.point2X+px1, bow.point2Y+(px1+1/verticalHeight), 3*relSize, 4*relSize)
-        px1+=1/verticalHeight
-        gCtx.fillStyle=colourArr[5]
-        gCtx.fillRect(bow.point2X+px1, bow.point2Y+(px1+1/verticalHeight), 3*relSize, 5*relSize)
-
+        var px1=1/verticalHeight+verticalHeight
+        var py1=((1/42)*verticalHeight)+verticalHeight
+        var relSize=((1/42)*verticalHeight)
+       
+        setInterval(function(){
+            px1=((1/42)*verticalHeight)+bow.point2X
+            py1=((1/42)*verticalHeight)+bow.point2Y
+            //top part of the bow's body
+        gCtx.fillStyle=bow.colourArr[0]
+        gCtx.fillRect(px1, py1, 2*relSize, 2*relSize)
+        px1+=((1/42)*verticalHeight)
+        py1+=2*((1/42)*verticalHeight)
+        gCtx.fillStyle=bow.colourArr[1]
+        gCtx.fillRect(px1, py1, 3*relSize,2*relSize )
+        px1+=((1/42)*verticalHeight)
+        py1+=2*((1/42)*verticalHeight)
+        gCtx.fillStyle=bow.colourArr[2]
+        gCtx.fillRect(px1, py1, 3*relSize,4*relSize )
+        px1+=((1/42)*verticalHeight)
+        py1+=4*((1/42)*verticalHeight)
+        gCtx.fillStyle=bow.colourArr[3]
+        gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
+        px1+=((1/42)*verticalHeight)
+        py1+=4*((1/42)*verticalHeight)
+        gCtx.fillStyle=bow.colourArr[4]
+        gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
+        px1+=((1/42)*verticalHeight)
+        py1+=4*((1/42)*verticalHeight)
+        gCtx.fillStyle=bow.colourArr[5]
+        gCtx.fillRect(px1, py1, 3*relSize, 5*relSize)
+            //bottom part of the bows body
+        px1=((1/42)*verticalHeight)+bow.point2X
+            py1=((1/42)*verticalHeight)+bow.point2Y
+            py1+=((1/42)*verticalHeight)*42
+        gCtx.fillStyle=bow.colourArr[0]
+        gCtx.fillRect(px1, py1, 2*relSize, 2*relSize)
+        px1+=((1/42)*verticalHeight)
+        py1-=2*((1/42)*verticalHeight)
+        gCtx.fillStyle=bow.colourArr[1]
+        gCtx.fillRect(px1, py1, 3*relSize,2*relSize )
+        px1+=((1/42)*verticalHeight)
+        py1-=4*((1/42)*verticalHeight)
+        gCtx.fillStyle=bow.colourArr[2]
+        gCtx.fillRect(px1, py1, 3*relSize,4*relSize )
+        px1+=((1/42)*verticalHeight)
+        py1-=4*((1/42)*verticalHeight)
+        gCtx.fillStyle=bow.colourArr[3]
+        gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
+        px1+=((1/42)*verticalHeight)
+        py1-=4*((1/42)*verticalHeight)
+        gCtx.fillStyle=bow.colourArr[4]
+        gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
+        px1+=((1/42)*verticalHeight)
+        py1-=4*((1/42)*verticalHeight)
+        gCtx.fillStyle=bow.colourArr[5]
+      console.log(bow.colourArr[5])
+        gCtx.fillRect(px1, py1, 3*relSize, 5*relSize)
+        //string
+        gCtx.strokeStyle=bow.colourArr[6]
+        gCtx.moveTo(bow.point2X , bow.point2Y+((1/28)*verticalHeight) )
+        gCtx.lineTo(bow.point3X, bow.point3Y)
+        gCtx.lineTo(bow.point4X, bow.point4Y)
+        gCtx.stroke()
+        }, 5)
      
     }
 }
-
+playerColourArr = ["#000000","#000000","#000000","#000000","#000000", "#000000"]
+var playerBow = new Bow(600,  600, 550,600, 300, 150, 314,450, [...playerColourArr] )
+playerBow.drawBow(playerBow)
 
 //END OF JS CODE HERE  
 });
