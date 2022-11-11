@@ -151,21 +151,35 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
         canvas.style.width=canvasStyle.getPropertyValue("width")
         canvas.style.height=canvasStyle.getPropertyValue("height")
    //mouseX and mouseY used later in the code
+   var mouseEnd;
+   setInterval(function(){
+    mouseEnd = true
+   }, 20)
      document.addEventListener("mousemove", function(event){
+  
+       
         mouseX = event.clientX;
 
 mouseY = event.clientY;
 ////console.log(mouseX)
-
+        mouseEnd=false
 
      lol=true
-          }, 10)
-          var canvasClear= setInterval(function(){
+
+          })
+     
+          var graphicClear= setInterval(function(){
             //dev canvas is constantly resizing bc im lazy
+
+      
             gCtx.clearRect(0,0, graphic.width, graphic.height)
  //console.log(canvas.height)
      
-          }, 1000)
+          }, 2500)
+         var devClear = setInterval(function(){
+             ctx.clearRect(0,0,canvas.width, canvas.height)
+         }, 10)
+          
           //used as an interval for visual representation of hitbox
           var reDraw;
          
@@ -504,7 +518,7 @@ class GameSprite{
     }
     //moves the img and hitbox to a given place(very var X)
     kill(afterTime, img, killX, obj ){
-        //console.log(obj.gamesprite.name)
+
         setTimeout(function(){
             
             
@@ -535,7 +549,7 @@ class GameSprite{
     //damage immunity toggle asks whether damage immunity is enabled
     //damage immunity store asks whether the immunity is active
     damageReceiver(obj, damagerSprite, damageeSprite, killXer, killXee ){
-        console.log(obj.gamesprite.name)
+
        if(damagerSprite.damageImmunityToggle==true){
        if(damagerSprite.damageImmunityStore==false){
        
@@ -1031,7 +1045,7 @@ function move_m(direction){
        changer = -1;
       
        //checks if it is within limits
-       if (Number(mario.style.top.substring(0, mario.style.top.length - 2))<=0){
+       if (playerBow.point2X<=0){
           
        }else{
            //actually changes value
@@ -1040,6 +1054,8 @@ function move_m(direction){
            marioObj.hitbox.pointChange(marioObj.hitbox.points,0,-1)
             marioObj.hitbox.movement(marioObj.hitbox.points, 1)
             
+            playerBow.clearString(playerBow, friendlyArrow)
+            playerBow.bowMove(playerBow, 0, -1)
         }
       
        break;
@@ -1480,7 +1496,7 @@ function aimingRadical(gunX, gunY, followX, followY){
     //creates an animation that shows where projectiles will be shot
 
   
-     
+    
     oldX=eval(followX)
 oldY=eval(followY)
   
@@ -1491,12 +1507,10 @@ oldY=eval(followY)
         }
 
 aimYIntercept = eval(followY)-(aimGradient*eval(followX))
-
 finalY=aimGradient*document.body.clientWidth+aimYIntercept
 
 
        
-        ctx.clearRect(0,0,canvas.width, canvas.height)
      //gCtx.clearRect(0,0,graphic.width, graphic.height)
        
      gCtx.beginPath()
@@ -1529,7 +1543,7 @@ if (eval(followX)>eval(gunX)&&eval(followX)>0&&mouseTrue==false&&event.button==0
     mouseTrue=true 
     console.log("desktop shot")
     
-marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle",window.innerWidth/4,  window.innerWidth)
+marioObj.gamesprite.shoot(enemyProjectileObj2, eval(gunX), eval(gunY),  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle",window.innerWidth/4,  window.innerWidth)
 
 
 setTimeout( function(){mouseTrue=false}, 500)
@@ -1547,7 +1561,7 @@ setTimeout( function(){mouseTrue=false}, 500)
 var infEnem=setInterval(enemyObj.gamesprite.respawn(300, 300, false, enemyObj, 10),10)
 setTimeout(function(){
     if(isMobile==false){
-    aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", "mouseX", "mouseY")
+    //aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", "mouseX", "mouseY")
    
     }
 }, 20)
@@ -1704,8 +1718,8 @@ function shotBind(joystick, joyName){
         
         xOffset*=4.5
         yOffset*=4.5
-        joystick.convertX=xOffset+marioObj.hitbox.points[2]
-        joystick.convertY = yOffset+marioObj.hitbox.points[3]
+        joystick.convertX=xOffset+playerBow.point3X
+        joystick.convertY = yOffset+playerBow.point3Y
        
        
         
@@ -1730,7 +1744,7 @@ function shotBind(joystick, joyName){
                     gCtx.closePath()
                     if(mouseTrue==false){
                    
-                            marioObj.gamesprite.shoot(enemyProjectileObj2, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle",window.innerWidth,  window.innerWidth)
+                            marioObj.gamesprite.shoot(enemyProjectileObj2, "playerBow.point3X", "playerBow.point3Y",  "document.body.clientWidth","finalY","marioObj.gamesprite.shotDelayToggle",window.innerWidth,  window.innerWidth)
                       
                     
                     mouseTrue=true
@@ -1740,7 +1754,7 @@ function shotBind(joystick, joyName){
                 
         })
     
-        setTimeout(aimingRadical, 6, "marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", joyName+".convertX", joyName+".convertY")
+        setTimeout(aimingRadical, 6, "playerBow.point3X", "playerBow.point3Y", joyName+".convertX", joyName+".convertY")
         //aimingRadical("marioObj.hitbox.points[2]", "marioObj.hitbox.points[3]", joyName+".convertX", joyName+".convertY")
     
 }
@@ -1785,8 +1799,7 @@ if(isMobile==true){
     
     
 } 
-console.log(marioObj.gamesprite.health)
-console.log(marioObj.gamesprite.maxHealth)
+
 function healthBar(obj, healthX, healthY, colour ){
     var healthBarRatio=obj.gamesprite.health/obj.gamesprite.maxHealth
     setInterval(function(){
@@ -1832,7 +1845,7 @@ function healthBar(obj, healthX, healthY, colour ){
     
     gCtx.stroke()
     gCtx.closePath()
-    }, 5)
+    }, 10)
    
     
 }
@@ -1850,8 +1863,24 @@ class Bow{
         this.point3Y=point3Y
         this.point4Y=point4Y
         this.colourArr=colourArr[0]
+        this.verticalHeight = point4Y-point2Y-14
+        this.rotInt;
+        this.oYDiff
+        this.oXDiff
+        this.idealX = point3X+150
+        this.idealY = point3Y
+        this.arrowCount = 0
 
     }
+    clearString(bow, arrow){
+        
+            gCtx.fillStyle = "#FFFFFF" 
+            arrow.clearArrow(arrow, bow)
+            gCtx.clearRect(bow.point1X, bow.point2Y, (bow.point2X-bow.point1X)+7, bow.verticalHeight+15)   
+            arrow.drawArrow(arrow)
+            
+    }
+ 
     drawBow(bow){
         var verticalHeight=bow.point4Y-bow.point2Y-14
         var bodyWidth=bow.point4X-bow.point2X
@@ -1860,9 +1889,12 @@ class Bow{
         var relSize=((1/42)*verticalHeight)
        
         setInterval(function(){
+            
+            
             px1=((1/42)*verticalHeight)+bow.point2X
             py1=((1/42)*verticalHeight)+bow.point2Y
             //top part of the bow's body
+        gCtx.lineWidth = 1
         gCtx.fillStyle=bow.colourArr[0]
         gCtx.fillRect(px1, py1, 2*relSize, 2*relSize)
         px1+=((1/42)*verticalHeight)
@@ -1910,21 +1942,197 @@ class Bow{
         px1+=((1/42)*verticalHeight)
         py1-=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[5]
-      console.log(bow.colourArr[5])
+     
         gCtx.fillRect(px1, py1, 3*relSize, 5*relSize)
         //string
         gCtx.strokeStyle=bow.colourArr[6]
-        gCtx.moveTo(bow.point2X , bow.point2Y+((1/28)*verticalHeight) )
-        gCtx.lineTo(bow.point3X, bow.point3Y)
-        gCtx.lineTo(bow.point4X, bow.point4Y)
+      
+        gCtx.moveTo(bow.point2X+7 , bow.point2Y+((1/28)*verticalHeight) )
+        gCtx.lineTo(bow.point1X+7, bow.point1Y+1)
+        gCtx.lineTo(bow.point4X+7, bow.point4Y)
         gCtx.stroke()
-        }, 5)
+      
+        }, 10)
+
      
     }
+    aimBow(bow, arrow){
+       var aimer =  setInterval(function(){
+        bow.clearString(bow, arrow)
+        bow.point1X-=4
+       
+           
+        }, 5)
+        setTimeout(clearInterval, 200, aimer)
+    }
+    releaseBow(bow, arrow){
+       var  releaser = setInterval(function(){
+           
+        gCtx.fillStyle = "#FFFFFF"
+           
+            //bow.clearString(bow, arrow)
+            bow.point1X+=14
+            
+        }, 5)
+        setTimeout(clearInterval, 50, releaser)
+        
+    }
+    bowBind(func){
+        eval(func)
+    }
+    bowMove(bow, x, y){
+       bow.bowBodyClear(bow)
+        bow.point1X+=x
+        bow.point2X+=x
+        bow.point3X+=x
+        bow.point4X+=x
+       
+        bow.point1Y+=y
+        bow.point2Y+=y
+        bow.point3Y+=y
+        bow.point4Y+=y
+       
+        bow.drawBow(bow)
+    }
+    bowBodyClear(bow){
+        gCtx.fillStyle - "FF0000"
+        gCtx.fillRect(bow.point1X, bow.point2Y, (bow.point3X-bow.point1X), (bow.verticalHeight)+21)
+        gCtx.clearRect(bow.point1X, bow.point2Y, (bow.point3X-bow.point1X), (bow.verticalHeight)+21)
+    }
+
+
+
 }
 playerColourArr = ["#000000","#000000","#000000","#000000","#000000", "#000000"]
-var playerBow = new Bow(600,  600, 550,600, 300, 150, 314,450, [...playerColourArr] )
+var playerBow = new Bow(600,  600, 670,600, 308.5, 150, 314,450, [...playerColourArr] )
+function playerBind(bow, bowString){
+    if(isMobile==false){
+  
+    aimingRadical(bowString+".point3X", bowString+".point3Y", "mouseX", "mouseY")
+    }
+
+}
+
+var arrowGameObjArr;
+var arrowImgArr
+//setTimeout(playerBow.releaseBow, 250, playerBow)
+class Arrow{
+    constructor(width1, width2, width3, point1X, point1Y, point2X, point2Y){
+        this.width1=width1
+        this.width2=width2
+        this.width3=width3
+        this.points = []
+        this.gradient;
+        this.yIntercept;
+        this.point1X=point1X
+        this.point2X=point2X
+        this.point1Y=point1Y
+        this.point2Y=point2Y
+        this.totalLength=this.point2X-this.point1X
+        this.identifier;
+        
+        
+        
+    }
+    drawArrow(arrow){
+        var totalLength = arrow.point2X-arrow.point1X
+       function fletchlingDraw(){
+        arrow.gradient = (arrow.point2Y-arrow.point1Y)/(arrow.point2X-arrow.point1X)
+
+        arrow.yIntercept = arrow.point1Y-(arrow.gradient*arrow.point1X)
+        gCtx.lineWidth = 1
+        //back of arrow
+        gCtx.beginPath()
+        gCtx.moveTo(arrow.point1X-65, arrow.point1Y+10)
+        gCtx.lineTo(arrow.point1X-71, arrow.point1Y+1)
+        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-71, arrow.point1Y+1)
+        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-65, arrow.point1Y+10)
+        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-71, arrow.point1Y+19)
+        gCtx.lineTo(arrow.point1X-71, arrow.point1Y+19)
+        gCtx.lineTo(arrow.point1X-65, arrow.point1Y+10)
+        gCtx.stroke()
+        gCtx.closePath()
+        //front of arrow
+        gCtx.beginPath()
+        gCtx.moveTo(arrow.point2X-65, arrow.point2Y+10)
+       gCtx.lineTo(arrow.point2X-71, arrow.point2Y+1)
+       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-71, arrow.point2Y+1)
+       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-65, arrow.point2Y+10)
+       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-71, arrow.point2Y+19)
+       gCtx.lineTo(arrow.point2X-71, arrow.point2Y+19)
+       gCtx.lineTo(arrow.point2X-65, arrow.point2Y+10)
+       gCtx.stroke()
+       gCtx.closePath()
+    // body of arrow
+        gCtx.beginPath()
+        gCtx.moveTo(arrow.point1X+(totalLength*arrow.width1)-65, arrow.point1Y+10)
+        gCtx.lineTo(arrow.point2X-65, arrow.point2Y+10)
+        gCtx.stroke()
+        gCtx.closePath()
+
+        }
+        
+        var draw = setInterval(function(){
+            fletchlingDraw()
+        }, 10)
+
+    }
+    clearArrow(arrow, bow){
+        var clear = setInterval(function(){
+            gCtx.clearRect(arrow.point1X-71, arrow.point2Y+1,bow.totalLength*(arrow.width1+arrow.width2+arrow.width3)-65, 18 )
+        }, 10)
+
+    }
+    arrowGameObj(arrow, arrowGameObjArrString, arrowImgArrString, bow){
+   bow.arrowCount+=1
+   arrow.identifier=bow.arrowCount
+    var arrowPointsArray = [arrow.point1X-65, arrow.point1Y+10, arrow.point1X-71, arrow.point1Y+1, arrow.point1X+(arrow.totalLength*arrow.width1)-71,arrow.point1Y+1,arrow.point1X+(arrow.totalLength*arrow.width1)-65, arrow.point1Y+10,arrow.point1X+(arrow.totalLength*arrow.width1)-71, arrow.point1Y+19, arrow.point1X-71, arrow.point1Y+19, arrow.point1X-65, arrow.point1Y+10, arrow.point1X+(arrow.totalLength*arrow.width1)-65,arrow.point2X-65, arrow.point2Y+10,  arrow.point1Y+10, arrow.point2X-65, arrow.point2Y+10,arrow.point2X-71, arrow.point2Y+1, arrow.point2X+(arrow.totalLength*arrow.width1), arrow.point2X+(arrow.totalLength*arrow.width1), arrow.point2X+(arrow.totalLength*arrow.width1), arrow.point2X-71, arrow.point2Y+19, arrow.point2X-65, arrow.point2Y+10 ]
+    var arrowOrientationArray = [0, 2, 0, 0, 2,0, 2, 0, 2, 0, 0, 2,0]
+    var arrowContentsArray = [true, false, false, true, true, false, /*this is the single line - need to fix dat one tho*/true,true, false, false, true, true, false  ]
+    class style{
+        constructor(left, right){
+            this.left=left
+            this.right=right
+        }
+    }
+    class arrowImg{
+        constructor(style){
+            this.style=style
+        }
+    }
+    var arrowStyle = new style(String(bow.point3X)+"px", String(bow.point3Y)+"px")
+    var arrowImage = new arrowImg(arrowStyle)
+
+//within gameSprite, the arguments are health, name, damage, type of damage, and damage that can be received
+//gameObj for declaring the hitbox, gamesprite
+var arrowgameObj = new gameObj(new Hitbox(...[[...arrowPointsArray],[...arrowOrientationArray] , [...arrowContentsArray]]), new GameSprite(1, "", -10, 0,false, false, 0,  ...[...[]]))
+ eval(arrowGameObjArrString+".push(arrowgameObj)")
+ eval(arrowImgArrString+".push(arrowImage)")
+ arrowgameObj.gamesprite.name = arrowImgArrString+"["+String(eval(arrowImgArrString).length-1)+"]"
+console.log(arrowGameObjArrString)
+eval(arrowGameObjArrString)[arrow.identifier-1].hitbox.movement(eval(arrowGameObjArrString)[arrow.identifier-1].hitbox.points, 1)
+    }
+    shootArrow(){
+        
+    }
+    
+}
+var friendlyArrow = new Arrow(1/6, 2/3, 1/6, 600, 300, 780, 300)
+friendlyArrow.drawArrow(friendlyArrow)
+var friendlyGameObjArr = []
+var friendlyArrowImgArr = []
+
 playerBow.drawBow(playerBow)
+playerBow.aimBow(playerBow, friendlyArrow)
+friendlyArrow.arrowGameObj(friendlyArrow, 'friendlyGameObjArr', "friendlyArrowImgArr", playerBow)
+
+playerBind(playerBow, "playerBow")
+
+setInterval(function(){
+
+   
+}, 1000)
+
 
 //END OF JS CODE HERE  
 });

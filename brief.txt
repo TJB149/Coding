@@ -1,0 +1,23 @@
+Basically, I didn’t ask
+
+To Do
+
+Heavy
+Mini
+	⁃	get arrow hitbox up and running
+	⁃	bow hitbox
+	⁃	arrow array up and running
+	⁃	binding arrows to the shoot function
+Mega
+	⁃	rotating arrows(if its effort I cant be asked)
+	⁃	enemy shooting
+
+Soft
+	⁃	enemy ai (AUUGGHGHGHGHGHGHGHHGHGHHG)
+	⁃	different game states(game over etc.)
+	⁃	background art
+	⁃	menu screen
+	⁃	music?
+	⁃	usernames (forms)(cookies?)(stored in a database?)
+
+
