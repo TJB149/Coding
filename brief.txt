@@ -4,7 +4,7 @@ To Do
 
 Heavy
 Mini
-	⁃	get arrow hitbox up and running
+	⁃	get arrow hitbox up and running/
 	⁃	bow hitbox
 	⁃	arrow array up and running
 	⁃	binding arrows to the shoot function

@@ -856,31 +856,28 @@ for( var k=0;k<points.length;k++){
 
             for(var l=0; l<horizontalTrue.length; l++){
 
-
                 if (horizontalTrue[l]==2){
-                    //console.log("current item is horizontal")
+       
                    // //console.log(lines.length)
                     if(aboveBelow[l]==true){
-                        //console.log("point must be above line")
-                        if(checkingY<=points[2*l]){
+                        
+                        if(checkingY<points[2*l+1]){
 
                         } else{
                             console.log("failed")
                             fitsAllCriteria=false
-
+                            console.log(checkingY)
+                            console.log(points[2*l+1])
                         }
                     }else{
-                        //console.log("point must be below line")
-                        if(checkingY>=points[2*l]){
-
+                     
+                        if(checkingY>points[2*l+1]){
+                           
                         }else{
-                            //console.log("failed horizontal below")
-
                           
-                            //console.log(points.length)
-                            //console.log(checkingY)
-                            
-                            //here's the problem
+                          
+                          
+                          console.log("failed")
                             
                             fitsAllCriteria=false
                             
@@ -890,7 +887,7 @@ for( var k=0;k<points.length;k++){
                     //console.log("current item is  vertical")
                     if(aboveBelow[l]==true){
                         //console.log("point must be to the left of  line")
-                        if(checkingY<=points[2*l+1]){
+                        if(checkingX<points[2*l]){
 
                         }else{
                             console.log("failed")
@@ -898,7 +895,7 @@ for( var k=0;k<points.length;k++){
                         }
                     }else{
                         //console.log("point must be below line")
-                        if(checkingY>=points[2*l+1]){
+                        if(checkingX>points[2*l]){
 
                         } else{
                             console.log("failed")
@@ -910,17 +907,19 @@ for( var k=0;k<points.length;k++){
                     //console.log("current item is diagonal")
                     if(aboveBelow[l]==true){
                         //console.log("point must be above line")
-                            if(checkingY<=(lines[l].gradient*checkingX)+lines[l].yIntercept){
+                        if((Math.max(checkingX, lines[l].point1X, lines[l].point2X)!=checkingX&&Math.min(checkingX, lines[l].point1X, lines[l].point2X)!=checkingX)){
+                            if(checkingY<((lines[l].gradient*checkingX)+lines[l].yIntercept||lines[l].gradient==Infinity)){
 
                             }else{
                             console.log("failed")
                             
                             fitsAllCriteria=false
                         }
+                    }
                     }else{
                         //console.log("point must be below line")
-
-                        if(checkingY>=((lines[l].gradient*checkingX)+lines[l].yIntercept)||lines[l].gradient==Infinity){
+                        if((Math.max(checkingX, lines[l].point1X, lines[l].point2X)!=checkingX&&Math.min(checkingX, lines[l].point1X, lines[l].point2X)!=checkingX)){
+                        if(checkingY>((lines[l].gradient*checkingX)+lines[l].yIntercept)||lines[l].gradient==Infinity){
 
                             }else{
                            
@@ -929,16 +928,18 @@ for( var k=0;k<points.length;k++){
 
 
                         }
+                    }
 
                     
                 }
             
-            return fitsAllCriteria  
+         
 }
 
 
 
 }
+return fitsAllCriteria  
 }
 
 
@@ -1465,7 +1466,7 @@ function hitboxCollision(colliderObj, collideeObj){
 
 var collide;
 var enemyDamage = setInterval(function(){
-    collide=hitboxCollision(enemyObj, enemyProjectileObj2)
+    //collide=hitboxCollision(enemyObj, enemyProjectileObj2)
     
     //console.log(collide)
     if(collide==true){
@@ -2086,9 +2087,13 @@ class Arrow{
     arrowGameObj(arrow, arrowGameObjArrString, arrowImgArrString, bow){
    bow.arrowCount+=1
    arrow.identifier=bow.arrowCount
-    var arrowPointsArray = [arrow.point1X-65, arrow.point1Y+10, arrow.point1X-71, arrow.point1Y+1, arrow.point1X+(arrow.totalLength*arrow.width1)-71,arrow.point1Y+1,arrow.point1X+(arrow.totalLength*arrow.width1)-65, arrow.point1Y+10,arrow.point1X+(arrow.totalLength*arrow.width1)-71, arrow.point1Y+19, arrow.point1X-71, arrow.point1Y+19, arrow.point1X-65, arrow.point1Y+10, arrow.point1X+(arrow.totalLength*arrow.width1)-65,arrow.point2X-65, arrow.point2Y+10,  arrow.point1Y+10, arrow.point2X-65, arrow.point2Y+10,arrow.point2X-71, arrow.point2Y+1, arrow.point2X+(arrow.totalLength*arrow.width1), arrow.point2X+(arrow.totalLength*arrow.width1), arrow.point2X+(arrow.totalLength*arrow.width1), arrow.point2X-71, arrow.point2Y+19, arrow.point2X-65, arrow.point2Y+10 ]
-    var arrowOrientationArray = [0, 2, 0, 0, 2,0, 2, 0, 2, 0, 0, 2,0]
-    var arrowContentsArray = [true, false, false, true, true, false, /*this is the single line - need to fix dat one tho*/true,true, false, false, true, true, false  ]
+   //defines where a point must be to be within the hitbox, true is above a given line, false is below, (left/right respectively for vertical lines)
+    var arrowPointsArray = [534 ,314, 528, 302, 560, 302, 567, 307/*end of top of first arrow fletchlincg*/,710, 307, 705, 300, 739, 300, 748, 310, 740, 322, 705, 322, 710,  313,/*end of  secondfletchlincg*/ 567, 313, 560, 322, 528, 322, 534, 314]
+    var arrowOrientationArray = [0, 2, 0, 2, 0,2, 0, 0, 2, 0, 2, 0,2, 0]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+    var arrowContentsArray = [true, false, false,false,true, false, false, true, true, false, true, true, true, false    ]
+
+
+
     class style{
         constructor(left, right){
             this.left=left
@@ -2109,7 +2114,7 @@ var arrowgameObj = new gameObj(new Hitbox(...[[...arrowPointsArray],[...arrowOri
  eval(arrowGameObjArrString+".push(arrowgameObj)")
  eval(arrowImgArrString+".push(arrowImage)")
  arrowgameObj.gamesprite.name = arrowImgArrString+"["+String(eval(arrowImgArrString).length-1)+"]"
-console.log(arrowGameObjArrString)
+
 eval(arrowGameObjArrString)[arrow.identifier-1].hitbox.movement(eval(arrowGameObjArrString)[arrow.identifier-1].hitbox.points, 1)
     }
     shootArrow(){
@@ -2125,6 +2130,7 @@ var friendlyArrowImgArr = []
 playerBow.drawBow(playerBow)
 playerBow.aimBow(playerBow, friendlyArrow)
 friendlyArrow.arrowGameObj(friendlyArrow, 'friendlyGameObjArr', "friendlyArrowImgArr", playerBow)
+console.log(friendlyGameObjArr[0].hitbox.collisionDetect(friendlyGameObjArr[0].hitbox.points,  720, 310,friendlyGameObjArr[0].hitbox.horizontalTrue, friendlyGameObjArr[0].hitbox.aboveBelow))
 
 playerBind(playerBow, "playerBow")
 
