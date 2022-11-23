@@ -5,15 +5,19 @@ To Do
 Heavy
 Mini
 	⁃	get arrow hitbox up and running/
-	⁃	bow hitbox
-	⁃	arrow array up and running
-	⁃	binding arrows to the shoot function
+	⁃	bow hitbox/
+	⁃	arrow array up and running/ + arrow deletion -
+	-	arrow movement
+	-	bind arrow to shoot function
+	-	create player character
+	-	player movement
+
 Mega
-	⁃	rotating arrows(if its effort I cant be asked)
+	⁃	rotating arrows
 	⁃	enemy shooting
 
 Soft
-	⁃	enemy ai (AUUGGHGHGHGHGHGHGHHGHGHHG)
+	⁃	enemy attack pattern
 	⁃	different game states(game over etc.)
 	⁃	background art
 	⁃	menu screen

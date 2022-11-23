@@ -503,7 +503,7 @@ class enemyAI{
 }
 //carrys out function s such as shooting and killing things
 class GameSprite{
-    constructor(health, name, damage, damageClass,damageImmunityStore, damageImmunityToggle,damageImmunityTime,   ...allArr){
+    constructor(health, name, damage, damageClass,damageImmunityStore, damageImmunityToggle,damageImmunityTime,   ...allArr_gunPoints){
         this.health=health
         this.maxHealth=health
         this.name=name
@@ -512,9 +512,9 @@ class GameSprite{
         this.damageImmunityStore=damageImmunityStore
         this.damageImmunityToggle=damageImmunityToggle
         this.shotDelayToggle=false
-        this.allArr=allArr
+        
         this.intervalCleared=false
-        this.gunPoints=allArr[0]
+        this.gunPoints=allArr_gunPoints[0]
     }
     //moves the img and hitbox to a given place(very var X)
     kill(afterTime, img, killX, obj ){
@@ -586,11 +586,10 @@ class GameSprite{
         eval(obj.gamesprite.name).style.left=returnX+"px"
         eval(obj.gamesprite.name).style.top=returnY+"px"
         obj.hitbox.endMovement()
+        console.log(obj.gamesprite.name)
         obj.hitbox.pointChange(obj.hitbox.points, xDiff, yDiff)
-        if(hidden==true){
-            obj.hitbox.endMovement()
-            eval(obj.gamesprite.name).style.visibility="hidden" 
-        }
+        obj.hitbox.movement(obj.hitbox.points, 1)
+     
         
 
     }
@@ -701,13 +700,13 @@ class GameSprite{
 class Hitbox{
     //parameters: x and y of object you create hitbox for
     //multistring is a 2d array - you need to pas multiple arrays into this function. 
-    constructor(  ...multiArr){
+    constructor(   ...multiArr_points_hrzntrue_abvblw){
         
         
-        this.points=multiArr[0];
-        this.horizontalTrue=multiArr[1]
-        this.aboveBelow=multiArr[2]
-       
+        this.points=multiArr_points_hrzntrue_abvblw[0];
+        this.horizontalTrue=multiArr_points_hrzntrue_abvblw[1]
+        this.aboveBelow=multiArr_points_hrzntrue_abvblw[2]
+        
        
        
     }
@@ -788,7 +787,7 @@ pointChange( points, x, y){
         
     }
     
-collisionDetect(points, checkingX, checkingY, horizontalTrue, aboveBelow){
+collisionDetect(hitbox, points, checkingX, checkingY, horizontalTrue, aboveBelow){
    //checks whether a given point is inside a hitbox, using the equation of each line(y=mx+c)
     var newX = true
     var firstPointCounter = true
@@ -838,9 +837,11 @@ for( var k=0;k<points.length;k++){
                 this.point1X=point1X
             }
             lines.push(new stores( point1X, point1Y,point2X,point2Y))
-           lines[Math.floor(k/4)].yIntercept=lines[Math.floor(k/4)].point1Y-(lines[Math.floor(k/4)].gradient*lines[Math.floor(k/4)].point1X)
-            lines[Math.floor(k/4)].gradient=(point2Y-point1Y)/(point2X-point1X)
-            //console.log( lines[Math.floor(k/4)].gradient)
+           lines[Math.floor(k/2)-1].yIntercept=lines[Math.floor(k/2)-1].point1Y-(lines[Math.floor(k/2)-1].gradient*lines[Math.floor(k/4)].point1X)
+            lines[Math.floor(k/2)-1].gradient=(point2Y-point1Y)/(point2X-point1X)
+
+        
+        
         }
            
     
@@ -857,8 +858,8 @@ for( var k=0;k<points.length;k++){
             for(var l=0; l<horizontalTrue.length; l++){
 
                 if (horizontalTrue[l]==2){
-       
-                   // //console.log(lines.length)
+                    console.log("current item is horizontal")
+                   // console.log(lines.length)
                     if(aboveBelow[l]==true){
                         
                         if(checkingY<points[2*l+1]){
@@ -884,9 +885,9 @@ for( var k=0;k<points.length;k++){
                         }
                       }
                 }else if(horizontalTrue[l]==1){
-                    //console.log("current item is  vertical")
+                    console.log("current item is  vertical")
                     if(aboveBelow[l]==true){
-                        //console.log("point must be to the left of  line")
+                        console.log("point must be to the left of  line")
                         if(checkingX<points[2*l]){
 
                         }else{
@@ -894,7 +895,7 @@ for( var k=0;k<points.length;k++){
                             fitsAllCriteria=false
                         }
                     }else{
-                        //console.log("point must be below line")
+                        console.log("point must be below line")
                         if(checkingX>points[2*l]){
 
                         } else{
@@ -904,34 +905,46 @@ for( var k=0;k<points.length;k++){
 
                     }
                 }else{
-                    //console.log("current item is diagonal")
+                    console.log("current item is diagonal")
                     if(aboveBelow[l]==true){
-                        //console.log("point must be above line")
-                        if((Math.max(checkingX, lines[l].point1X, lines[l].point2X)!=checkingX&&Math.min(checkingX, lines[l].point1X, lines[l].point2X)!=checkingX)){
+                        console.log("point must be above line")
+
+                        if(((Math.max(checkingX, lines[l].point1X, lines[l].point2X)!=checkingX&&Math.min(checkingX, lines[l].point1X, lines[l].point2X)!=checkingX))){
+                            
                             if(checkingY<((lines[l].gradient*checkingX)+lines[l].yIntercept||lines[l].gradient==Infinity)){
 
                             }else{
                             console.log("failed")
                             
+                            console.log(lines[l].gradient)
+                            console.log(lines[l].point1X)
+                            console.log(lines[l].point2X)
+                            console.log(lines[l].point1Y)
+                            console.log(lines[l].point2Y)
+
                             fitsAllCriteria=false
                         }
+                    
                     }
-                    }else{
-                        //console.log("point must be below line")
-                        if((Math.max(checkingX, lines[l].point1X, lines[l].point2X)!=checkingX&&Math.min(checkingX, lines[l].point1X, lines[l].point2X)!=checkingX)){
+                        
+                }else{ 
+                    console.log("point must be below line")
+                        if(((Math.max(checkingX, lines[l].point1X, lines[l].point2X)!=checkingX&&Math.min(checkingX, lines[l].point1X, lines[l].point2X)!=checkingX))){
+                            console.log('hey')
                         if(checkingY>((lines[l].gradient*checkingX)+lines[l].yIntercept)||lines[l].gradient==Infinity){
 
                             }else{
                            
                            fitsAllCriteria=false
-                         
+                         console.log("failed")
 
 
                         }
-                    }
-
                     
                 }
+            }
+                    
+                
             
          
 }
@@ -1871,6 +1884,8 @@ class Bow{
         this.idealX = point3X+150
         this.idealY = point3Y
         this.arrowCount = 0
+        this.gameObj
+        this.bowImg
 
     }
     clearString(bow, arrow){
@@ -1878,7 +1893,7 @@ class Bow{
             gCtx.fillStyle = "#FFFFFF" 
             arrow.clearArrow(arrow, bow)
             gCtx.clearRect(bow.point1X, bow.point2Y, (bow.point2X-bow.point1X)+7, bow.verticalHeight+15)   
-            arrow.drawArrow(arrow)
+            
             
     }
  
@@ -2000,24 +2015,59 @@ class Bow{
         gCtx.fillRect(bow.point1X, bow.point2Y, (bow.point3X-bow.point1X), (bow.verticalHeight)+21)
         gCtx.clearRect(bow.point1X, bow.point2Y, (bow.point3X-bow.point1X), (bow.verticalHeight)+21)
     }
+    bowGameObj(bow, bowName){
+
+   //defines where a point must be to be within the hitbox, true is above a given line, false is below, (left/right respectively for vertical lines)
+
+    var bowPointsArray = [ 603,152,633, 152,  673, 232, 673, 387, 634,467, 604, 467, 520, 327, 520, 297, 603,152]
+    var bowOrientationArray = [2,0,1,0, 2, 0, 1, 0]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+    var bowContentsArray = [false, false, true ,true, true, true, false, false]
 
 
 
-}
-playerColourArr = ["#000000","#000000","#000000","#000000","#000000", "#000000"]
-var playerBow = new Bow(600,  600, 670,600, 308.5, 150, 314,450, [...playerColourArr] )
-function playerBind(bow, bowString){
-    if(isMobile==false){
-  
-    aimingRadical(bowString+".point3X", bowString+".point3Y", "mouseX", "mouseY")
+    class style{
+        constructor(left, right){
+            this.left=left
+            this.right=right
+        }
+    }
+    class bowImg{
+        constructor(style){
+            this.style=style
+        }
+    }
+    var bowStyle = new style(String(bow.point3X)+"px", String(bow.point3Y)+"px")
+    var bowImage = new bowImg(bowStyle)
+    bow.bowImg = bowImage
+
+//within gameSprite, the arguments are health, name, damage, type of damage, and damage that can be received
+//gameObj for declaring the hitbox, gamesprite
+bow.gameObj = new gameObj(new Hitbox( ...[[...bowPointsArray],[...bowOrientationArray] , [...bowContentsArray]]), new GameSprite(1, bowName, -10, 0,false, false, 0,  ...[...[]]))
+
+
+
+
+
     }
 
+
+
 }
+
+
+playerColourArr = ["#000000","#000000","#000000","#000000","#000000", "#000000"]
+var playerBow = new Bow(600,  600, 670,600, 308.5, 150, 314,450, [...playerColourArr] )
+playerBow.bowGameObj(playerBow, "playerBow")
+playerBow.gameObj.hitbox.movement(playerBow.gameObj.hitbox.points, 1)
+
+
+
+
 
 var arrowGameObjArr;
 var arrowImgArr
 //setTimeout(playerBow.releaseBow, 250, playerBow)
-class Arrow{
+class ArrowInit{
     constructor(width1, width2, width3, point1X, point1Y, point2X, point2Y){
         this.width1=width1
         this.width2=width2
@@ -2031,12 +2081,17 @@ class Arrow{
         this.point2Y=point2Y
         this.totalLength=this.point2X-this.point1X
         this.identifier;
-        
+        this.gameObjArr = []
+        this.imageArr =  []
+        this.drawArr = []
         
         
     }
-    drawArrow(arrow){
+    drawArrow(arrow, arrowIndex){
         var totalLength = arrow.point2X-arrow.point1X
+        console.log(arrowIndex)
+        var currXOffset = arrow.gameObjArr[arrowIndex].hitbox.points[0]-534
+        var currYOffset = arrow.gameObjArr[arrowIndex].hitbox.points[1]-314
        function fletchlingDraw(){
         arrow.gradient = (arrow.point2Y-arrow.point1Y)/(arrow.point2X-arrow.point1X)
 
@@ -2044,38 +2099,48 @@ class Arrow{
         gCtx.lineWidth = 1
         //back of arrow
         gCtx.beginPath()
-        gCtx.moveTo(arrow.point1X-65, arrow.point1Y+10)
-        gCtx.lineTo(arrow.point1X-71, arrow.point1Y+1)
-        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-71, arrow.point1Y+1)
-        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-65, arrow.point1Y+10)
-        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-71, arrow.point1Y+19)
-        gCtx.lineTo(arrow.point1X-71, arrow.point1Y+19)
-        gCtx.lineTo(arrow.point1X-65, arrow.point1Y+10)
+        gCtx.moveTo(arrow.point1X-65+currXOffset, arrow.point1Y+10+currYOffset)
+        gCtx.lineTo(arrow.point1X-71+currXOffset, arrow.point1Y+1+currYOffset)
+        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-71+currXOffset, arrow.point1Y+1+currYOffset)
+        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-65+currXOffset, arrow.point1Y+10+currYOffset)
+        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-71+currXOffset, arrow.point1Y+19+currYOffset)
+        gCtx.lineTo(arrow.point1X-71+currXOffset, arrow.point1Y+19+currYOffset)
+        gCtx.lineTo(arrow.point1X-65+currXOffset, arrow.point1Y+10+currYOffset)
         gCtx.stroke()
         gCtx.closePath()
         //front of arrow
         gCtx.beginPath()
-        gCtx.moveTo(arrow.point2X-65, arrow.point2Y+10)
-       gCtx.lineTo(arrow.point2X-71, arrow.point2Y+1)
-       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-71, arrow.point2Y+1)
-       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-65, arrow.point2Y+10)
-       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-71, arrow.point2Y+19)
-       gCtx.lineTo(arrow.point2X-71, arrow.point2Y+19)
-       gCtx.lineTo(arrow.point2X-65, arrow.point2Y+10)
+        gCtx.moveTo(arrow.point2X-65+currXOffset, arrow.point2Y+10+currYOffset)
+       gCtx.lineTo(arrow.point2X-71+currXOffset, arrow.point2Y+1+currYOffset)
+       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-71+currXOffset, arrow.point2Y+1+currYOffset)
+       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-65+currXOffset, arrow.point2Y+10+currYOffset)
+       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-71+currXOffset, arrow.point2Y+19+currYOffset)
+       gCtx.lineTo(arrow.point2X-71+currXOffset, arrow.point2Y+19+currYOffset)
+       gCtx.lineTo(arrow.point2X-65+currXOffset, arrow.point2Y+10+currYOffset)
        gCtx.stroke()
        gCtx.closePath()
     // body of arrow
         gCtx.beginPath()
-        gCtx.moveTo(arrow.point1X+(totalLength*arrow.width1)-65, arrow.point1Y+10)
-        gCtx.lineTo(arrow.point2X-65, arrow.point2Y+10)
+        gCtx.moveTo(arrow.point1X+(totalLength*arrow.width1)-65+currXOffset, arrow.point1Y+10+currYOffset)
+        gCtx.lineTo(arrow.point2X-65+currXOffset, arrow.point2Y+10+currYOffset)
         gCtx.stroke()
         gCtx.closePath()
-
+   
+        
         }
         
         var draw = setInterval(function(){
             fletchlingDraw()
         }, 10)
+        arrow.drawArr[arrowIndex] = draw
+
+    }
+    endArrowDraw(arrow, arrowIndex, bow){
+        clearInterval(arrow.drawArr[arrowIndex])
+        console.log(arrow.drawArr[arrowIndex])
+        var currXOffset = arrow.gameObjArr[arrowIndex].hitbox.points[0]-534
+        var currYOffset = arrow.gameObjArr[arrowIndex].hitbox.points[1]-314
+        gCtx.clearRect(arrow.point1X-71+currXOffset, arrow.point2Y+1+currYOffset,bow.totalLength*(arrow.width1+arrow.width2+arrow.width3)-65, 18 )
 
     }
     clearArrow(arrow, bow){
@@ -2084,9 +2149,9 @@ class Arrow{
         }, 10)
 
     }
-    arrowGameObj(arrow, arrowGameObjArrString, arrowImgArrString, bow){
-   bow.arrowCount+=1
-   arrow.identifier=bow.arrowCount
+    arrowGameObj(arrow,  bow){
+   bow.arrowCount+=1 
+
    //defines where a point must be to be within the hitbox, true is above a given line, false is below, (left/right respectively for vertical lines)
     var arrowPointsArray = [534 ,314, 528, 302, 560, 302, 567, 307/*end of top of first arrow fletchlincg*/,710, 307, 705, 300, 739, 300, 748, 310, 740, 322, 705, 322, 710,  313,/*end of  secondfletchlincg*/ 567, 313, 560, 322, 528, 322, 534, 314]
     var arrowOrientationArray = [0, 2, 0, 2, 0,2, 0, 0, 2, 0, 2, 0,2, 0]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
@@ -2109,35 +2174,52 @@ class Arrow{
     var arrowImage = new arrowImg(arrowStyle)
 
 //within gameSprite, the arguments are health, name, damage, type of damage, and damage that can be received
+
 //gameObj for declaring the hitbox, gamesprite
 var arrowgameObj = new gameObj(new Hitbox(...[[...arrowPointsArray],[...arrowOrientationArray] , [...arrowContentsArray]]), new GameSprite(1, "", -10, 0,false, false, 0,  ...[...[]]))
- eval(arrowGameObjArrString+".push(arrowgameObj)")
- eval(arrowImgArrString+".push(arrowImage)")
- arrowgameObj.gamesprite.name = arrowImgArrString+"["+String(eval(arrowImgArrString).length-1)+"]"
+ eval(arrow.gameObjArr.push(arrowgameObj))
+ eval(arrow.imageArr.push(arrowImage))
+ console.log(arrow.gameObjArr[0])
+ arrow.gameObjArr[arrow.gameObjArr.length-1].gamesprite.name = arrow.imageArr[arrow.imageArr.length-1]
 
-eval(arrowGameObjArrString)[arrow.identifier-1].hitbox.movement(eval(arrowGameObjArrString)[arrow.identifier-1].hitbox.points, 1)
+arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.movement(arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.points, 1)
     }
     shootArrow(){
         
     }
     
 }
-var friendlyArrow = new Arrow(1/6, 2/3, 1/6, 600, 300, 780, 300)
-friendlyArrow.drawArrow(friendlyArrow)
-var friendlyGameObjArr = []
-var friendlyArrowImgArr = []
+var friendlyArrow = new ArrowInit(1/6, 2/3, 1/6, 600, 300, 780, 300)
+friendlyArrow.arrowGameObj(friendlyArrow, playerBow)
+friendlyArrow.drawArrow(friendlyArrow,0)
+setTimeout(function(){
+    friendlyArrow.gameObjArr[0].hitbox.endMovement()
+friendlyArrow.endArrowDraw(friendlyArrow, 0, playerBow)
+
+friendlyArrow.gameObjArr[0].hitbox.pointChange(friendlyArrow.gameObjArr[0].hitbox.points, 50, 50)
+friendlyArrow.drawArrow(friendlyArrow,0)
+
+friendlyArrow.gameObjArr[0].hitbox.movement(friendlyArrow.gameObjArr[0].hitbox.points,1 )
+}, 500)
+
+friendlyArrow.arrowGameObj(friendlyArrow, playerBow)
+friendlyArrow.drawArrow(friendlyArrow,1)
+setTimeout(function(){
+    friendlyArrow.gameObjArr[1].hitbox.endMovement()
+friendlyArrow.endArrowDraw(friendlyArrow, 1, playerBow)
+
+friendlyArrow.gameObjArr[1].hitbox.pointChange(friendlyArrow.gameObjArr[1].hitbox.points, -50, -50)
+friendlyArrow.drawArrow(friendlyArrow,1)
+
+friendlyArrow.gameObjArr[1].hitbox.movement(friendlyArrow.gameObjArr[1].hitbox.points,1 )
+}, 500)
+
+
 
 playerBow.drawBow(playerBow)
 playerBow.aimBow(playerBow, friendlyArrow)
-friendlyArrow.arrowGameObj(friendlyArrow, 'friendlyGameObjArr', "friendlyArrowImgArr", playerBow)
-console.log(friendlyGameObjArr[0].hitbox.collisionDetect(friendlyGameObjArr[0].hitbox.points,  720, 310,friendlyGameObjArr[0].hitbox.horizontalTrue, friendlyGameObjArr[0].hitbox.aboveBelow))
 
-playerBind(playerBow, "playerBow")
 
-setInterval(function(){
-
-   
-}, 1000)
 
 
 //END OF JS CODE HERE  
