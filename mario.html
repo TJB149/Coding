@@ -722,26 +722,34 @@ class Hitbox{
        
         //interval to repeatedly redraw the hitbox
 gameObj.hitbox.reDraw = setInterval(function(){
-           ctx.rotate(angle* Math.PI / 180)
+    ctx.save()
+
+//Convert degrees to radian 
+        var rad = (angle) * Math.PI / 180;
+
+//Set the origin to the center of the image
+    ctx.translate(points[0],points[1]);
+      
+   
+//Rotate the canvas around the origin
+        ctx.rotate(angle*Math.PI/180);
             ctx.beginPath();
         ctx.strokeStyle = "#000000";
         ctx.lineWidth = lineWidth;
-        ctx.moveTo(points[0],points[1]);
+        ctx.moveTo(0,0);
        
       
         for (var i=0;i<points.length;i++){
            
-           
-            
 
             if (hasX==false){
-                xcoord=points[i]
-               
-               
+                xcoord=points[i]-points[0]
+              
+                //xcoord=points[i]
                 hasX=true
             }else{
-                ycoord=points[i]
-                
+                ycoord=points[i]-points[1]
+                //ycoord=points[i]
                 hasX=false
                 
                
@@ -753,9 +761,9 @@ gameObj.hitbox.reDraw = setInterval(function(){
         
         
     }
-        
+
         ctx.stroke();
-        ctx.rotate(-angle* Math.PI / 180)
+     ctx.restore()
     }, 10)    
     
 }
@@ -1070,8 +1078,7 @@ function move_m(direction){
            marioObj.hitbox.pointChange(marioObj.hitbox.points,0,-1)
             marioObj.hitbox.movement(marioObj.hitbox.points, 1, marioObj)
             
-            playerBow.clearString(playerBow, friendlyArrow, arrow.gameObjArr.length-1)
-            playerBow.bowMove(playerBow, 0, -1)
+        
         }
       
        break;
@@ -1132,87 +1139,7 @@ function move_m(direction){
 
 // (canvas.style.left)
 // moves enemy projectiles in the same fashion as the main character
-function enemyProjMovement(number, direction){
-   var changer = 0
-  
-eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px"
 
-    switch(direction){
-   //if the direction is up
-   case "up":
-  
-       //used to decide how much the value(top or left) is being changed by
-       changer = -1;
-      
-       //checks if it is within limits
-       if (Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))<=00){
-          
-       }else{
-           //actually changes value
-           eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px";
-           eval("enemyProjectileObj"+number).hitbox.endMovement(eval("enemyProjectileObj"+number))
-          eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 0, changer)
-         // //console.log("enemyProjectileObj"+number+" up")
-          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1, eval("enemyProjectileObj"+number))
-            
-            
-        }
-      
-       break;
-       //direction is down
- 
-       case "down":
-      
-       changer = 1
-      
-       //see above for all of these
-   if (Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))>=canvas.height){
-    
-       }else{
-        
-           eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px";
-           eval("enemyProjectileObj"+number).hitbox.endMovement(eval("enemyProjectileObj"+number))
-          eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 0, changer)
-          ////console.log("enemyProjectileObj"+number+" down")
-          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1, eval("enemyProjectileObj"+number))
-            
-           
-        }
-      
-       break;
-   case "left":
-        changer=-1
-      if (Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))<=0){
-          
-       }else{
-           eval("enemyProjectile"+number).style.left=Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))-1+"px";
-           eval("enemyProjectileObj"+number).hitbox.endMovement(eval("enemyProjectileObj"+number))
-          eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points,  changer, 0)
-          ////console.log("enemyProjectileObj"+number+" left")
-          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1, eval("enemyProjectileObj"+number))
-            
-           
-        }
-      
-       break;
-   case"right":
-        changer=1
-    if (Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))>=canvas.width){
-        
-       }else{
-           eval("enemyProjectile"+number).style.left=Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))+1+"px";
-           eval("enemyProjectileObj"+number).hitbox.endMovement(eval("enemyProjectileObj"+number))
-          eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, changer, 0)
-          ////console.log("enemyProjectileObj"+number+" right")
-          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1, eval("enemyProjectileObj"+number))
-            
-       }
-      
-       break;
-   default:
-}
-
-   }
    function enemyMovement(direction){
     var changer = 0;
     
@@ -1229,10 +1156,8 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
      
        }else{
            //actually changes value
-           enemy.style.top=Number(enemy.style.top.substring(0, enemy.style.top.length - 2))+changer+"px";
-           enemyObj.hitbox.endMovement(enemyObj)
-           enemyObj.hitbox.pointChange(enemyObj.hitbox.points,0,-1)
-            enemyObj.hitbox.movement(enemyObj.hitbox.points, 1, enemyObj)
+           playerBow.clearString(playerBow, friendlyArrow, friendlyArrow.gameObjArr.length-1)
+            playerBow.bowMove(playerBow, 0, -1)
               
         }
       
@@ -1247,10 +1172,8 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
    if (Number(enemy.style.top.substring(0, enemy.style.top.length - 2))>=canvas.height){
    
        }else{
-           enemy.style.top=Number(enemy.style.top.substring(0, enemy.style.top.length - 2))+changer+"px";
-           enemyObj.hitbox.endMovement(enemyObj)
-           enemyObj.hitbox.pointChange(enemyObj.hitbox.points,0,1)
-           enemyObj.hitbox.movement( enemyObj.hitbox.points, 1, enemyObj)
+        playerBow.clearString(playerBow, friendlyArrow, friendlyArrow.gameObjArr.length-1)
+            playerBow.bowMove(playerBow, 0, 1)
              
         }
       
@@ -1260,11 +1183,8 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
       if (Number(enemy.style.left.substring(0, enemy.style.left.length - 2))<=0){
           
        }else{
-           enemy.style.left=Number(enemy.style.left.substring(0, enemy.style.left.length - 2))-1+"px";
-           enemyObj.hitbox.endMovement(enemyObj)
-           
-           enemyObj.hitbox.pointChange(enemyObj.hitbox.points,-1,0)
-           enemyObj.hitbox.movement( enemyObj.hitbox.points, 1, enemyObj)
+        playerBow.clearString(playerBow, friendlyArrow, friendlyArrow.gameObjArr.length-1)
+            playerBow.bowMove(playerBow, -1, 0)
              
            
         }
@@ -1275,12 +1195,8 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
     if (Number(enemy.style.left.substring(0, enemy.style.left.length - 2))>=canvas.width){
        
        }else{
-           enemy.style.left=Number(enemy.style.left.substring(0, enemy.style.left.length - 2))+1+"px";
-           
-           enemyObj.hitbox.endMovement(enemyObj)
-           enemyObj.hitbox.pointChange(enemyObj.hitbox.points,1,0)
-           enemyObj.hitbox.movement(enemyObj.hitbox.points, 1, enemyObj)
-             
+        playerBow.clearString(playerBow, friendlyArrow, friendlyArrow.gameObjArr.length-1)
+            playerBow.bowMove(playerBow, 1,0)
            
        }
       
@@ -1586,7 +1502,7 @@ setTimeout(function(){
 
 
 var enem = new enemyAI(0.7)
-enem.randomMovement("enem.distanceRand", "enem.directionRand", enem.difficulty)
+
 //joystic
 
 var joyBase;
@@ -1888,6 +1804,7 @@ class Bow{
         this.arrowCount = 0
         this.gameObj
         this.bowImg
+        this.drawInt
 
     }
     clearString(bow, arrow){
@@ -1900,75 +1817,85 @@ class Bow{
             
     }
  
-    drawBow(bow){
+    drawBow(bow, angle = 0){
         var verticalHeight=bow.point4Y-bow.point2Y-14
         var bodyWidth=bow.point4X-bow.point2X
         var px1=1/verticalHeight+verticalHeight
         var py1=((1/42)*verticalHeight)+verticalHeight
         var relSize=((1/42)*verticalHeight)
        
-        setInterval(function(){
-            
+        bow.drawInt=setInterval(function(){
+            gCtx.save()
+
+//Convert degrees to radian 
+        var rad = (angle) * Math.PI / 180;
+
+//Set the origin to the center of the image
+       gCtx.translate(bow.point3X, bow.point3Y);
+      console.log(bow.point3X)
+   
+//Rotate the canvas around the origin
+        gCtx.rotate(angle*Math.PI/180);
             
             px1=((1/42)*verticalHeight)+bow.point2X
             py1=((1/42)*verticalHeight)+bow.point2Y
             //top part of the bow's body
         gCtx.lineWidth = 1
         gCtx.fillStyle=bow.colourArr[0]
-        gCtx.fillRect(px1, py1, 2*relSize, 2*relSize)
+        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 2*relSize, 2*relSize)
         px1+=((1/42)*verticalHeight)
         py1+=2*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[1]
-        gCtx.fillRect(px1, py1, 3*relSize,2*relSize )
+        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize,2*relSize )
         px1+=((1/42)*verticalHeight)
         py1+=2*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[2]
-        gCtx.fillRect(px1, py1, 3*relSize,4*relSize )
+        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize,4*relSize )
         px1+=((1/42)*verticalHeight)
         py1+=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[3]
-        gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
+        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize, 4*relSize)
         px1+=((1/42)*verticalHeight)
         py1+=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[4]
-        gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
+        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize, 4*relSize)
         px1+=((1/42)*verticalHeight)
         py1+=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[5]
-        gCtx.fillRect(px1, py1, 3*relSize, 5*relSize)
+        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize, 5*relSize)
             //bottom part of the bows body
         px1=((1/42)*verticalHeight)+bow.point2X
             py1=((1/42)*verticalHeight)+bow.point2Y
             py1+=((1/42)*verticalHeight)*42
         gCtx.fillStyle=bow.colourArr[0]
-        gCtx.fillRect(px1, py1, 2*relSize, 2*relSize)
+        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 2*relSize, 2*relSize)
         px1+=((1/42)*verticalHeight)
         py1-=2*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[1]
-        gCtx.fillRect(px1, py1, 3*relSize,2*relSize )
+        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize,2*relSize )
         px1+=((1/42)*verticalHeight)
         py1-=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[2]
-        gCtx.fillRect(px1, py1, 3*relSize,4*relSize )
+        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize,4*relSize )
         px1+=((1/42)*verticalHeight)
         py1-=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[3]
-        gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
+        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize, 4*relSize)
         px1+=((1/42)*verticalHeight)
         py1-=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[4]
-        gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
+        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize, 4*relSize)
         px1+=((1/42)*verticalHeight)
         py1-=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[5]
      
-        gCtx.fillRect(px1, py1, 3*relSize, 5*relSize)
+        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize, 5*relSize)
         //string
         gCtx.strokeStyle=bow.colourArr[6]
       
-        gCtx.moveTo(bow.point2X+7 , bow.point2Y+((1/28)*verticalHeight) )
-        gCtx.lineTo(bow.point1X+7, bow.point1Y+1)
-        gCtx.lineTo(bow.point4X+7, bow.point4Y)
+        gCtx.moveTo(bow.point2X+7-bow.point3X , bow.point2Y+((1/28)*verticalHeight)-bow.point3Y )
+        gCtx.lineTo(bow.point1X+7-bow.point3X, bow.point1Y+1-bow.point3Y)
+        gCtx.lineTo(bow.point4X+7-bow.point3X, bow.point4Y-bow.point3Y)
         gCtx.stroke()
       
         }, 10)
@@ -2014,8 +1941,8 @@ class Bow{
         bow.drawBow(bow)
     }
     bowBodyClear(bow){
-        gCtx.fillStyle - "FF0000"
-        gCtx.fillRect(bow.point1X, bow.point2Y, (bow.point3X-bow.point1X), (bow.verticalHeight)+21)
+        clearInterval(bow.drawInt)
+
         gCtx.clearRect(bow.point1X, bow.point2Y, (bow.point3X-bow.point1X), (bow.verticalHeight)+21)
     }
     bowGameObj(bow, bowName){
@@ -2109,7 +2036,7 @@ class ArrowInit{
       
    
 //Rotate the canvas around the origin
-        //gCtx.rotate(10*Math.PI/180);
+        gCtx.rotate(angle*Math.PI/180);
 
 //draw the image    
      
@@ -2123,32 +2050,32 @@ class ArrowInit{
         //back of arrow
         gCtx.beginPath()
         
-        gCtx.lineTo(arrow.point1X-71+currXOffset, arrow.point1Y+1+currYOffset)
-        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-71+currXOffset, arrow.point1Y+1+currYOffset)
-        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-65+currXOffset, arrow.point1Y+10+currYOffset)
-        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-71+currXOffset, arrow.point1Y+19+currYOffset)
-        gCtx.lineTo(arrow.point1X-71+currXOffset, arrow.point1Y+19+currYOffset)
-        gCtx.lineTo(arrow.point1X-65+currXOffset, arrow.point1Y+10+currYOffset)
+        gCtx.lineTo(arrow.point1X-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+1+currYOffset-(arrow.point1Y+10+currYOffset))
+        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+1+currYOffset-(arrow.point1Y+10+currYOffset))
+        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
+        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+19+currYOffset-(arrow.point1Y+10+currYOffset))
+        gCtx.lineTo(arrow.point1X-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+19+currYOffset-(arrow.point1Y+10+currYOffset))
+        gCtx.lineTo(arrow.point1X-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
         gCtx.stroke()
         gCtx.closePath()
         //front of arrow
         gCtx.beginPath()
-        gCtx.moveTo(arrow.point2X-65+currXOffset, arrow.point2Y+10+currYOffset)
-       gCtx.lineTo(arrow.point2X-71+currXOffset, arrow.point2Y+1+currYOffset)
-       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-71+currXOffset, arrow.point2Y+1+currYOffset)
-       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-65+currXOffset, arrow.point2Y+10+currYOffset)
-       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-71+currXOffset, arrow.point2Y+19+currYOffset)
-       gCtx.lineTo(arrow.point2X-71+currXOffset, arrow.point2Y+19+currYOffset)
-       gCtx.lineTo(arrow.point2X-65+currXOffset, arrow.point2Y+10+currYOffset)
+        gCtx.moveTo(arrow.point2X-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
+       gCtx.lineTo(arrow.point2X-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+1+currYOffset-(arrow.point1Y+10+currYOffset))
+       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+1+currYOffset-(arrow.point1Y+10+currYOffset))
+       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
+       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+19+currYOffset-(arrow.point1Y+10+currYOffset))
+       gCtx.lineTo(arrow.point2X-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+19+currYOffset-(arrow.point1Y+10+currYOffset))
+       gCtx.lineTo(arrow.point2X-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
        gCtx.stroke()
        gCtx.closePath()
     // body of arrow
         gCtx.beginPath()
-        gCtx.moveTo(arrow.point1X+(totalLength*arrow.width1)-65+currXOffset, arrow.point1Y+10+currYOffset)
-        gCtx.lineTo(arrow.point2X-65+currXOffset, arrow.point2Y+10+currYOffset)
+        gCtx.moveTo(arrow.point1X+(totalLength*arrow.width1)-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
+        gCtx.lineTo(arrow.point2X-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
         gCtx.stroke()
         gCtx.closePath()
-        //gCtx.rotate(-angle*Math.PI/180)
+        
         gCtx.restore();
         }
         
@@ -2164,21 +2091,33 @@ class ArrowInit{
         arrow.gameObjArr[arrowIndex] = null
         
     }
-    endArrowDraw(arrow, arrowIndex){
+    endArrowDraw(arrow, arrowIndex, angle){
 
         //console.log(arrow.drawArr[arrowIndex][0])
-      
+        var currXOffset = arrow.gameObjArr[arrowIndex].hitbox.points[0]-534
+        var currYOffset = arrow.gameObjArr[arrowIndex].hitbox.points[1]-314
         
             clearInterval(arrow.drawArr[arrowIndex][0])
-        
+            gCtx.save()
+
+//Convert degrees to radian 
+        var rad = (angle) * Math.PI / 180;
+
+//Set the origin to the center of the image
+       gCtx.translate(arrow.point1X-65+currXOffset-6, arrow.point1Y+10+currYOffset-12);
+      
+   
+//Rotate the canvas around the origin
+        gCtx.rotate(angle*Math.PI/180);
+
       
         arrow.drawArr[arrowIndex].splice(0, arrow.drawArr[arrowIndex].length)
      
         var currXOffset = arrow.gameObjArr[arrowIndex].hitbox.points[0]-534
         var currYOffset = arrow.gameObjArr[arrowIndex].hitbox.points[1]-314
-        
-        gCtx.clearRect(arrow.point1X-73+currXOffset, arrow.point2Y+currYOffset,arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65, 22 )
-       
+        gCtx.fillStyle = "#FF0000"
+        gCtx.clearRect(0, 0,arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65, 22 )
+       gCtx.restore()
     }
     
 
@@ -2236,12 +2175,12 @@ arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.movement(arrow.gameObjArr[arr
         }
 
         var shootInterval = setInterval(function(){
-             arrow.endArrowDraw(arrow, arrowIndex)
+             arrow.endArrowDraw(arrow, arrowIndex, 10)
           
             arrow.gameObjArr[arrowIndex].hitbox.endMovement(arrow.gameObjArr[arrowIndex])
            
             arrow.gameObjArr[arrowIndex].hitbox.pointChange(arrow.gameObjArr[arrowIndex].hitbox.points,relFreq*5, yCheck*5 )
-            arrow.gameObjArr[arrowIndex].hitbox.movement( arrow.gameObjArr[arrowIndex].hitbox.points, 1,  arrow.gameObjArr[arrowIndex], 45)
+            arrow.gameObjArr[arrowIndex].hitbox.movement( arrow.gameObjArr[arrowIndex].hitbox.points, 1,  arrow.gameObjArr[arrowIndex], 10)
             
             arrow.drawArrow(arrow, arrowIndex, internalAngle)
            //console.log(arrow.gameObjArr[arrowIndex].hitbox.points[0])
