@@ -6,11 +6,12 @@ Heavy
 Mini
 	⁃	get arrow hitbox up and running/
 	⁃	bow hitbox/
-	⁃	arrow array up and running/ + arrow deletion -
-	-	arrow movement
+	⁃	arrow array up and running/ + arrow deletion /
+	-	arrow movement/
 	-	bind arrow to shoot function
 	-	create player character
 	-	player movement
+	-	bow movement
 
 Mega
 	⁃	rotating arrows

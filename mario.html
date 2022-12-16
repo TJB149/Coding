@@ -522,10 +522,10 @@ class GameSprite{
         setTimeout(function(){
             
             
-            obj.hitbox.endMovement()
+            obj.hitbox.endMovement(obj)
             
                 obj.hitbox.pointChange(obj.hitbox.points, killX, 0)
-                obj.hitbox.movement(obj.hitbox.points, 1)
+                obj.hitbox.movement(obj.hitbox.points, 1, obj)
                 eval(img).style.left=killX
             
 
@@ -585,10 +585,10 @@ class GameSprite{
       
         eval(obj.gamesprite.name).style.left=returnX+"px"
         eval(obj.gamesprite.name).style.top=returnY+"px"
-        obj.hitbox.endMovement()
-        console.log(obj.gamesprite.name)
+        obj.hitbox.endMovement(obj)
+     
         obj.hitbox.pointChange(obj.hitbox.points, xDiff, yDiff)
-        obj.hitbox.movement(obj.hitbox.points, 1)
+        obj.hitbox.movement(obj.hitbox.points, 1, obj)
      
         
 
@@ -654,9 +654,9 @@ class GameSprite{
                 
               
                 
-            projObj.hitbox.endMovement()
+            projObj.hitbox.endMovement(projObj)
             projObj.hitbox.pointChange(projObj.hitbox.points, iterationX, iterationY)
-            projObj.hitbox.movement(projObj.hitbox.points, 1)
+            projObj.hitbox.movement(projObj.hitbox.points, 1, projObj)
             eval(projObj.gamesprite.name).style.left=(Number(eval(projObj.gamesprite.name).style.left.substring(0, eval(projObj.gamesprite.name).style.left.length-2))+iterationX)+"px"
             eval(projObj.gamesprite.name).style.top=(Number(eval(projObj.gamesprite.name).style.top.substring(0, eval(projObj.gamesprite.name).style.top.length-2))+iterationY)+"px"
             
@@ -702,7 +702,7 @@ class Hitbox{
     //multistring is a 2d array - you need to pas multiple arrays into this function. 
     constructor(   ...multiArr_points_hrzntrue_abvblw){
         
-        
+        this.reDraw;
         this.points=multiArr_points_hrzntrue_abvblw[0];
         this.horizontalTrue=multiArr_points_hrzntrue_abvblw[1]
         this.aboveBelow=multiArr_points_hrzntrue_abvblw[2]
@@ -712,7 +712,7 @@ class Hitbox{
     }
     //used to move and redraw the hitbox - also changes the points array
         
-        movement(points, lineWidth){
+        movement(points, lineWidth, gameObj, angle = 0 ){
        //used to temporarily store the x and y of a given point
            
         var xcoord;
@@ -721,8 +721,8 @@ class Hitbox{
         var hasX=false;
        
         //interval to repeatedly redraw the hitbox
-        reDraw=setInterval(function(){
-           
+gameObj.hitbox.reDraw = setInterval(function(){
+           ctx.rotate(angle* Math.PI / 180)
             ctx.beginPath();
         ctx.strokeStyle = "#000000";
         ctx.lineWidth = lineWidth;
@@ -754,12 +754,14 @@ class Hitbox{
         
     }
         
-        ctx.stroke();}, 1)    
+        ctx.stroke();
+        ctx.rotate(-angle* Math.PI / 180)
+    }, 10)    
     
 }
-    endMovement(){
-        clearInterval(reDraw)
-        
+    endMovement(gameObj){
+        clearInterval(gameObj.hitbox.reDraw)
+     
     }
 
 pointChange( points, x, y){
@@ -1008,13 +1010,13 @@ var enemyObj = new gameObj(new Hitbox(...[[...enemyPosArr], [...enemyOrientation
 
 
 //starting all hitboxes
-enemyProjectileObj1.hitbox.movement( enemyProjectilePosArrays[0], 1)
-enemyProjectileObj2.hitbox.movement(enemyProjectilePosArrays[1], 1)
-enemyProjectileObj3.hitbox.movement( enemyProjectilePosArrays[2], 1)
-enemyProjectileObj4.hitbox.movement(enemyProjectilePosArrays[3], 1)
+enemyProjectileObj1.hitbox.movement( enemyProjectilePosArrays[0], 1, enemyProjectileObj1)
+enemyProjectileObj2.hitbox.movement(enemyProjectilePosArrays[1], 1,enemyProjectileObj2 )
+enemyProjectileObj3.hitbox.movement( enemyProjectilePosArrays[2], 1, enemyProjectileObj3)
+enemyProjectileObj4.hitbox.movement(enemyProjectilePosArrays[3], 1, enemyProjectileObj4)
 
-marioObj.hitbox.movement(marioObj.hitbox.points, 1)
-enemyObj.hitbox.movement(enemyObj.hitbox.points, 1)
+marioObj.hitbox.movement(marioObj.hitbox.points, 1, marioObj)
+enemyObj.hitbox.movement(enemyObj.hitbox.points, 1, enemyObj)
 setTimeout(enemyObj.hitbox.pointChange, 1, enemyObj.hitbox.points, 5, 25)
 function buttonControl(freq, btn, btnstring){
     //on mouse down , runs start move
@@ -1064,11 +1066,11 @@ function move_m(direction){
        }else{
            //actually changes value
            mario.style.top=Number(mario.style.top.substring(0, mario.style.top.length - 2))+changer+"px";
-           marioObj.hitbox.endMovement()
+           marioObj.hitbox.endMovement(marioObj)
            marioObj.hitbox.pointChange(marioObj.hitbox.points,0,-1)
-            marioObj.hitbox.movement(marioObj.hitbox.points, 1)
+            marioObj.hitbox.movement(marioObj.hitbox.points, 1, marioObj)
             
-            playerBow.clearString(playerBow, friendlyArrow)
+            playerBow.clearString(playerBow, friendlyArrow, arrow.gameObjArr.length-1)
             playerBow.bowMove(playerBow, 0, -1)
         }
       
@@ -1084,9 +1086,9 @@ function move_m(direction){
    
        }else{
            mario.style.top=Number(mario.style.top.substring(0, mario.style.top.length - 2))+changer+"px";
-           marioObj.hitbox.endMovement()
+           marioObj.hitbox.endMovement(marioObj)
            marioObj.hitbox.pointChange(marioObj.hitbox.points,0,1)
-           marioObj.hitbox.movement( marioObj.hitbox.points, 1)
+           marioObj.hitbox.movement( marioObj.hitbox.points, 1, marioObj)
            
         }
       
@@ -1097,10 +1099,10 @@ function move_m(direction){
           
        }else{
            mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))-1+"px";
-           marioObj.hitbox.endMovement()
+           marioObj.hitbox.endMovement(marioObj)
            
            marioObj.hitbox.pointChange(marioObj.hitbox.points,-1,0)
-           marioObj.hitbox.movement( marioObj.hitbox.points, 1)
+           marioObj.hitbox.movement( marioObj.hitbox.points, 1, marioObj)
            
            
         }
@@ -1112,9 +1114,9 @@ function move_m(direction){
        
        }else{
            mario.style.left=Number(mario.style.left.substring(0, mario.style.left.length - 2))+1+"px";
-           marioObj.hitbox.endMovement()
+           marioObj.hitbox.endMovement(marioObj)
            marioObj.hitbox.pointChange(marioObj.hitbox.points,1,0)
-           marioObj.hitbox.movement(enemyObj.hitbox.points,1)
+           marioObj.hitbox.movement(enemyObj.hitbox.points,1, marioObj)
            
        }
       
@@ -1148,10 +1150,10 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
        }else{
            //actually changes value
            eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px";
-           eval("enemyProjectileObj"+number).hitbox.endMovement()
+           eval("enemyProjectileObj"+number).hitbox.endMovement(eval("enemyProjectileObj"+number))
           eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 0, changer)
          // //console.log("enemyProjectileObj"+number+" up")
-          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1)
+          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1, eval("enemyProjectileObj"+number))
             
             
         }
@@ -1169,10 +1171,10 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
        }else{
         
            eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).style.top.substring(0, eval("enemyProjectile"+number).style.top.length - 2))+changer+"px";
-           eval("enemyProjectileObj"+number).hitbox.endMovement()
+           eval("enemyProjectileObj"+number).hitbox.endMovement(eval("enemyProjectileObj"+number))
           eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, 0, changer)
           ////console.log("enemyProjectileObj"+number+" down")
-          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1)
+          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1, eval("enemyProjectileObj"+number))
             
            
         }
@@ -1184,10 +1186,10 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
           
        }else{
            eval("enemyProjectile"+number).style.left=Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))-1+"px";
-           eval("enemyProjectileObj"+number).hitbox.endMovement()
+           eval("enemyProjectileObj"+number).hitbox.endMovement(eval("enemyProjectileObj"+number))
           eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points,  changer, 0)
           ////console.log("enemyProjectileObj"+number+" left")
-          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1)
+          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1, eval("enemyProjectileObj"+number))
             
            
         }
@@ -1199,10 +1201,10 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
         
        }else{
            eval("enemyProjectile"+number).style.left=Number(eval("enemyProjectile"+number).style.left.substring(0, eval("enemyProjectile"+number).style.left.length - 2))+1+"px";
-           eval("enemyProjectileObj"+number).hitbox.endMovement()
+           eval("enemyProjectileObj"+number).hitbox.endMovement(eval("enemyProjectileObj"+number))
           eval("enemyProjectileObj"+number).hitbox.pointChange(eval("enemyProjectileObj"+number).hitbox.points, changer, 0)
           ////console.log("enemyProjectileObj"+number+" right")
-          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1)
+          eval("enemyProjectileObj"+number).hitbox.movement(eval("enemyProjectileObj"+number).hitbox.points, 1, eval("enemyProjectileObj"+number))
             
        }
       
@@ -1228,9 +1230,9 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
        }else{
            //actually changes value
            enemy.style.top=Number(enemy.style.top.substring(0, enemy.style.top.length - 2))+changer+"px";
-           enemyObj.hitbox.endMovement()
+           enemyObj.hitbox.endMovement(enemyObj)
            enemyObj.hitbox.pointChange(enemyObj.hitbox.points,0,-1)
-            enemyObj.hitbox.movement(enemyObj.hitbox.points, 1)
+            enemyObj.hitbox.movement(enemyObj.hitbox.points, 1, enemyObj)
               
         }
       
@@ -1246,9 +1248,9 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
    
        }else{
            enemy.style.top=Number(enemy.style.top.substring(0, enemy.style.top.length - 2))+changer+"px";
-           enemyObj.hitbox.endMovement()
+           enemyObj.hitbox.endMovement(enemyObj)
            enemyObj.hitbox.pointChange(enemyObj.hitbox.points,0,1)
-           enemyObj.hitbox.movement( enemyObj.hitbox.points, 1)
+           enemyObj.hitbox.movement( enemyObj.hitbox.points, 1, enemyObj)
              
         }
       
@@ -1259,10 +1261,10 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
           
        }else{
            enemy.style.left=Number(enemy.style.left.substring(0, enemy.style.left.length - 2))-1+"px";
-           enemyObj.hitbox.endMovement()
+           enemyObj.hitbox.endMovement(enemyObj)
            
            enemyObj.hitbox.pointChange(enemyObj.hitbox.points,-1,0)
-           enemyObj.hitbox.movement( enemyObj.hitbox.points, 1)
+           enemyObj.hitbox.movement( enemyObj.hitbox.points, 1, enemyObj)
              
            
         }
@@ -1275,9 +1277,9 @@ eval("enemyProjectile"+number).style.top=Number(eval("enemyProjectile"+number).s
        }else{
            enemy.style.left=Number(enemy.style.left.substring(0, enemy.style.left.length - 2))+1+"px";
            
-           enemyObj.hitbox.endMovement()
+           enemyObj.hitbox.endMovement(enemyObj)
            enemyObj.hitbox.pointChange(enemyObj.hitbox.points,1,0)
-           enemyObj.hitbox.movement(enemyObj.hitbox.points, 1)
+           enemyObj.hitbox.movement(enemyObj.hitbox.points, 1, enemyObj)
              
            
        }
@@ -1486,7 +1488,7 @@ var enemyDamage = setInterval(function(){
         //enemyObj.gamesprite.damageReceiver(enemyObj, enemyObj.gamesprite, enemyProjectileObj2.gamesprite, 50000, 50000)
        
     }
-    enemyObj.hitbox.movement(enemyObj.hitbox.points, 1)
+    //enemyObj.hitbox.movement(enemyObj.hitbox.points, 1)
     
     //console.log(enemyProjectileObj2.hitbox.collisionDetect(enemyProjectileObj2.hitbox.points, enemyProjectileObj2.hitbox.points[0]+5, enemyProjectileObj2.hitbox.points[1]+5, enemyProjectileObj2.hitbox.horizontalTrue, enemyProjectileObj2.hitbox.aboveBelow))
     //console.log(enemyProjectileObj2.hitbox.points[0]+5)
@@ -1891,7 +1893,8 @@ class Bow{
     clearString(bow, arrow){
         
             gCtx.fillStyle = "#FFFFFF" 
-            arrow.clearArrow(arrow, bow)
+            arrow.endArrowDraw(arrow, arrow.gameObjArr.length-1)
+            
             gCtx.clearRect(bow.point1X, bow.point2Y, (bow.point2X-bow.point1X)+7, bow.verticalHeight+15)   
             
             
@@ -1974,7 +1977,7 @@ class Bow{
     }
     aimBow(bow, arrow){
        var aimer =  setInterval(function(){
-        bow.clearString(bow, arrow)
+        bow.clearString(bow, arrow, arrow.length-1)
         bow.point1X-=4
        
            
@@ -1986,7 +1989,7 @@ class Bow{
            
         gCtx.fillStyle = "#FFFFFF"
            
-            //bow.clearString(bow, arrow)
+            
             bow.point1X+=14
             
         }, 5)
@@ -2058,7 +2061,7 @@ bow.gameObj = new gameObj(new Hitbox( ...[[...bowPointsArray],[...bowOrientation
 playerColourArr = ["#000000","#000000","#000000","#000000","#000000", "#000000"]
 var playerBow = new Bow(600,  600, 670,600, 308.5, 150, 314,450, [...playerColourArr] )
 playerBow.bowGameObj(playerBow, "playerBow")
-playerBow.gameObj.hitbox.movement(playerBow.gameObj.hitbox.points, 1)
+playerBow.gameObj.hitbox.movement(playerBow.gameObj.hitbox.points, 1, playerBow.gameObj)
 
 
 
@@ -2083,23 +2086,43 @@ class ArrowInit{
         this.identifier;
         this.gameObjArr = []
         this.imageArr =  []
-        this.drawArr = []
+        this.drawArr = [[]]
         
         
     }
-    drawArrow(arrow, arrowIndex){
+    drawArrow(arrow, arrowIndex, angle){
         var totalLength = arrow.point2X-arrow.point1X
-        console.log(arrowIndex)
+      
         var currXOffset = arrow.gameObjArr[arrowIndex].hitbox.points[0]-534
         var currYOffset = arrow.gameObjArr[arrowIndex].hitbox.points[1]-314
        function fletchlingDraw(){
+        
+        
+            
+        gCtx.save()
+
+//Convert degrees to radian 
+        var rad = (angle) * Math.PI / 180;
+
+//Set the origin to the center of the image
+       gCtx.translate(arrow.point1X-65+currXOffset, arrow.point1Y+10+currYOffset);
+      
+   
+//Rotate the canvas around the origin
+        //gCtx.rotate(10*Math.PI/180);
+
+//draw the image    
+     
+
+// Restore canvas state as saved from above
+    
         arrow.gradient = (arrow.point2Y-arrow.point1Y)/(arrow.point2X-arrow.point1X)
 
         arrow.yIntercept = arrow.point1Y-(arrow.gradient*arrow.point1X)
         gCtx.lineWidth = 1
         //back of arrow
         gCtx.beginPath()
-        gCtx.moveTo(arrow.point1X-65+currXOffset, arrow.point1Y+10+currYOffset)
+        
         gCtx.lineTo(arrow.point1X-71+currXOffset, arrow.point1Y+1+currYOffset)
         gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-71+currXOffset, arrow.point1Y+1+currYOffset)
         gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-65+currXOffset, arrow.point1Y+10+currYOffset)
@@ -2125,37 +2148,47 @@ class ArrowInit{
         gCtx.lineTo(arrow.point2X-65+currXOffset, arrow.point2Y+10+currYOffset)
         gCtx.stroke()
         gCtx.closePath()
-   
-        
+        //gCtx.rotate(-angle*Math.PI/180)
+        gCtx.restore();
         }
         
         var draw = setInterval(function(){
             fletchlingDraw()
         }, 10)
-        arrow.drawArr[arrowIndex] = draw
-
+        arrow.drawArr[arrowIndex].push(draw) 
+        
     }
-    endArrowDraw(arrow, arrowIndex, bow){
-        clearInterval(arrow.drawArr[arrowIndex])
-        console.log(arrow.drawArr[arrowIndex])
+    deleteArrow(arrow, arrowIndex, bow){
+        arrow.endArrowDraw(arrow, arrowIndex)
+        arrow.gameObjArr[arrowIndex].hitbox.endMovement(arrow.gameObjArr[arrowIndex])
+        arrow.gameObjArr[arrowIndex] = null
+        
+    }
+    endArrowDraw(arrow, arrowIndex){
+
+        //console.log(arrow.drawArr[arrowIndex][0])
+      
+        
+            clearInterval(arrow.drawArr[arrowIndex][0])
+        
+      
+        arrow.drawArr[arrowIndex].splice(0, arrow.drawArr[arrowIndex].length)
+     
         var currXOffset = arrow.gameObjArr[arrowIndex].hitbox.points[0]-534
         var currYOffset = arrow.gameObjArr[arrowIndex].hitbox.points[1]-314
-        gCtx.clearRect(arrow.point1X-71+currXOffset, arrow.point2Y+1+currYOffset,bow.totalLength*(arrow.width1+arrow.width2+arrow.width3)-65, 18 )
-
+        
+        gCtx.clearRect(arrow.point1X-73+currXOffset, arrow.point2Y+currYOffset,arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65, 22 )
+       
     }
-    clearArrow(arrow, bow){
-        var clear = setInterval(function(){
-            gCtx.clearRect(arrow.point1X-71, arrow.point2Y+1,bow.totalLength*(arrow.width1+arrow.width2+arrow.width3)-65, 18 )
-        }, 10)
+    
 
-    }
     arrowGameObj(arrow,  bow){
    bow.arrowCount+=1 
 
    //defines where a point must be to be within the hitbox, true is above a given line, false is below, (left/right respectively for vertical lines)
     var arrowPointsArray = [534 ,314, 528, 302, 560, 302, 567, 307/*end of top of first arrow fletchlincg*/,710, 307, 705, 300, 739, 300, 748, 310, 740, 322, 705, 322, 710,  313,/*end of  secondfletchlincg*/ 567, 313, 560, 322, 528, 322, 534, 314]
     var arrowOrientationArray = [0, 2, 0, 2, 0,2, 0, 0, 2, 0, 2, 0,2, 0]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-    var arrowContentsArray = [true, false, false,false,true, false, false, true, true, false, true, true, true, false    ]
+    var arrowContentsArray = [true, false, false,false,true, false, false, true, true, false, true, true, true, false    ]                        
 
 
 
@@ -2179,45 +2212,60 @@ class ArrowInit{
 var arrowgameObj = new gameObj(new Hitbox(...[[...arrowPointsArray],[...arrowOrientationArray] , [...arrowContentsArray]]), new GameSprite(1, "", -10, 0,false, false, 0,  ...[...[]]))
  eval(arrow.gameObjArr.push(arrowgameObj))
  eval(arrow.imageArr.push(arrowImage))
- console.log(arrow.gameObjArr[0])
+
  arrow.gameObjArr[arrow.gameObjArr.length-1].gamesprite.name = arrow.imageArr[arrow.imageArr.length-1]
 
-arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.movement(arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.points, 1)
+arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.movement(arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.points, 1, arrow.gameObjArr[arrow.gameObjArr.length-1])
     }
-    shootArrow(){
-        
+    shootArrow(arrow, arrowIndex, targetX, targetY, bow, projSpeed){
+        var internalAngle= angleCalc(bow.point3X, bow.point3Y, targetX, targetY)
+        console.log(internalAngle)
+        var totalDist = Math.sqrt(Math.pow(arrow.gameObjArr[arrowIndex].hitbox.points[0]-targetX, 2)+Math.pow(arrow.gameObjArr[arrowIndex].hitbox.points[1]-targetY, 2))
+        var relFreq = (arrow.gameObjArr[arrowIndex].hitbox.points[0]-targetX)/(arrow.gameObjArr[arrowIndex].hitbox.points[1]-targetY)
+        var yCheck
+     
+
+        if((arrow.gameObjArr[arrowIndex].hitbox.points[1]-targetY)>0){
+            yCheck=-1
+        }else{
+            yCheck=1
+        }
+  
+        if(projSpeed<1){
+            projSpeed=1
+        }
+
+        var shootInterval = setInterval(function(){
+             arrow.endArrowDraw(arrow, arrowIndex)
+          
+            arrow.gameObjArr[arrowIndex].hitbox.endMovement(arrow.gameObjArr[arrowIndex])
+           
+            arrow.gameObjArr[arrowIndex].hitbox.pointChange(arrow.gameObjArr[arrowIndex].hitbox.points,relFreq*5, yCheck*5 )
+            arrow.gameObjArr[arrowIndex].hitbox.movement( arrow.gameObjArr[arrowIndex].hitbox.points, 1,  arrow.gameObjArr[arrowIndex], 45)
+            
+            arrow.drawArrow(arrow, arrowIndex, internalAngle)
+           //console.log(arrow.gameObjArr[arrowIndex].hitbox.points[0])
+           //console.log(arrow.gameObjArr[arrowIndex].hitbox.points[1])
+         
+        }, 50)
+        setTimeout(clearInterval, totalDist/projSpeed*1000, shootInterval)
+
     }
     
 }
 var friendlyArrow = new ArrowInit(1/6, 2/3, 1/6, 600, 300, 780, 300)
 friendlyArrow.arrowGameObj(friendlyArrow, playerBow)
-friendlyArrow.drawArrow(friendlyArrow,0)
-setTimeout(function(){
-    friendlyArrow.gameObjArr[0].hitbox.endMovement()
-friendlyArrow.endArrowDraw(friendlyArrow, 0, playerBow)
+friendlyArrow.drawArrow(friendlyArrow,0, 0)
 
-friendlyArrow.gameObjArr[0].hitbox.pointChange(friendlyArrow.gameObjArr[0].hitbox.points, 50, 50)
-friendlyArrow.drawArrow(friendlyArrow,0)
 
-friendlyArrow.gameObjArr[0].hitbox.movement(friendlyArrow.gameObjArr[0].hitbox.points,1 )
-}, 500)
 
-friendlyArrow.arrowGameObj(friendlyArrow, playerBow)
-friendlyArrow.drawArrow(friendlyArrow,1)
-setTimeout(function(){
-    friendlyArrow.gameObjArr[1].hitbox.endMovement()
-friendlyArrow.endArrowDraw(friendlyArrow, 1, playerBow)
 
-friendlyArrow.gameObjArr[1].hitbox.pointChange(friendlyArrow.gameObjArr[1].hitbox.points, -50, -50)
-friendlyArrow.drawArrow(friendlyArrow,1)
-
-friendlyArrow.gameObjArr[1].hitbox.movement(friendlyArrow.gameObjArr[1].hitbox.points,1 )
-}, 500)
 
 
 
 playerBow.drawBow(playerBow)
-playerBow.aimBow(playerBow, friendlyArrow)
+//playerBow.aimBow(playerBow, friendlyArrow)
+friendlyArrow.shootArrow(friendlyArrow, 0,1000, 500, playerBow, 100)
 
 
 
