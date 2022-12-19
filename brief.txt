@@ -2,8 +2,7 @@ Basically, I didn’t ask
 
 To Do
 
-Heavy
-Mini
+
 	⁃	get arrow hitbox up and running/
 	⁃	bow hitbox/
 	⁃	arrow array up and running/ + arrow deletion /
@@ -14,11 +13,11 @@ Mini
 	-	player movement
 	-	bow movement/
 
-Mega
+
 	
 	⁃	enemy shooting
 
-Soft
+
 	⁃	enemy attack pattern
 	⁃	different game states(game over etc.)
 	⁃	background art

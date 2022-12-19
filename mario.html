@@ -712,7 +712,7 @@ class Hitbox{
     }
     //used to move and redraw the hitbox - also changes the points array
         
-        movement(points, lineWidth, gameObj, angle = 0 ){
+        movement(points, lineWidth, gameObj,rotateAroundXIndex = 0, rotateAroundYIndex = 1,angle = 0 ){
        //used to temporarily store the x and y of a given point
            
         var xcoord;
@@ -728,9 +728,9 @@ gameObj.hitbox.reDraw = setInterval(function(){
         var rad = (angle) * Math.PI / 180;
 
 //Set the origin to the center of the image
-    ctx.translate(points[0],points[1]);
+    ctx.translate(points[rotateAroundXIndex],points[rotateAroundYIndex]);
       
-   
+
 //Rotate the canvas around the origin
         ctx.rotate(angle*Math.PI/180);
             ctx.beginPath();
@@ -743,12 +743,12 @@ gameObj.hitbox.reDraw = setInterval(function(){
            
 
             if (hasX==false){
-                xcoord=points[i]-points[0]
+                xcoord=points[i]-points[rotateAroundXIndex]
               
                 //xcoord=points[i]
                 hasX=true
             }else{
-                ycoord=points[i]-points[1]
+                ycoord=points[i]-points[rotateAroundYIndex]
                 //ycoord=points[i]
                 hasX=false
                 
@@ -1077,7 +1077,7 @@ function move_m(direction){
            marioObj.hitbox.endMovement(marioObj)
            marioObj.hitbox.pointChange(marioObj.hitbox.points,0,-1)
             marioObj.hitbox.movement(marioObj.hitbox.points, 1, marioObj)
-            
+            enemyMovement("left")
         
         }
       
@@ -1805,6 +1805,7 @@ class Bow{
         this.gameObj
         this.bowImg
         this.drawInt
+        this.drawAngle = 20
 
     }
     clearString(bow, arrow){
@@ -1825,67 +1826,84 @@ class Bow{
         var relSize=((1/42)*verticalHeight)
        
         bow.drawInt=setInterval(function(){
+      
+              gCtx.clearRect(bow.point1X, bow.point2Y, (bow.point3X-bow.point1X)+10, (bow.verticalHeight)+23)
             gCtx.save()
-
+       gCtx.translate(bow.point1X, bow.point1Y)
+       gCtx.rotate(angle*Math.PI/180)
             px1=((1/42)*verticalHeight)+bow.point2X
             py1=((1/42)*verticalHeight)+bow.point2Y
+            px1-=bow.point1X
+            py1-=bow.point1Y
             //top part of the bow's body
         gCtx.lineWidth = 1
         gCtx.fillStyle=bow.colourArr[0]
         gCtx.fillRect(px1, py1, 2*relSize, 2*relSize)
         px1+=((1/42)*verticalHeight)
         py1+=2*((1/42)*verticalHeight)
+
         gCtx.fillStyle=bow.colourArr[1]
         gCtx.fillRect(px1, py1, 3*relSize,2*relSize )
         px1+=((1/42)*verticalHeight)
         py1+=2*((1/42)*verticalHeight)
+
         gCtx.fillStyle=bow.colourArr[2]
         gCtx.fillRect(px1, py1, 3*relSize,4*relSize )
         px1+=((1/42)*verticalHeight)
         py1+=4*((1/42)*verticalHeight)
+
         gCtx.fillStyle=bow.colourArr[3]
         gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
         px1+=((1/42)*verticalHeight)
         py1+=4*((1/42)*verticalHeight)
+
         gCtx.fillStyle=bow.colourArr[4]
         gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
         px1+=((1/42)*verticalHeight)
         py1+=4*((1/42)*verticalHeight)
+   
         gCtx.fillStyle=bow.colourArr[5]
         gCtx.fillRect(px1, py1, 3*relSize, 5*relSize)
             //bottom part of the bows body
         px1=((1/42)*verticalHeight)+bow.point2X
             py1=((1/42)*verticalHeight)+bow.point2Y
+       px1-=bow.point1X
+            py1-=bow.point1Y
             py1+=((1/42)*verticalHeight)*42
         gCtx.fillStyle=bow.colourArr[0]
         gCtx.fillRect(px1, py1, 2*relSize, 2*relSize)
         px1+=((1/42)*verticalHeight)
         py1-=2*((1/42)*verticalHeight)
+
         gCtx.fillStyle=bow.colourArr[1]
         gCtx.fillRect(px1, py1, 3*relSize,2*relSize )
         px1+=((1/42)*verticalHeight)
         py1-=4*((1/42)*verticalHeight)
+
         gCtx.fillStyle=bow.colourArr[2]
         gCtx.fillRect(px1, py1, 3*relSize,4*relSize )
         px1+=((1/42)*verticalHeight)
         py1-=4*((1/42)*verticalHeight)
+  
         gCtx.fillStyle=bow.colourArr[3]
         gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
         px1+=((1/42)*verticalHeight)
         py1-=4*((1/42)*verticalHeight)
+
         gCtx.fillStyle=bow.colourArr[4]
         gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
         px1+=((1/42)*verticalHeight)
         py1-=4*((1/42)*verticalHeight)
+ 
         gCtx.fillStyle=bow.colourArr[5]
      
         gCtx.fillRect(px1, py1, 3*relSize, 5*relSize)
         //string
         gCtx.strokeStyle=bow.colourArr[6]
       
-        gCtx.moveTo(bow.point2X+7 , bow.point2Y+((1/28)*verticalHeight) )
-        gCtx.lineTo(bow.point1X+7, bow.point1Y+1)
-        gCtx.lineTo(bow.point4X+7, bow.point4Y)
+        gCtx.moveTo(bow.point2X+7-bow.point1X , bow.point2Y+((1/28)*verticalHeight)-bow.point1Y )
+        gCtx.lineTo(7, 1)
+        gCtx.lineTo(bow.point4X+7-bow.point1X, bow.point4Y-bow.point1Y)
         gCtx.stroke()
       gCtx.restore()
         }, 10)
@@ -1917,7 +1935,7 @@ class Bow{
         eval(func)
     }
     bowMove(bow, x, y){
-       bow.bowBodyClear(bow)
+      
         bow.point1X+=x
         bow.point2X+=x
         bow.point3X+=x
@@ -1927,14 +1945,13 @@ class Bow{
         bow.point2Y+=y
         bow.point3Y+=y
         bow.point4Y+=y
-       
-        bow.drawBow(bow)
-    }
-    bowBodyClear(bow){
-        clearInterval(bow.drawInt)
+        bow.gameObj.hitbox.endMovement(bow.gameObj)
+       bow.gameObj.hitbox.pointChange(bow.gameObj.hitbox.points, x, y)
+       bow.gameObj.hitbox.movement(bow.gameObj.hitbox.points, 1, bow.gameObj, 14, 15, bow.drawAngle)
 
-        gCtx.clearRect(bow.point1X, bow.point2Y, (bow.point3X-bow.point1X), (bow.verticalHeight)+21)
+  
     }
+    
     bowGameObj(bow, bowName){
 
    //defines where a point must be to be within the hitbox, true is above a given line, false is below, (left/right respectively for vertical lines)
@@ -1979,7 +1996,7 @@ playerColourArr = ["#000000","#000000","#000000","#000000","#000000", "#000000"]
 var playerBow = new Bow(600,  600, 670,600, 308.5, 150, 314,450, [...playerColourArr] )
 playerBow.bowGameObj(playerBow, "playerBow")
 playerBow.gameObj.hitbox.movement(playerBow.gameObj.hitbox.points, 1, playerBow.gameObj)
-
+console.log(playerBow.drawAngle)
 
 
 
@@ -2170,7 +2187,7 @@ arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.movement(arrow.gameObjArr[arr
             arrow.gameObjArr[arrowIndex].hitbox.endMovement(arrow.gameObjArr[arrowIndex])
            
             arrow.gameObjArr[arrowIndex].hitbox.pointChange(arrow.gameObjArr[arrowIndex].hitbox.points,relFreq*5, yCheck*5 )
-            arrow.gameObjArr[arrowIndex].hitbox.movement( arrow.gameObjArr[arrowIndex].hitbox.points, 1,  arrow.gameObjArr[arrowIndex], 10)
+            arrow.gameObjArr[arrowIndex].hitbox.movement( arrow.gameObjArr[arrowIndex].hitbox.points, 1,  arrow.gameObjArr[arrowIndex],undefined, undefined, internalAngle)
             
             arrow.drawArrow(arrow, arrowIndex, internalAngle)
            //console.log(arrow.gameObjArr[arrowIndex].hitbox.points[0])
@@ -2192,7 +2209,7 @@ friendlyArrow.drawArrow(friendlyArrow,0, 0)
 
 
 
-playerBow.drawBow(playerBow)
+playerBow.drawBow(playerBow, playerBow.drawAngle)
 //playerBow.aimBow(playerBow, friendlyArrow)
 friendlyArrow.shootArrow(friendlyArrow, 0,1000, 500, playerBow, 100)
 
