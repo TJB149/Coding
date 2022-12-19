@@ -1827,77 +1827,67 @@ class Bow{
         bow.drawInt=setInterval(function(){
             gCtx.save()
 
-//Convert degrees to radian 
-        var rad = (angle) * Math.PI / 180;
-
-//Set the origin to the center of the image
-       gCtx.translate(bow.point3X, bow.point3Y);
-      console.log(bow.point3X)
-   
-//Rotate the canvas around the origin
-        gCtx.rotate(angle*Math.PI/180);
-            
             px1=((1/42)*verticalHeight)+bow.point2X
             py1=((1/42)*verticalHeight)+bow.point2Y
             //top part of the bow's body
         gCtx.lineWidth = 1
         gCtx.fillStyle=bow.colourArr[0]
-        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 2*relSize, 2*relSize)
+        gCtx.fillRect(px1, py1, 2*relSize, 2*relSize)
         px1+=((1/42)*verticalHeight)
         py1+=2*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[1]
-        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize,2*relSize )
+        gCtx.fillRect(px1, py1, 3*relSize,2*relSize )
         px1+=((1/42)*verticalHeight)
         py1+=2*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[2]
-        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize,4*relSize )
+        gCtx.fillRect(px1, py1, 3*relSize,4*relSize )
         px1+=((1/42)*verticalHeight)
         py1+=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[3]
-        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize, 4*relSize)
+        gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
         px1+=((1/42)*verticalHeight)
         py1+=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[4]
-        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize, 4*relSize)
+        gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
         px1+=((1/42)*verticalHeight)
         py1+=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[5]
-        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize, 5*relSize)
+        gCtx.fillRect(px1, py1, 3*relSize, 5*relSize)
             //bottom part of the bows body
         px1=((1/42)*verticalHeight)+bow.point2X
             py1=((1/42)*verticalHeight)+bow.point2Y
             py1+=((1/42)*verticalHeight)*42
         gCtx.fillStyle=bow.colourArr[0]
-        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 2*relSize, 2*relSize)
+        gCtx.fillRect(px1, py1, 2*relSize, 2*relSize)
         px1+=((1/42)*verticalHeight)
         py1-=2*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[1]
-        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize,2*relSize )
+        gCtx.fillRect(px1, py1, 3*relSize,2*relSize )
         px1+=((1/42)*verticalHeight)
         py1-=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[2]
-        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize,4*relSize )
+        gCtx.fillRect(px1, py1, 3*relSize,4*relSize )
         px1+=((1/42)*verticalHeight)
         py1-=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[3]
-        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize, 4*relSize)
+        gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
         px1+=((1/42)*verticalHeight)
         py1-=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[4]
-        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize, 4*relSize)
+        gCtx.fillRect(px1, py1, 3*relSize, 4*relSize)
         px1+=((1/42)*verticalHeight)
         py1-=4*((1/42)*verticalHeight)
         gCtx.fillStyle=bow.colourArr[5]
      
-        gCtx.fillRect(px1-bow.point3X, py1-bow.point3Y, 3*relSize, 5*relSize)
+        gCtx.fillRect(px1, py1, 3*relSize, 5*relSize)
         //string
         gCtx.strokeStyle=bow.colourArr[6]
       
-        gCtx.moveTo(bow.point2X+7-bow.point3X , bow.point2Y+((1/28)*verticalHeight)-bow.point3Y )
-        gCtx.lineTo(bow.point1X+7-bow.point3X, bow.point1Y+1-bow.point3Y)
-        gCtx.lineTo(bow.point4X+7-bow.point3X, bow.point4Y-bow.point3Y)
+        gCtx.moveTo(bow.point2X+7 , bow.point2Y+((1/28)*verticalHeight) )
+        gCtx.lineTo(bow.point1X+7, bow.point1Y+1)
+        gCtx.lineTo(bow.point4X+7, bow.point4Y)
         gCtx.stroke()
-      
+      gCtx.restore()
         }, 10)
 
      
