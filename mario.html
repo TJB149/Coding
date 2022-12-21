@@ -1805,7 +1805,8 @@ class Bow{
         this.gameObj
         this.bowImg
         this.drawInt
-        this.drawAngle = 20
+        this.drawAngle = 90
+      
 
     }
     clearString(bow, arrow){
@@ -1826,8 +1827,8 @@ class Bow{
         var relSize=((1/42)*verticalHeight)
        
         bow.drawInt=setInterval(function(){
-      
-              gCtx.clearRect(bow.point1X, bow.point2Y, (bow.point3X-bow.point1X)+10, (bow.verticalHeight)+23)
+
+              gCtx.clearRect(bow.point1X-bow.verticalHeight/2-10, bow.point2Y, bow.verticalHeight+23, bow.verticalHeight+23)
             gCtx.save()
        gCtx.translate(bow.point1X, bow.point1Y)
        gCtx.rotate(angle*Math.PI/180)
@@ -2028,7 +2029,7 @@ class ArrowInit{
         var totalLength = arrow.point2X-arrow.point1X
       
         var currXOffset = arrow.gameObjArr[arrowIndex].hitbox.points[0]-534
-        var currYOffset = arrow.gameObjArr[arrowIndex].hitbox.points[1]-314
+        console.log(angle+" "+arrowIndex)
        function fletchlingDraw(){
         
         
@@ -2039,7 +2040,7 @@ class ArrowInit{
         var rad = (angle) * Math.PI / 180;
 
 //Set the origin to the center of the image
-       gCtx.translate(arrow.point1X-65+currXOffset, arrow.point1Y+10+currYOffset);
+       gCtx.translate(arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[1]);
       
    
 //Rotate the canvas around the origin
@@ -2047,7 +2048,7 @@ class ArrowInit{
 
 //draw the image    
      
-
+     
 // Restore canvas state as saved from above
     
         arrow.gradient = (arrow.point2Y-arrow.point1Y)/(arrow.point2X-arrow.point1X)
@@ -2055,34 +2056,40 @@ class ArrowInit{
         arrow.yIntercept = arrow.point1Y-(arrow.gradient*arrow.point1X)
         gCtx.lineWidth = 1
         //back of arrow
+
+    
+        //back of arrow
         gCtx.beginPath()
-        
-        gCtx.lineTo(arrow.point1X-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+1+currYOffset-(arrow.point1Y+10+currYOffset))
-        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+1+currYOffset-(arrow.point1Y+10+currYOffset))
-        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
-        gCtx.lineTo(arrow.point1X+(totalLength*arrow.width1)-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+19+currYOffset-(arrow.point1Y+10+currYOffset))
-        gCtx.lineTo(arrow.point1X-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+19+currYOffset-(arrow.point1Y+10+currYOffset))
-        gCtx.lineTo(arrow.point1X-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
-        gCtx.stroke()
-        gCtx.closePath()
+        gCtx.lineTo(0, 0)
+        gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[2]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[3]-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+        gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[4]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[5]-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+        //line1
+    
+        //console.log(arrow.gameObjArr[arrowIndex].hitbox.points[4])
+        gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[6]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[7]+2-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+        gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[8]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[9]+2-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+        gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[10]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[11]-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+   
+      
+        gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[12]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[13]-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+       gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[14]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[15]-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+   
+    
         //front of arrow
-        gCtx.beginPath()
-        gCtx.moveTo(arrow.point2X-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
-       gCtx.lineTo(arrow.point2X-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+1+currYOffset-(arrow.point1Y+10+currYOffset))
-       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+1+currYOffset-(arrow.point1Y+10+currYOffset))
-       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
-       gCtx.lineTo(arrow.point2X+(totalLength*arrow.width1)-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+19+currYOffset-(arrow.point1Y+10+currYOffset))
-       gCtx.lineTo(arrow.point2X-71+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+19+currYOffset-(arrow.point1Y+10+currYOffset))
-       gCtx.lineTo(arrow.point2X-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
-       gCtx.stroke()
-       gCtx.closePath()
-    // body of arrow
-        gCtx.beginPath()
-        gCtx.moveTo(arrow.point1X+(totalLength*arrow.width1)-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point1Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
-        gCtx.lineTo(arrow.point2X-65+currXOffset-(arrow.point1X-65+currXOffset), arrow.point2Y+10+currYOffset-(arrow.point1Y+10+currYOffset))
+      
+        gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[16]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[17]-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+        gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[18]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[19]-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+        gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[20]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[21]-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+        gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[22]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[23]-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+        gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[24]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[25]-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+        gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[26]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[27]-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+        gCtx.lineTo(arrow.gameObjArr[arrowIndex].hitbox.points[28]-arrow.gameObjArr[arrowIndex].hitbox.points[0], arrow.gameObjArr[arrowIndex].hitbox.points[29]-arrow.gameObjArr[arrowIndex].hitbox.points[1])
+
         gCtx.stroke()
         gCtx.closePath()
-        
+    // body of arrow
+
+
         gCtx.restore();
         }
         
@@ -2123,7 +2130,7 @@ class ArrowInit{
         var currXOffset = arrow.gameObjArr[arrowIndex].hitbox.points[0]-534
         var currYOffset = arrow.gameObjArr[arrowIndex].hitbox.points[1]-314
         gCtx.fillStyle = "#FF0000"
-        gCtx.clearRect(0, 0,arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65, 22 )
+        gCtx.fillRect(-(arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65)/2, -(arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65)/2,arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65, arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65 )
        gCtx.restore()
     }
     
@@ -2165,7 +2172,7 @@ arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.movement(arrow.gameObjArr[arr
     }
     shootArrow(arrow, arrowIndex, targetX, targetY, bow, projSpeed){
         var internalAngle= angleCalc(bow.point3X, bow.point3Y, targetX, targetY)
-        console.log(internalAngle)
+
         var totalDist = Math.sqrt(Math.pow(arrow.gameObjArr[arrowIndex].hitbox.points[0]-targetX, 2)+Math.pow(arrow.gameObjArr[arrowIndex].hitbox.points[1]-targetY, 2))
         var relFreq = (arrow.gameObjArr[arrowIndex].hitbox.points[0]-targetX)/(arrow.gameObjArr[arrowIndex].hitbox.points[1]-targetY)
         var yCheck
@@ -2179,21 +2186,24 @@ arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.movement(arrow.gameObjArr[arr
   
         if(projSpeed<1){
             projSpeed=1
-        }
+        } 
+        arrow.endArrowDraw(arrow, arrowIndex, internalAngle)
+    
+         arrow.drawArrow(arrow, arrowIndex, internalAngle)
 
         var shootInterval = setInterval(function(){
-             arrow.endArrowDraw(arrow, arrowIndex, 10)
+             //arrow.endArrowDraw(arrow, arrowIndex, 10)
           
             arrow.gameObjArr[arrowIndex].hitbox.endMovement(arrow.gameObjArr[arrowIndex])
            
-            arrow.gameObjArr[arrowIndex].hitbox.pointChange(arrow.gameObjArr[arrowIndex].hitbox.points,relFreq*5, yCheck*5 )
+            arrow.gameObjArr[arrowIndex].hitbox.pointChange(arrow.gameObjArr[arrowIndex].hitbox.points,relFreq, yCheck )
             arrow.gameObjArr[arrowIndex].hitbox.movement( arrow.gameObjArr[arrowIndex].hitbox.points, 1,  arrow.gameObjArr[arrowIndex],undefined, undefined, internalAngle)
             
-            arrow.drawArrow(arrow, arrowIndex, internalAngle)
+          
            //console.log(arrow.gameObjArr[arrowIndex].hitbox.points[0])
            //console.log(arrow.gameObjArr[arrowIndex].hitbox.points[1])
          
-        }, 50)
+        }, 10)
         setTimeout(clearInterval, totalDist/projSpeed*1000, shootInterval)
 
     }

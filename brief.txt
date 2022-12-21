@@ -8,7 +8,7 @@ To Do
 	⁃	arrow array up and running/ + arrow deletion /
 	-	arrow movement/
 	-	bind arrow to shoot function/
-	-	bow rotation
+	-	bow rotation/
 	-	create player character
 	-	player movement
 	-	bow movement/
