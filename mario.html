@@ -1805,7 +1805,7 @@ class Bow{
         this.gameObj
         this.bowImg
         this.drawInt
-        this.drawAngle = 90
+        this.drawAngle = 0
       
 
     }
@@ -1819,7 +1819,7 @@ class Bow{
             
     }
  
-    drawBow(bow, angle = 0){
+    drawBow(bow){
         var verticalHeight=bow.point4Y-bow.point2Y-14
         var bodyWidth=bow.point4X-bow.point2X
         var px1=1/verticalHeight+verticalHeight
@@ -1831,7 +1831,8 @@ class Bow{
               gCtx.clearRect(bow.point1X-bow.verticalHeight/2-10, bow.point2Y, bow.verticalHeight+23, bow.verticalHeight+23)
             gCtx.save()
        gCtx.translate(bow.point1X, bow.point1Y)
-       gCtx.rotate(angle*Math.PI/180)
+       gCtx.rotate(bow.drawAngle*Math.PI/180)
+
             px1=((1/42)*verticalHeight)+bow.point2X
             py1=((1/42)*verticalHeight)+bow.point2Y
             px1-=bow.point1X
@@ -2045,8 +2046,10 @@ class ArrowInit{
    
 //Rotate the canvas around the origin
         gCtx.rotate(angle*Math.PI/180);
-
-//draw the image    
+        
+            gCtx.clearRect(-10,-15,250,25)  
+       
+    
      
      
 // Restore canvas state as saved from above
@@ -2105,7 +2108,7 @@ class ArrowInit{
         arrow.gameObjArr[arrowIndex] = null
         
     }
-    endArrowDraw(arrow, arrowIndex, angle){
+    endArrowDraw(arrow, arrowIndex, angle = 0){
 
         //console.log(arrow.drawArr[arrowIndex][0])
         var currXOffset = arrow.gameObjArr[arrowIndex].hitbox.points[0]-534
@@ -2129,8 +2132,8 @@ class ArrowInit{
      
         var currXOffset = arrow.gameObjArr[arrowIndex].hitbox.points[0]-534
         var currYOffset = arrow.gameObjArr[arrowIndex].hitbox.points[1]-314
-        gCtx.fillStyle = "#FF0000"
-        gCtx.fillRect(-(arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65)/2, -(arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65)/2,arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65, arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65 )
+  
+        gCtx.clearRect(-(arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65)/2-100, -(arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65)/2-100,(arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+65)*2, (arrow.totalLength*(arrow.width1+arrow.width2+arrow.width3)+80)*2 )
        gCtx.restore()
     }
     
@@ -2171,7 +2174,7 @@ var arrowgameObj = new gameObj(new Hitbox(...[[...arrowPointsArray],[...arrowOri
 arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.movement(arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.points, 1, arrow.gameObjArr[arrow.gameObjArr.length-1])
     }
     shootArrow(arrow, arrowIndex, targetX, targetY, bow, projSpeed){
-        var internalAngle= angleCalc(bow.point3X, bow.point3Y, targetX, targetY)
+        var internalAngle= angleCalc(bow.point3X, bow.point3Y, targetX, targetY)-187
 
         var totalDist = Math.sqrt(Math.pow(arrow.gameObjArr[arrowIndex].hitbox.points[0]-targetX, 2)+Math.pow(arrow.gameObjArr[arrowIndex].hitbox.points[1]-targetY, 2))
         var relFreq = (arrow.gameObjArr[arrowIndex].hitbox.points[0]-targetX)/(arrow.gameObjArr[arrowIndex].hitbox.points[1]-targetY)
@@ -2187,13 +2190,17 @@ arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.movement(arrow.gameObjArr[arr
         if(projSpeed<1){
             projSpeed=1
         } 
-        arrow.endArrowDraw(arrow, arrowIndex, internalAngle)
+        arrow.endArrowDraw(arrow, arrowIndex)
     
          arrow.drawArrow(arrow, arrowIndex, internalAngle)
 
         var shootInterval = setInterval(function(){
              //arrow.endArrowDraw(arrow, arrowIndex, 10)
-          
+         
+        
+
+
+        
             arrow.gameObjArr[arrowIndex].hitbox.endMovement(arrow.gameObjArr[arrowIndex])
            
             arrow.gameObjArr[arrowIndex].hitbox.pointChange(arrow.gameObjArr[arrowIndex].hitbox.points,relFreq, yCheck )
@@ -2204,7 +2211,10 @@ arrow.gameObjArr[arrow.gameObjArr.length-1].hitbox.movement(arrow.gameObjArr[arr
            //console.log(arrow.gameObjArr[arrowIndex].hitbox.points[1])
          
         }, 10)
-        setTimeout(clearInterval, totalDist/projSpeed*1000, shootInterval)
+        setTimeout(function(){
+            clearInterval(shootInterval)
+            arrow.endArrowDraw(arrow, 0)
+        }, totalDist/projSpeed*1000)
 
     }
     
@@ -2219,13 +2229,231 @@ friendlyArrow.drawArrow(friendlyArrow,0, 0)
 
 
 
-playerBow.drawBow(playerBow, playerBow.drawAngle)
+playerBow.drawBow(playerBow)
 //playerBow.aimBow(playerBow, friendlyArrow)
 friendlyArrow.shootArrow(friendlyArrow, 0,1000, 500, playerBow, 100)
 
+class Player{
+    constructor(x, y,colour1, colour2 = "", colour3 = "", colour4 = "", colour5 = "" ){
+        this.x = x
+        this.y = y
+        this.colour1 = colour1
+        this.colour2 = colour2
+        this.colour3 = colour3
+        this.colour4 = colour4
+        this.colour5 = colour5
+        this.drawAngle = 0
+        this.drawInt;
+
+    }
+    drawPlayer(player){
+        
+        player.drawInt = setInterval(function(){
+        gCtx.save()
+        gCtx.translate(player.x, player.y)
+        gCtx.rotate(player.drawAngle*Math.PI/180)
+        var len = 37/7
+        var offsetStore = 0
+        gCtx.fillStyle = player.colour1
+            //outside layer
+        gCtx.fillRect(2*len, 0*len, 2*len, 9*len)
+        offsetStore+=4*len
+        gCtx.fillRect(0, offsetStore+3*len, 2*len, 8*len)
+         offsetStore+=8*len
+        gCtx.fillRect(2*len, offsetStore+3*len, len, 2*len)
+         offsetStore+=2*len
+         gCtx.fillRect(3*len, offsetStore+2*len, len, len)
+         offsetStore+=2*len    
+         gCtx.fillRect(4*len, offsetStore+len, 2*len, 2*len)
+        
+              gCtx.fillRect(6*len, offsetStore+len, len, len)
+              offsetStore+=3*len
+             gCtx.fillRect(len, offsetStore, 3*len, 2*len)
+         offsetStore+=2*len
+           gCtx.fillRect(4*len, offsetStore, 2*len, 2*len)
+         offsetStore+=2*len
+           gCtx.fillRect(6*len, offsetStore, 6*len, 2*len)
+         offsetStore+=2*len
+        gCtx.fillRect(10*len, offsetStore-4*len, 2*len, 2*len)
+         gCtx.fillRect(11*len, offsetStore-5*len, len, len)
+        gCtx.fillRect(12*len, offsetStore-len, len, 3*len)
+         offsetStore+=len
+           gCtx.fillRect(13*len, offsetStore, len, len)
+           offsetStore+=len
+           gCtx.fillRect(14*len, offsetStore, 8*len, 2*len)
+         offsetStore+=2*len
+           gCtx.fillRect(22*len, offsetStore-4*len, len, len)
+         offsetStore-=2*len
+         gCtx.fillRect(20*len, offsetStore-len, 3*len, len)
+      
+         gCtx.fillRect(22*len, offsetStore-2*len, 2*len, len)
+         offsetStore-=3*len
+         //centrepiece
+         gCtx.fillRect(24*len, offsetStore-9*len, 3*len, 11*len)
+         offsetStore-=13*len
+         //returning to 0,0
+         gCtx.fillRect(22*len, offsetStore, 2*len, 4*len)
+         offsetStore-=4*len
+          gCtx.fillRect(20*len, offsetStore, 2*len, 4*len)
+         offsetStore-=2*len
+         gCtx.fillRect(16*len, offsetStore, 4*len, 2*len)
+         offsetStore-=2*len
+            gCtx.fillRect(12*len, offsetStore, 4*len, 2*len)
+         offsetStore-=2*len
+            gCtx.fillRect(8*len, offsetStore, 4*len, 2*len)
+         offsetStore-=1*len
+            gCtx.fillRect(4*len, offsetStore, 4*len, 2*len)
+         offsetStore-=2*len
+         //right wing
+         gCtx.restore()
+  
+gCtx.save()
+len = 37/7
+    //gCtx.translate(0,graphic.height); 
+    gCtx.scale(-1,1)
+    
+    gCtx.fillStyle=player.colour1
+    gCtx.translate(player.x-120*len, player.y)
+
+    //gCtx.rotate(Math.PI)
+            //gCtx.translate(-52*len, -56*len)
+
+        offsetStore = 0
+        gCtx.fillStyle = player.colour1
+            //outside layer
+        gCtx.fillRect(2*len, 0*len, 2*len, 9*len)
+        offsetStore+=4*len
+        gCtx.fillRect(0, offsetStore+3*len, 2*len, 8*len)
+         offsetStore+=8*len
+        gCtx.fillRect(2*len, offsetStore+3*len, len, 2*len)
+         offsetStore+=2*len
+         gCtx.fillRect(3*len, offsetStore+2*len, len, len)
+         offsetStore+=2*len    
+         gCtx.fillRect(4*len, offsetStore+len, 2*len, 2*len)
+        
+              gCtx.fillRect(6*len, offsetStore+len, len, len)
+              offsetStore+=3*len
+             gCtx.fillRect(len, offsetStore, 3*len, 2*len)
+         offsetStore+=2*len
+           gCtx.fillRect(4*len, offsetStore, 2*len, 2*len)
+         offsetStore+=2*len
+           gCtx.fillRect(6*len, offsetStore, 6*len, 2*len)
+         offsetStore+=2*len
+        gCtx.fillRect(10*len, offsetStore-4*len, 2*len, 2*len)
+         gCtx.fillRect(11*len, offsetStore-5*len, len, len)
+        gCtx.fillRect(12*len, offsetStore-len, len, 3*len)
+         offsetStore+=len
+           gCtx.fillRect(13*len, offsetStore, len, len)
+           offsetStore+=len
+           gCtx.fillRect(14*len, offsetStore, 8*len, 2*len)
+         offsetStore+=2*len
+           gCtx.fillRect(22*len, offsetStore-4*len, len, len)
+         offsetStore-=2*len
+         gCtx.fillRect(20*len, offsetStore-len, 3*len, len)
+      
+         gCtx.fillRect(22*len, offsetStore-2*len, 2*len, len)
+         offsetStore-=3*len
+         //centrepiece
+         gCtx.fillRect(24*len, offsetStore-9*len, 3*len, 11*len)
+         offsetStore-=13*len
+         //returning to 0,0
+         gCtx.fillRect(22*len, offsetStore, 2*len, 4*len)
+         offsetStore-=4*len
+          gCtx.fillRect(20*len, offsetStore, 2*len, 4*len)
+         offsetStore-=2*len
+         gCtx.fillRect(16*len, offsetStore, 4*len, 2*len)
+         offsetStore-=2*len
+            gCtx.fillRect(12*len, offsetStore, 4*len, 2*len)
+         offsetStore-=2*len
+            gCtx.fillRect(8*len, offsetStore, 4*len, 2*len)
+         offsetStore-=1*len
+            gCtx.fillRect(4*len, offsetStore, 4*len, 2*len)
+         offsetStore-=2*len
+         gCtx.restore()
+ 
+         
+         gCtx.save()
+    
+    gCtx.translate(player.x, player.y)
+    gCtx.rotate(player.drawAngle*Math.PI/180)
+    //centre part of each wing
+ 
+   
+    gCtx.fillStyle = player.colour1
+   
+    len = 37/7
+    offsetStore = 0
+
+    gCtx.translate(12*len, 16*len)
+    gCtx.fillRect(0,len, 2*len, 2*len)
+   
+    gCtx.fillRect(len, 0, 7*len, len)
 
 
+    gCtx.fillRect(2*len, offsetStore+len, len, len)
+   
+    gCtx.fillRect(7*len,offsetStore+2*len, len,-len )
+    gCtx.fillRect(8*len, offsetStore+len, len, 3*len)
+    offsetStore+=4*len
+    gCtx.fillRect(7*len, offsetStore, len, 2*len)
+    //right wing
+    gCtx.restore()
+    gCtx.save()
 
+    gCtx.scale(-1,1)
+    
+    gCtx.fillStyle=player.colour1
+    gCtx.translate(-player.x-38*len,player.y+16*len)
+//gCtx.fillRect(0,0,600,600)
+    //gCtx.rotate(Math.PI)
+    offsetStore=0
+    len=37/7
+    gCtx.fillRect(0,len, 2*len, 2*len)
+   
+    gCtx.fillRect(len, 0, 7*len, len)
+
+
+    gCtx.fillRect(2*len, offsetStore+len, len, len)
+   
+    gCtx.fillRect(7*len,offsetStore+2*len, len,-len )
+    gCtx.fillRect(8*len, offsetStore+len, len, 3*len)
+    offsetStore+=4*len
+    gCtx.fillRect(7*len, offsetStore, len, 2*len)
+    gCtx.restore()
+
+   gCtx.save()
+    //2nd layer
+    offsetStore = 0
+    len=37/7
+    gCtx.fillStyle = player.colour2
+    gCtx.translate(player.x+2*len, player.y+2*len)
+    gCtx.fillRect(2*len,0,len,7*len )
+    offsetStore+=7*len
+    gCtx.fillRect(0,offsetStore, 2*len, 6*len)
+    offsetStore+=6*len
+    gCtx.fillRect(len, offsetStore, 2*len, len)
+    offsetStore+=len
+    gCtx.fillRect(2*len, offsetStore, 4*len, len)
+    offsetStore+=len
+    gCtx.fillRect(5*len, offsetStore, len, 2*len)
+    offsetStore+=len
+    gCtx.fillRect(4*len, offsetStore, 2*len, len)
+    offsetStore+=len
+    gCtx.fillRect(2*len,offsetStore, 2*len, 3*len )
+    offsetStore+=len
+    gCtx.fillRect(5*len, offsetStore, len, len)
+    offsetStore+=len
+    gCtx.fillRect(4*len, offsetStore, 4*len, 2*len)
+
+    gCtx.restore()
+        },10)
+
+     
+        
+    }
+}
+var p1 = new Player(270,100,"#FFFF66")
+p1.drawPlayer(p1)
 //END OF JS CODE HERE  
 });
 
